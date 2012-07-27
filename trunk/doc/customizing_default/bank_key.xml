@@ -1,0 +1,4 @@
+<root>
+	<bank_account id='CMB' name="China Merchants Bank" />
+	<bank_account id='SPDB' name="Shanghai Pudong Development Bank" />
+</root>
