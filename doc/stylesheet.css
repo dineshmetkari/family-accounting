@@ -11,7 +11,13 @@ h2 { font-size: 125%; font-family: Cambria}
 p { font-family: Verdana; font-size: 80% }
 
 /* table content */
-.Table { font-size: 60% }
+.Table 
+{ 
+	font-size: 60%;
+	border: 1;
+	border-collapse: collapse;
+	border-width: 0px
+}
 
 /* Table colors */
 .TableHeadingColor     { background: #CCCCFF; color:#000000 } /* Dark mauve */
