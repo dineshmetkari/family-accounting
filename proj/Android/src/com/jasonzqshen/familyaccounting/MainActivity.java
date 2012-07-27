@@ -1,4 +1,4 @@
-package com.example.com.jasonzqshen.familyaccounting;
+package com.jasonzqshen.familyaccounting;
 
 import android.os.Bundle;
 import android.app.Activity;
