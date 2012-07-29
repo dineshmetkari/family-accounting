@@ -10,15 +10,15 @@
 		and the resulting financial position of the customer with the bank.  </p>
 
 		<h2>Fields</h2>
-		<p>
-			1. Bank account identity(char[10])<br/>
-				&nbsp;The identity format is &lt;bank key&gt;_&lt;account last four number&gt;.
-				&nbsp;For example, identity &quot;CMB_6620&quot; is bank account **********6620 in bank key CMB.<br/>
-			2. Bank account description(String)<br/>
-			3. <a href='./bank_key.html'>Bank key</a><br/>
-			4. <a href='../sys_customizing/bank_account_type.html'>Bank account type</a><br/>
-			5. Bank account number(char[16])
-		</p>
+		<table class='Table' width='60%' border='1'>
+			<tr style="border-style: double"><td width='20%'>Field Name</td><td width='20%'>Tag Name</td><td width='40%'>Description</td><td width='20%'>Is Mandatory</td></tr>
+			<tr><td>Identity</td><td>id</td><td>Identity of bank account; The identity format is &lt;bank key&gt;_&lt;account last four number&gt;.
+				&nbsp;For example, identity &quot;CMB_6620&quot; is bank account **********6620 in bank key CMB.</td><td>Mandatory</td></tr>
+			<tr><td>Name</td><td>name</td><td>Description of bank account</td><td>Mandatory</td></tr>
+			<tr><td><a href='./bank_key.html'>Bank Key</a></td><td>bank_key</td><td>Bank key of bank account</td><td>Mandatory</td></tr>
+			<tr><td><a href='../sys_customizing/bank_account_type.html'>Bank account type</a><td>type</td><td>Bank key of bank account</td><td>Mandatory</td></tr>
+			<tr><td>Bank account number</td><td>bank_account</td><td>Bank account number(char[16])</td><td>Mandatory</td></tr>
+		</table>
 		<h2>Reference: </h2>
 		<p><a href='../customizing_default/bank_account.xml'>Default customizing</a></p>
 	</body>
