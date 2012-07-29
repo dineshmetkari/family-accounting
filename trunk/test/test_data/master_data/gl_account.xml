@@ -1,4 +1,14 @@
 <root>
-	<entity id='113100' name="Jason's China Merchants Bank Account" type='B' bank_account='CMB_6620' group='1131'/> 
-	<entity id='113101' name="Jason's China Merchants Bank Account" type='P' bank_account='SPDB_3704' group='1131' /> 
+	<entity id='0000101001' name="Jason's cash on hands" type='B' group='1010'/> 
+	<entity id='0000101002' name="Shirley's cash on hands" type='B' group='1010' /> 
+	<entity id="0000104001" name="Jason's CMB bank account 6235" bank_account='CMB_6235' type='B' group='1040'/>
+	<entity id="0000104002" name="Jason's SPDB bank account 3704" bank_account='SPDB_3704' type='B' group='1040'/>
+	<entity id="0000107001" name="Deposites in ICBC" bank_account='ICBC_0000' type='B' group='1070'/>
+	<entity id="0000140001" name="Jason's traffic card" type='B' group='1400'/>
+	<entity id="0000140002" name="Shirley's traffic card" type='B' group='1400'/>
+	<entity id="0000270801" name="Jason's credit card" bank_account='CMB_6620' type='B' group='2708'/>
+	<entity id="0000400001" name="Jason's salary incoming" type='B' group='4000'/>
+	<entity id="0000400002" name="Shirley's salary imcoming" type='B' group='4000'/>
+	<entity id="0000406001" name="Deposit interest incoming" type='B' group='4060'/>
+	<entity id="0000406002" name="Other! interest incoming" type='B' group='4060'/>
 </root>
