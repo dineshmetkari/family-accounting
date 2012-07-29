@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.xmlpull.v1.XmlSerializer;
 
+import com.jasonzqshen.familyaccounting.core.CoreDriver;
+
 /**
  * Base class of master data
  * 
@@ -11,17 +13,18 @@ import org.xmlpull.v1.XmlSerializer;
  * 
  */
 public abstract class MasterDataBase {
-	
-	
+
 	protected final MasterDataIdentity _identity;
 	protected final IMasterDataParser _parser;
 	protected String _descp; // description
+	protected final CoreDriver _coreDriver; // core driver
 
-	protected MasterDataBase(MasterDataIdentity id, String descp,
-			IMasterDataParser parser) {
+	protected MasterDataBase(CoreDriver coreDriver, MasterDataIdentity id,
+			String descp, IMasterDataParser parser) {
 		_identity = id;
 		_parser = parser;
 		_descp = descp;
+		_coreDriver = coreDriver;
 	}
 
 	/**

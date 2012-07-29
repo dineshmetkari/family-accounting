@@ -1,8 +1,9 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
-import java.util.ArrayList;
-
 import org.w3c.dom.Element;
+
+import com.jasonzqshen.familyaccounting.core.CoreDriver;
+
 
 /**
  * Parse the XML to memory data
@@ -11,5 +12,5 @@ import org.w3c.dom.Element;
  * 
  */
 public interface IMasterDataParser {
-	MasterDataBase parse(Element elem, ArrayList<String> errorMsg);
+	MasterDataBase parse(CoreDriver coreDriver,Element elem) throws Exception;
 }

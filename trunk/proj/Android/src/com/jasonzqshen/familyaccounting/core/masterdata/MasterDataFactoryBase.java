@@ -18,10 +18,13 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 public abstract class MasterDataFactoryBase {
 	protected final CoreDriver _coreDriver;
 	protected final Hashtable<MasterDataIdentity, MasterDataBase> _list;
+	protected final IMasterDataFactoryParser _parser;
 
-	public MasterDataFactoryBase(CoreDriver coreDriver) {
+	public MasterDataFactoryBase(IMasterDataFactoryParser parser,
+			CoreDriver coreDriver) {
 		_coreDriver = coreDriver;
 		_list = new Hashtable<MasterDataIdentity, MasterDataBase>();
+		_parser = parser;
 	}
 
 	/**
@@ -31,6 +34,15 @@ public abstract class MasterDataFactoryBase {
 	 * @return
 	 */
 	public abstract MasterDataBase createNewMasterDataBase(MasterDataIdentity id);
+
+	/**
+	 * get parser
+	 * 
+	 * @return
+	 */
+	public IMasterDataFactoryParser getParser() {
+		return _parser;
+	}
 
 	/**
 	 * remove the master data entity from list
@@ -69,4 +81,40 @@ public abstract class MasterDataFactoryBase {
 
 		return writer.toString();
 	}
+
+	/**
+	 * get the count of master data
+	 * 
+	 * @return
+	 */
+	public int getMasterDataCount() {
+		return _list.size();
+	}
+
+	/**
+	 * get master data entities
+	 * 
+	 * @return
+	 */
+	public MasterDataBase[] getAllEntities() {
+		MasterDataBase[] ret = new MasterDataBase[getMasterDataCount()];
+		int index = 0;
+		for (MasterDataBase data : _list.values()) {
+			ret[index++] = data;
+		}
+
+		return ret;
+	}
+
+	/**
+	 * get master data entity according identity
+	 * 
+	 * @param id
+	 *            identity
+	 * @return master data entity
+	 */
+	public MasterDataBase getEntity(MasterDataIdentity id) {
+		return _list.get(id);
+	}
+
 }
