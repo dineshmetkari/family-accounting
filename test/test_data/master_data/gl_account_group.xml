@@ -17,4 +17,9 @@
 	<entity id="4020" name="Awards Incoming"/>
 	<entity id="4060" name="Interest Incoming"/>
 	<entity id="4080" name="Other Incoming"/>
+	
+	<entity id="5000" name="Dinner expense"/>
+	<entity id="5001" name="Daily objects expense"/>
+	<entity id="5002" name="Traffic expense"/>
+	<entity id="5003" name="Snacks expense"/>
 </root>
