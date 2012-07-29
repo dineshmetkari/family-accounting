@@ -1,4 +1,0 @@
-<root>
-	<bank_account id='CMB_6620' name="Jason's CMB credit card" bank_key='CMB' bank_account='4392258324576620' type='C'/>
-	<bank_account id='SPDB_3704' name="Jason's SPDB bank account" bank_key='SPDB' bank_account='6225220106553704' type='D'/>
-</root>

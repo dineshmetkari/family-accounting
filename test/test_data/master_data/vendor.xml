@@ -1,0 +1,4 @@
+<root>
+	<entity id="SUBWAY" name="Subway"/>
+	<entity id="BUS" name="Bus"/>
+</root>

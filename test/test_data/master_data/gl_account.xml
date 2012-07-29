@@ -1,0 +1,4 @@
+<root>
+	<entity id='113100' name="Jason's China Merchants Bank Account" type='B' bank_account='CMB_6620' group='1131'/> 
+	<entity id='113101' name="Jason's China Merchants Bank Account" type='P' bank_account='SPDB_3704' group='1131' /> 
+</root>
