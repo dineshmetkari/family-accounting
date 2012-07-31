@@ -4,7 +4,7 @@
 	<entity id="1060" name="Investments - Money Market"/>
 	<entity id="1070" name="Investments - Deposites"/>
 	<entity id="1400" name="Prepaid expenses, like traffic card"/>
-	<entity id="1500" name="Furniture & Fixtures"/>
+	<entity id="1500" name="Furniture and Fixtures"/>
 	<entity id="1510" name="Equipment"/>
 	<entity id="1520" name="Vehicles"/>
 	<entity id="1550" name="Buildings"/>

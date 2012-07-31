@@ -2,6 +2,6 @@
 	<entity id='CMB_6620' name="Jason's CMB credit card" bank_key='CMB' bank_account='0000000000006620' type='C'/>
 	<entity id='CMB_6235' name="Jason's CMB bank account" bank_key='CMB' bank_account='0000000000006235' type='D'/>
 	<entity id='SPDB_3704' name="Jason's SPDB bank account" bank_key='SPDB' bank_account='0000000000003704' type='D'/>
-	<entity id='ICBC_0000' name="Deposite ICBC" bank_key='ICBC' bank_account='0000000000000000' type='D'/>
+	<entity id='ICBC_0000' name="Deposite ICBC" bank_key='ICBC' bank_account='0000000000000001' type='D'/>
 	
 </root>
