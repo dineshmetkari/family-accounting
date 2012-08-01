@@ -9,6 +9,7 @@ body { background-color: #FFFFFF; color:#000000; font-family: Verdana }
 h1 { font-size: 145%; font-family: Cambria }
 h2 { font-size: 125%; font-family: Cambria}
 p { font-family: Verdana; font-size: 80% }
+code{ font-family: Courier New; color: blue }
 
 /* table content */
 .Table 
