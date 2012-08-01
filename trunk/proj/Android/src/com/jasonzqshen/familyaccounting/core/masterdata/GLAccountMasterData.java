@@ -1,30 +1,12 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
-import org.w3c.dom.Element;
-
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
+import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountType;
 
 public class GLAccountMasterData extends MasterDataBase {
-	/**
-	 * parser
-	 */
-	public static IMasterDataParser PARSER = new IMasterDataParser() {
-		public MasterDataBase parse(CoreDriver coreDriver, Element elem)
-				throws Exception {
-			String id = elem.getAttribute(MasterDataUtils.XML_ID);
-			String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
-			String typeStr = elem.getAttribute(MasterDataUtils.XML_TYPE);
-			String bankAccoutStr = elem.getAttribute(MasterDataUtils.XML_BANK_ACCOUNT);
-			String groupStr = elem.getAttribute(MasterDataUtils.XML_GROUP);
-
-			MasterDataIdentity_GLAccount identity = new MasterDataIdentity_GLAccount(
-					id.toCharArray());
-			GLAccountMasterData glAccount = new GLAccountMasterData(coreDriver,
-					identity, descp);
-			return glAccount;
-		}
-	};
+	public static final String FILE_NAME = "gl_account.xml";
 
 	private GLAccountType _type;
 	private MasterDataIdentity _bankAccount;
@@ -35,10 +17,35 @@ public class GLAccountMasterData extends MasterDataBase {
 	 * @param id
 	 * @param descp
 	 * @param parser
+	 * @throws NullValueNotAcceptable
+	 * @throws MasterDataIdentityNotDefined
 	 */
 	public GLAccountMasterData(CoreDriver coreDriver,
-			MasterDataIdentity_GLAccount id, String descp) {
-		super(coreDriver, id, descp, PARSER);
+			MasterDataIdentity_GLAccount id, String descp, GLAccountType type,
+			MasterDataIdentity group) throws NullValueNotAcceptable,
+			MasterDataIdentityNotDefined {
+		this(coreDriver, id, descp, type, group, null);
+	}
+
+	/**
+	 * 
+	 * @param coreDriver
+	 * @param id
+	 * @param descp
+	 * @param type
+	 * @param group
+	 * @throws NullValueNotAcceptable
+	 * @throws MasterDataIdentityNotDefined
+	 */
+	public GLAccountMasterData(CoreDriver coreDriver,
+			MasterDataIdentity_GLAccount id, String descp, GLAccountType type,
+			MasterDataIdentity group, MasterDataIdentity bankAccount)
+			throws NullValueNotAcceptable, MasterDataIdentityNotDefined {
+		super(coreDriver, id, descp);
+
+		this.setBankAccount(bankAccount);
+		this.setGLAccountType(type);
+		this.setAccountGroup(group);
 	}
 
 	/**
@@ -54,8 +61,13 @@ public class GLAccountMasterData extends MasterDataBase {
 	 * set G/L account type
 	 * 
 	 * @param type
+	 * @throws NullValueNotAcceptable
 	 */
-	public void setGLAccountType(GLAccountType type) {
+	public void setGLAccountType(GLAccountType type)
+			throws NullValueNotAcceptable {
+		if (type == null) {
+			throw new NullValueNotAcceptable("GL account type");
+		}
 		_type = type;
 	}
 
@@ -72,17 +84,24 @@ public class GLAccountMasterData extends MasterDataBase {
 	 * Set bank account
 	 * 
 	 * @param bankAccount
+	 * @throws MasterDataIdentityNotDefined
 	 */
-	public boolean setBankAccount(MasterDataIdentity bankAccount) {
+	public void setBankAccount(MasterDataIdentity bankAccount)
+			throws MasterDataIdentityNotDefined {
+		if (bankAccount == null) {
+			// clear
+			_bankAccount = null;
+			return;
+		}
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
 		MasterDataIdentity bankAccountId = management.getMasterData(
 				bankAccount, MasterDataType.BANK_ACCOUNT).getIdentity();
 		if (bankAccountId == null) {
-			return false;
+			throw new MasterDataIdentityNotDefined(bankAccount,
+					MasterDataType.BANK_ACCOUNT);
 		}
 
 		_bankAccount = bankAccountId;
-		return true;
 	}
 
 	/**
@@ -99,13 +118,21 @@ public class GLAccountMasterData extends MasterDataBase {
 	 * 
 	 * @param group
 	 *            id of G/L account group
+	 * @return result of the action
+	 * @throws MasterDataIdentityNotDefined
+	 * @throws NullValueNotAcceptable
 	 */
-	public boolean setAccountGroup(MasterDataIdentity group) {
+	public boolean setAccountGroup(MasterDataIdentity group)
+			throws MasterDataIdentityNotDefined, NullValueNotAcceptable {
+		if (group == null) {
+			throw new NullValueNotAcceptable("G/L account group");
+		}
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
 		MasterDataIdentity groupId = management.getMasterData(group,
 				MasterDataType.GL_ACCOUNT_GROUP).getIdentity();
 		if (groupId == null) {
-			return false;
+			throw new MasterDataIdentityNotDefined(group,
+					MasterDataType.GL_ACCOUNT_GROUP);
 		}
 		_group = groupId;
 		return true;
@@ -118,5 +145,21 @@ public class GLAccountMasterData extends MasterDataBase {
 	 */
 	public MasterDataIdentity getAccountGroup() {
 		return _group;
+	}
+
+	@Override
+	public String toXML() {
+		String superStr = super.toXML();
+
+		StringBuilder strBuilder = new StringBuilder(superStr);
+		strBuilder.append(String.format("%s=\"%s\" %s=\"%s\" ",
+				MasterDataUtils.XML_TYPE, _type.toString(),
+				MasterDataUtils.XML_GROUP, _group.toString()));
+
+		if (_bankAccount != null) {
+			strBuilder.append(String.format("%s=\"%s\" ",
+					MasterDataUtils.XML_BANK_ACCOUNT, _bankAccount.toString()));
+		}
+		return strBuilder.toString();
 	}
 }

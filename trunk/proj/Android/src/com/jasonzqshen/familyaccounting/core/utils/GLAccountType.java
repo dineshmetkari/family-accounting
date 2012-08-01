@@ -9,7 +9,7 @@ package com.jasonzqshen.familyaccounting.core.utils;
  * 
  */
 public enum GLAccountType {
-	CREDIT_CARD('C'), DEBIT_CARD('D');
+	BALANCE('B'), PROFIT_LOSS('P');
 
 	private char _value;
 
@@ -34,5 +34,15 @@ public enum GLAccountType {
 	 */
 	public char getValue() {
 		return _value;
+	}
+
+	public static GLAccountType parse(char ch) {
+		switch (ch) {
+		case 'B':
+			return GLAccountType.BALANCE;
+		case 'P':
+			return GLAccountType.PROFIT_LOSS;
+		}
+		return null;
 	}
 }

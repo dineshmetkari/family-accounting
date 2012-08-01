@@ -12,7 +12,8 @@ public class MasterDataUtils {
 																	// account
 	public static final String XML_TYPE = "type"; 
 	public static final String XML_GROUP = "group";
-
+	
+	
 	private MasterDataUtils() {
 	}
 }

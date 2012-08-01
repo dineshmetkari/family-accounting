@@ -1,13 +1,17 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Hashtable;
 
-import org.xmlpull.v1.XmlSerializer;
-import android.util.Xml;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Element;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
+import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
+import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
 /**
  * Abstract Factory Pattern.
@@ -18,31 +22,42 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 public abstract class MasterDataFactoryBase {
 	protected final CoreDriver _coreDriver;
 	protected final Hashtable<MasterDataIdentity, MasterDataBase> _list;
-	protected final IMasterDataFactoryParser _parser;
 
-	public MasterDataFactoryBase(IMasterDataFactoryParser parser,
-			CoreDriver coreDriver) {
+	/**
+	 * constructor
+	 * 
+	 * @param parser
+	 * @param coreDriver
+	 */
+	protected MasterDataFactoryBase(CoreDriver coreDriver) {
 		_coreDriver = coreDriver;
 		_list = new Hashtable<MasterDataIdentity, MasterDataBase>();
-		_parser = parser;
 	}
 
 	/**
-	 * create new master data with id. And add the masterdata into list
+	 * create new master data with id. And add the master data into list
 	 * 
 	 * @param id
 	 * @return
+	 * @throws ParametersException
+	 * @throws MasterDataIdentityExists
+	 * @throws MasterDataIdentityNotDefined
 	 */
-	public abstract MasterDataBase createNewMasterDataBase(MasterDataIdentity id);
+	public abstract MasterDataBase createNewMasterDataBase(
+			MasterDataIdentity identity, String descp, Object... objects)
+			throws ParametersException, MasterDataIdentityExists,
+			MasterDataIdentityNotDefined, SystemException;
 
 	/**
-	 * get parser
+	 * parse master data
 	 * 
+	 * @param coreDriver
+	 * @param elem
 	 * @return
+	 * @throws Exception
 	 */
-	public IMasterDataFactoryParser getParser() {
-		return _parser;
-	}
+	public abstract MasterDataBase parseMasterData(CoreDriver coreDriver,
+			Element elem) throws Exception;
 
 	/**
 	 * remove the master data entity from list
@@ -58,28 +73,36 @@ public abstract class MasterDataFactoryBase {
 	 * parse memory to XML
 	 * 
 	 * @return
-	 * @throws IOException
-	 * @throws IllegalStateException
-	 * @throws IllegalArgumentException
+	 * @throws SystemException
+	 * @throws ParserConfigurationException
 	 */
-	public String toXml() throws IllegalArgumentException,
-			IllegalStateException, IOException {
-		XmlSerializer serializer = Xml.newSerializer();
-		StringWriter writer = new StringWriter();
-		serializer.setOutput(writer);
-		serializer.startDocument("UTF-8", true);
+	public String toXmlDocument() throws SystemException {
 
-		serializer.startTag("", MasterDataUtils.XML_ROOT);
-		for (MasterDataBase masterdata : _list.values()) {
-			serializer.startTag("", MasterDataUtils.XML_ENTITY);
-			masterdata.toXML(serializer);
-			serializer.endTag("", MasterDataUtils.XML_ENTITY);
+		if (_list.size() == 0) {
+			return String.format("%s%s %s", XMLTransfer.SINGLE_TAG_LEFT,
+					MasterDataUtils.XML_ROOT, XMLTransfer.SINGLE_TAG_RIGHT);
 		}
 
-		serializer.endTag("", MasterDataUtils.XML_ROOT);
-		serializer.endDocument();
+		StringBuilder ret = new StringBuilder();
+		// begin tag
+		ret.append(String.format("%s%s %s", XMLTransfer.BEGIN_TAG_LEFT,
+				MasterDataUtils.XML_ROOT, XMLTransfer.BEGIN_TAG_RIGHT));
 
-		return writer.toString();
+		for (MasterDataBase masterData : _list.values()) {
+			ret.append(String.format("\t%s%s ", XMLTransfer.SINGLE_TAG_LEFT,
+					MasterDataUtils.XML_ENTITY));
+
+			String str = masterData.toXML();
+			ret.append(str);
+
+			ret.append(XMLTransfer.SINGLE_TAG_RIGHT);
+		}
+
+		// end tag
+		ret.append(String.format("%s%s %s", XMLTransfer.END_TAG_LEFT,
+				MasterDataUtils.XML_ROOT, XMLTransfer.END_TAG_RIGHT));
+
+		return ret.toString();
 	}
 
 	/**

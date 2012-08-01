@@ -9,7 +9,7 @@ package com.jasonzqshen.familyaccounting.core.utils;
  * 
  */
 public enum BankAccountType {
-	BALANCE('B'), PROFIT_LOSS('P');
+	SAVING_ACCOUNT('C'), DEBIT_CARD('D');
 
 	private char _value;
 
@@ -34,5 +34,15 @@ public enum BankAccountType {
 	 */
 	public char getValue() {
 		return _value;
+	}
+
+	public static BankAccountType parse(char ch) {
+		switch (ch) {
+		case 'C':
+			return BankAccountType.SAVING_ACCOUNT;
+		case 'D':
+			return BankAccountType.DEBIT_CARD;
+		}
+		return null;
 	}
 }

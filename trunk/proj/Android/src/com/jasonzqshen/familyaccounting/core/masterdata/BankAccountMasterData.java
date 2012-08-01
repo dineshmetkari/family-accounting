@@ -1,56 +1,12 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
-import org.w3c.dom.Element;
-
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
+import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.utils.BankAccountType;
 
 public class BankAccountMasterData extends MasterDataBase {
-	public static final int BANK_NUM_LENGTH = 10;
-
-	/**
-	 * parser
-	 */
-	public static IMasterDataParser PARSER = new IMasterDataParser() {
-		public MasterDataBase parse(CoreDriver coreDriver, Element elem)
-				throws Exception {
-			String id = elem.getAttribute(MasterDataUtils.XML_ID);
-			String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
-			String bankKey = elem.getAttribute(MasterDataUtils.XML_BANK_KEY);
-			String bankAcc = elem
-					.getAttribute(MasterDataUtils.XML_BANK_ACCOUNT);
-			String type = elem.getAttribute(MasterDataUtils.XML_TYPE);
-
-			MasterDataIdentity identity = new MasterDataIdentity(
-					id.toCharArray());
-			BankAccountMasterData bankAccount = new BankAccountMasterData(
-					coreDriver, identity, descp);
-
-			// bank key
-			if (bankKey != null) {
-				MasterDataIdentity bankKeyId = new MasterDataIdentity(
-						bankKey.toCharArray());
-				boolean ret = bankAccount.setBankKey(bankKeyId);
-				if (ret == false) {
-					throw new MasterDataIdentityNotDefined(bankKeyId,
-							MasterDataType.BANK_KEY);
-				}
-			}
-			// bank account
-			if (bankAcc != null) {
-				bankAccount._accNumber = new BankAccountNumber(
-						bankAcc.toCharArray());
-			}
-			// bank type
-			if (type != null) {
-				bankAccount._bankAccType = Enum.valueOf(BankAccountType.class,
-						type);
-			}
-
-			return bankAccount;
-		}
-	};
+	public static final String FILE_NAME = "bank_account.xml";
 
 	/**
 	 * bank account number
@@ -70,10 +26,18 @@ public class BankAccountMasterData extends MasterDataBase {
 	 * @param id
 	 * @param descp
 	 * @param parser
+	 * @throws MasterDataIdentityNotDefined
+	 * @throws NullValueNotAcceptable
 	 */
 	public BankAccountMasterData(CoreDriver coreDriver, MasterDataIdentity id,
-			String descp) {
-		super(coreDriver, id, descp, PARSER);
+			String descp, BankAccountNumber accNumber,
+			MasterDataIdentity bankKey, BankAccountType type)
+			throws MasterDataIdentityNotDefined, NullValueNotAcceptable {
+		super(coreDriver, id, descp);
+
+		setBankAccountNumber(accNumber);
+		setBankAccType(type);
+		setBankKey(bankKey);
 	}
 
 	/**
@@ -81,8 +45,13 @@ public class BankAccountMasterData extends MasterDataBase {
 	 * 
 	 * @param accNum
 	 *            bank account number
+	 * @throws NullValueNotAcceptable
 	 */
-	public void setBankAccountNumber(BankAccountNumber accNum) {
+	public void setBankAccountNumber(BankAccountNumber accNum)
+			throws NullValueNotAcceptable {
+		if (accNum == null) {
+			throw new NullValueNotAcceptable("Bank Account Number");
+		}
 		_accNumber = accNum;
 	}
 
@@ -102,16 +71,23 @@ public class BankAccountMasterData extends MasterDataBase {
 	 *            identity of bank key
 	 * @return boolean. If bank key identity is defined in the application,
 	 *         return true. Else return false.
+	 * @throws MasterDataIdentityNotDefined
+	 * @throws NullValueNotAcceptable
 	 */
-	public boolean setBankKey(MasterDataIdentity bankKey) {
+	public void setBankKey(MasterDataIdentity bankKey)
+			throws MasterDataIdentityNotDefined, NullValueNotAcceptable {
+		if (bankKey == null) {
+			throw new NullValueNotAcceptable("Bank Key");
+		}
+
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
 		MasterDataIdentity bankKeyId = management.getMasterData(bankKey,
 				MasterDataType.BANK_KEY).getIdentity();
 		if (bankKeyId == null) {
-			return false;
+			throw new MasterDataIdentityNotDefined(bankKey,
+					MasterDataType.BANK_KEY);
 		}
 		_bankKey = bankKeyId;
-		return true;
 	}
 
 	/**
@@ -128,8 +104,13 @@ public class BankAccountMasterData extends MasterDataBase {
 	 * 
 	 * @param bankAccType
 	 *            bank account type
+	 * @throws NullValueNotAcceptable
 	 */
-	public void setBankAccType(BankAccountType bankAccType) {
+	public void setBankAccType(BankAccountType bankAccType)
+			throws NullValueNotAcceptable {
+		if (bankAccType == null) {
+			throw new NullValueNotAcceptable("Bank Account Type");
+		}
 		_bankAccType = bankAccType;
 	}
 
@@ -140,5 +121,17 @@ public class BankAccountMasterData extends MasterDataBase {
 	 */
 	public BankAccountType getBankAccType() {
 		return _bankAccType;
+	}
+
+	@Override
+	public String toXML() {
+		String superStr = super.toXML();
+
+		StringBuilder strBuilder = new StringBuilder(superStr);
+		strBuilder.append(String.format("%s=\"%s\" %s=\"%s\" %s=\"%s\"",
+				MasterDataUtils.XML_BANK_ACCOUNT, _accNumber.toString(),
+				MasterDataUtils.XML_BANK_KEY, _bankKey.toString(),
+				MasterDataUtils.XML_TYPE, _bankAccType.toString()));
+		return strBuilder.toString();
 	}
 }

@@ -1,35 +1,11 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
-import org.w3c.dom.Element;
-
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.utils.CriticalLevel;
 
 public class BusinessAreaMasterData extends MasterDataBase {
-	/**
-	 * parser
-	 */
-	public static IMasterDataParser PARSER = new IMasterDataParser() {
-		public MasterDataBase parse(CoreDriver coreDriver, Element elem)
-				throws Exception {
-			String id = elem.getAttribute(MasterDataUtils.XML_ID);
-			String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
-			String criticalLevel = elem
-					.getAttribute(MasterDataUtils.XML_CRITICAL_LEVEL);
-
-			MasterDataIdentity identity = new MasterDataIdentity(
-					id.toCharArray());
-			BusinessAreaMasterData businessArea = new BusinessAreaMasterData(
-					coreDriver, identity, descp);
-			// set critical level
-			if (criticalLevel != null) {
-				CriticalLevel l = Enum.valueOf(CriticalLevel.class,
-						criticalLevel);
-				businessArea._criticalLevel = l;
-			}
-			return businessArea;
-		}
-	};
+	public static final String FILE_NAME = "business.xml";
 
 	private CriticalLevel _criticalLevel;
 
@@ -38,10 +14,13 @@ public class BusinessAreaMasterData extends MasterDataBase {
 	 * @param id
 	 * @param descp
 	 * @param parser
+	 * @throws NullValueNotAcceptable
 	 */
-	public BusinessAreaMasterData(CoreDriver coreDriver,
-			MasterDataIdentity id, String descp) {
-		super(coreDriver, id, descp, PARSER);
+	public BusinessAreaMasterData(CoreDriver coreDriver, MasterDataIdentity id,
+			String descp, CriticalLevel level) throws NullValueNotAcceptable {
+		super(coreDriver, id, descp);
+
+		setCriticalLevel(level);
 	}
 
 	/**
@@ -49,8 +28,12 @@ public class BusinessAreaMasterData extends MasterDataBase {
 	 * 
 	 * @param l
 	 *            critical level
+	 * @throws NullValueNotAcceptable
 	 */
-	public void setCriticalLevel(CriticalLevel l) {
+	public void setCriticalLevel(CriticalLevel l) throws NullValueNotAcceptable {
+		if (l == null) {
+			throw new NullValueNotAcceptable("Critical Level");
+		}
 		_criticalLevel = l;
 	}
 
@@ -61,5 +44,12 @@ public class BusinessAreaMasterData extends MasterDataBase {
 	 */
 	public CriticalLevel getCriticalLevel() {
 		return _criticalLevel;
+	}
+
+	@Override
+	public String toXML() {
+		String superStr = super.toXML();
+		return String.format("%s %s=\"%s\"", superStr,
+				MasterDataUtils.XML_CRITICAL_LEVEL, _criticalLevel);
 	}
 }
