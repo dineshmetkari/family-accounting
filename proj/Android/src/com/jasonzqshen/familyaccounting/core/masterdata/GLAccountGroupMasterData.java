@@ -1,35 +1,20 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
-import org.w3c.dom.Element;
-
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 
 public class GLAccountGroupMasterData extends MasterDataBase {
-	/**
-	 * parser
-	 */
-	public static IMasterDataParser PARSER = new IMasterDataParser() {
-		public MasterDataBase parse(CoreDriver coreDriver, Element elem)
-				throws Exception {
-			String id = elem.getAttribute(MasterDataUtils.XML_ID);
-			String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
-
-			MasterDataIdentity identity = new MasterDataIdentity(
-					id.toCharArray());
-			GLAccountGroupMasterData accGroup = new GLAccountGroupMasterData(
-					coreDriver, identity, descp);
-			return accGroup;
-		}
-	};
+	public static final String FILE_NAME = "gl_account_group.xml";
 
 	/**
 	 * 
 	 * @param id
 	 * @param descp
 	 * @param parser
+	 * @throws NullValueNotAcceptable 
 	 */
 	public GLAccountGroupMasterData(CoreDriver coreDriver,
-			MasterDataIdentity id, String descp) {
-		super(coreDriver, id, descp, PARSER);
+			MasterDataIdentity id, String descp) throws NullValueNotAcceptable {
+		super(coreDriver, id, descp);
 	}
 }

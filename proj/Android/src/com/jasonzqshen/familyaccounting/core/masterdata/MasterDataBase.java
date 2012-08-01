@@ -2,9 +2,8 @@ package com.jasonzqshen.familyaccounting.core.masterdata;
 
 import java.io.IOException;
 
-import org.xmlpull.v1.XmlSerializer;
-
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 
 /**
  * Base class of master data
@@ -15,15 +14,17 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 public abstract class MasterDataBase {
 
 	protected final MasterDataIdentity _identity;
-	protected final IMasterDataParser _parser;
 	protected String _descp; // description
 	protected final CoreDriver _coreDriver; // core driver
 
 	protected MasterDataBase(CoreDriver coreDriver, MasterDataIdentity id,
-			String descp, IMasterDataParser parser) {
+			String descp) throws NullValueNotAcceptable {
+		if (id == null) {
+			throw new NullValueNotAcceptable("Identity");
+		}
 		_identity = id;
-		_parser = parser;
-		_descp = descp;
+
+		setDescp(descp);
 		_coreDriver = coreDriver;
 	}
 
@@ -37,20 +38,15 @@ public abstract class MasterDataBase {
 	}
 
 	/**
-	 * get master data parse
-	 * 
-	 * @return
-	 */
-	public IMasterDataParser getParser() {
-		return _parser;
-	}
-
-	/**
 	 * set description
 	 * 
 	 * @param descp
+	 * @throws NullValueNotAcceptable
 	 */
-	public void setDescp(String descp) {
+	public void setDescp(String descp) throws NullValueNotAcceptable {
+		if (descp == null) {
+			throw new NullValueNotAcceptable("Desciption");
+		}
 		_descp = descp;
 	}
 
@@ -72,9 +68,8 @@ public abstract class MasterDataBase {
 	 * @throws IllegalStateException
 	 * @throws IllegalArgumentException
 	 */
-	public void toXML(XmlSerializer serializer)
-			throws IllegalArgumentException, IllegalStateException, IOException {
-		serializer.attribute("", MasterDataUtils.XML_ID, _identity.toString());
-		serializer.attribute("", MasterDataUtils.XML_DESCP, _descp.toString());
+	public String toXML() {
+		return String.format("%s=\"%s\" %s=\"%s\" ", MasterDataUtils.XML_ID,
+				_identity.toString(), MasterDataUtils.XML_DESCP, _descp);
 	}
 }

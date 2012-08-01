@@ -35,4 +35,23 @@ public enum CriticalLevel {
 	public char getValue() {
 		return _value;
 	}
+
+	/**
+	 * parse
+	 * 
+	 * @param ch
+	 * @return
+	 */
+	public static CriticalLevel parse(char ch) {
+		switch (ch) {
+		case 'H':
+			return CriticalLevel.HIGH;
+		case 'M':
+			return CriticalLevel.MEDIUM;
+		case 'L':
+			return CriticalLevel.LOW;
+		}
+
+		return null;
+	}
 }

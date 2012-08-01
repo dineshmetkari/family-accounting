@@ -1,6 +1,14 @@
 package com.jasonzqshen.familyaccounting.core;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+
+import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFactoryClass;
+import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
+import com.jasonzqshen.familyaccounting.core.exception.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
+import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 
 /**
  * Back end of the family finance application. The CoreDriver.java is the driver
@@ -28,6 +36,7 @@ public class CoreDriver {
 	}
 
 	private final MasterDataManagement _masterDataManagement;
+	private String _applicationRootPath;
 
 	/**
 	 * singleton
@@ -37,12 +46,53 @@ public class CoreDriver {
 	}
 
 	/**
+	 * initialize
+	 * 
+	 * @throws SystemException
+	 * 
+	 * @throws NoSuchMethodException
+	 * @throws NoMasterDataFactoryClass
+	 * @throws RootFolderNotExsits
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 */
+	public void init(ArrayList<CoreMessage> messages)
+			throws NoMasterDataFactoryClass, SystemException,
+			RootFolderNotExsits {
+		// establish folder
+		File file = new File(_applicationRootPath);
+		if (!file.exists()) {
+			throw new RootFolderNotExsits(_applicationRootPath);
+		}
+		String masterFolderPath = String.format("%s/%s", _applicationRootPath,
+				MasterDataManagement.MASTER_DATA_FOLDER);
+		File masterFolder = new File(masterFolderPath);
+		if (!masterFolder.exists()) {
+			masterFolder.mkdir();
+		}
+
+		_masterDataManagement.load(messages);
+	}
+
+	/**
+	 * set application root path
+	 * 
+	 * @param rootPath
+	 */
+	public void setRootPath(String rootPath) {
+		_applicationRootPath = rootPath;
+	}
+
+	/**
 	 * get root path
 	 * 
 	 * @return root path
 	 */
-	public String appRootPath() {
-		return null;
+	public String getRootPath() {
+		return _applicationRootPath;
 	}
 
 	/**
