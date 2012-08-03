@@ -3,6 +3,9 @@ package com.jasonzqshen.familyaccounting.core.masterdata;
 import org.w3c.dom.Element;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
@@ -44,7 +47,7 @@ public class GLAccountGroupMasterDataFactory extends MasterDataFactoryBase {
 
 	@Override
 	public MasterDataBase parseMasterData(CoreDriver coreDriver, Element elem)
-			throws Exception {
+			throws MandatoryFieldIsMissing, SystemException {
 		String id = elem.getAttribute(MasterDataUtils.XML_ID);
 		String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
 		// check attribute
@@ -52,12 +55,23 @@ public class GLAccountGroupMasterDataFactory extends MasterDataFactoryBase {
 			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_DESCP);
 		}
 
-		MasterDataIdentity identity = new MasterDataIdentity(id.toCharArray());
-		GLAccountGroupMasterData group = new GLAccountGroupMasterData(
-				coreDriver, identity, descp);
+		try {
+			MasterDataIdentity identity = new MasterDataIdentity(id.toCharArray());
+			GLAccountGroupMasterData group = new GLAccountGroupMasterData(
+					coreDriver, identity, descp);
 
-		this._list.put(identity, group);
-		return group;
+			this._list.put(identity, group);
+			return group;
+		} catch (IdentityTooLong e) {
+			throw new SystemException(e);
+		} catch (IdentityNoData e) {
+			throw new SystemException(e);
+		} catch (IdentityInvalidChar e) {
+			throw new SystemException(e);
+		} catch (NullValueNotAcceptable e) {
+			throw new SystemException(e);
+		}
+
 	}
 
 }

@@ -3,6 +3,9 @@ package com.jasonzqshen.familyaccounting.core.masterdata;
 import org.w3c.dom.Element;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
@@ -26,7 +29,8 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 	@Override
 	public MasterDataBase createNewMasterDataBase(MasterDataIdentity identity,
 			String descp, Object... objects) throws ParametersException,
-			MasterDataIdentityNotDefined, SystemException, MasterDataIdentityExists {
+			MasterDataIdentityNotDefined, SystemException,
+			MasterDataIdentityExists {
 		// check id is G/L identity
 		if (!(identity instanceof MasterDataIdentity_GLAccount)) {
 			throw new ParametersException(
@@ -89,7 +93,7 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 
 	@Override
 	public MasterDataBase parseMasterData(CoreDriver coreDriver, Element elem)
-			throws Exception {
+			throws MandatoryFieldIsMissing, SystemException {
 		String id = elem.getAttribute(MasterDataUtils.XML_ID);
 		String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
 		String typeStr = elem.getAttribute(MasterDataUtils.XML_TYPE);
@@ -106,27 +110,43 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_GROUP);
 		}
 
-		MasterDataIdentity_GLAccount identity = new MasterDataIdentity_GLAccount(
-				id.toCharArray());
+		try {
+			MasterDataIdentity_GLAccount identity = new MasterDataIdentity_GLAccount(
+					id.toCharArray());
 
-		// G/L account type
-		GLAccountType type = GLAccountType.parse(typeStr.charAt(0));
+			// G/L account type
+			GLAccountType type = GLAccountType.parse(typeStr.charAt(0));
 
-		// G/L account group
-		MasterDataIdentity groupId = new MasterDataIdentity(
-				groupStr.toCharArray());
+			// G/L account group
+			MasterDataIdentity groupId = new MasterDataIdentity(
+					groupStr.toCharArray());
 
-		GLAccountMasterData glAccount = (GLAccountMasterData) this
-				.createNewMasterDataBase(identity, descp, type, groupId);
+			GLAccountMasterData glAccount = (GLAccountMasterData) this
+					.createNewMasterDataBase(identity, descp, type, groupId);
 
-		// bank account
-		if (!StringUtility.isNullOrEmpty(bankAccStr)) {
-			MasterDataIdentity bankAccId = new MasterDataIdentity(
-					bankAccStr.toCharArray());
-			glAccount.setBankAccount(bankAccId);
+			// bank account
+			if (!StringUtility.isNullOrEmpty(bankAccStr)) {
+				MasterDataIdentity bankAccId = new MasterDataIdentity(
+						bankAccStr.toCharArray());
+				glAccount.setBankAccount(bankAccId);
+			}
+
+			return glAccount;
+		} catch (IdentityTooLong e) {
+			throw new SystemException(e);
+		} catch (IdentityNoData e) {
+			throw new SystemException(e);
+		} catch (IdentityInvalidChar e) {
+			throw new SystemException(e);
+		} catch (ParametersException e) {
+			throw new SystemException(e);
+		} catch (MasterDataIdentityNotDefined e) {
+			throw new SystemException(e);
+		} catch (SystemException e) {
+			throw new SystemException(e);
+		} catch (MasterDataIdentityExists e) {
+			throw new SystemException(e);
 		}
-
-		return glAccount;
 	}
 
 }

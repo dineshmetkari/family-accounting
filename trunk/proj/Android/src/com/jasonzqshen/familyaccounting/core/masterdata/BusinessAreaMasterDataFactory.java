@@ -3,6 +3,9 @@ package com.jasonzqshen.familyaccounting.core.masterdata;
 import org.w3c.dom.Element;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
@@ -52,7 +55,7 @@ public class BusinessAreaMasterDataFactory extends MasterDataFactoryBase {
 
 	@Override
 	public MasterDataBase parseMasterData(CoreDriver coreDriver, Element elem)
-			throws Exception {
+			throws MandatoryFieldIsMissing, SystemException {
 		String id = elem.getAttribute(MasterDataUtils.XML_ID);
 		String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
 		String criticalLevel = elem
@@ -67,11 +70,27 @@ public class BusinessAreaMasterDataFactory extends MasterDataFactoryBase {
 		}
 
 		CriticalLevel l = CriticalLevel.parse(criticalLevel.charAt(0));
-		MasterDataIdentity identity = new MasterDataIdentity(id.toCharArray());
-		BusinessAreaMasterData businessArea = (BusinessAreaMasterData) this
-				.createNewMasterDataBase(identity, descp, l);
+		try {
+			MasterDataIdentity identity = new MasterDataIdentity(id.toCharArray());
+			
+			BusinessAreaMasterData businessArea = (BusinessAreaMasterData) this
+					.createNewMasterDataBase(identity, descp, l);
 
-		return businessArea;
+			return businessArea;
+		} catch (IdentityTooLong e) {
+			throw new SystemException(e);
+		} catch (IdentityNoData e) {
+			throw new SystemException(e);
+		} catch (IdentityInvalidChar e) {
+			throw new SystemException(e);
+		} catch (SystemException e) {
+			throw new SystemException(e);
+		} catch (ParametersException e) {
+			throw new SystemException(e);
+		} catch (MasterDataIdentityExists e) {
+			throw new SystemException(e);
+		}
+		
 	}
 
 }

@@ -8,6 +8,8 @@ import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
 import com.jasonzqshen.familyaccounting.core.exception.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
+import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 
 /**
@@ -36,13 +38,16 @@ public class CoreDriver {
 	}
 
 	private final MasterDataManagement _masterDataManagement;
+	private final TransactionDataManagement _transDataManagement;
 	private String _applicationRootPath;
+	private MonthIdentity _monthId;
 
 	/**
 	 * singleton
 	 */
 	private CoreDriver() {
 		_masterDataManagement = new MasterDataManagement(this);
+		_transDataManagement = new TransactionDataManagement(this);
 	}
 
 	/**
@@ -75,6 +80,7 @@ public class CoreDriver {
 		}
 
 		_masterDataManagement.load(messages);
+		_transDataManagement.load(messages);
 	}
 
 	/**
@@ -84,6 +90,24 @@ public class CoreDriver {
 	 */
 	public void setRootPath(String rootPath) {
 		_applicationRootPath = rootPath;
+	}
+
+	/**
+	 * set month identity
+	 * 
+	 * @param monthId
+	 */
+	public void setStartMonthID(MonthIdentity monthId) {
+		_monthId = monthId;
+	}
+
+	/**
+	 * get month identity
+	 * 
+	 * @return month identity
+	 */
+	public MonthIdentity getStartMonthId() {
+		return _monthId;
 	}
 
 	/**
@@ -103,4 +127,14 @@ public class CoreDriver {
 	public MasterDataManagement getMasterDataManagement() {
 		return _masterDataManagement;
 	}
+
+	/**
+	 * get transaction data management
+	 * 
+	 * @return
+	 */
+	public TransactionDataManagement getTransDataManagement() {
+		return _transDataManagement;
+	}
+
 }
