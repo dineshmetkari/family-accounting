@@ -2,7 +2,6 @@ package com.jasonzqshen.familyAccountingBackendTest;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.junit.After;
@@ -12,6 +11,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
+import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
@@ -41,7 +42,6 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.masterdata.VendorMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.VendorMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.utils.BankAccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 
 public class MasterDataTestCases {
@@ -286,7 +286,9 @@ public class MasterDataTestCases {
 	@Test
 	public void testMasterDataInit() throws NoMasterDataFactoryClass,
 			SystemException, RootFolderNotExsits {
-		testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER);
+		ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
+		testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER, messages);
+		assertEquals(0, messages.size());
 	}
 
 	/**
@@ -296,23 +298,21 @@ public class MasterDataTestCases {
 	 * @throws NoMasterDataFactoryClass
 	 * @throws RootFolderNotExsits
 	 */
-	public void testMasterDataLoad(String rootFile)
-			throws NoMasterDataFactoryClass, SystemException,
-			RootFolderNotExsits {
+	public void testMasterDataLoad(String rootFile,
+			ArrayList<CoreMessage> messages) throws NoMasterDataFactoryClass,
+			SystemException, RootFolderNotExsits {
 		CoreDriver coreDriver = CoreDriver.getInstance();
 
 		// set root path
 		coreDriver.setRootPath(rootFile);
 
 		// initialize
-		ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
 		coreDriver.init(messages);
 		if (messages.size() > 0) {
 			for (CoreMessage m : messages) {
 				System.out.println(m.toString());
 			}
 		}
-		assertEquals(0, messages.size());
 
 		MasterDataManagement masterDataManagement = coreDriver
 				.getMasterDataManagement();
@@ -431,238 +431,25 @@ public class MasterDataTestCases {
 	 * @throws MasterDataIdentityExists
 	 * @throws MasterDataIdentityNotDefined
 	 * @throws RootFolderNotExsits
+	 * @throws FiscalMonthRangeException
+	 * @throws FiscalYearRangeException
 	 */
 	@Test
 	public void testMasterDataStore() throws NoMasterDataFactoryClass,
 			SystemException, IdentityTooLong, IdentityNoData,
 			IdentityInvalidChar, ParametersException, MasterDataIdentityExists,
-			MasterDataIdentityNotDefined, RootFolderNotExsits {
-		// set the root folder
-		File rootFolder = new File(TestUtilities.TEST_ROOT_FOLDER_EMPTY);
-		if (!rootFolder.exists()) {
-			rootFolder.mkdir();
-		}
+			MasterDataIdentityNotDefined, RootFolderNotExsits,
+			FiscalYearRangeException, FiscalMonthRangeException {
+		TestUtilities.clearTestingRootFolder();
 
-		// clear the master data folder
-		File masterDataFolder = new File(String.format("%s/%s",
-				TestUtilities.TEST_ROOT_FOLDER_EMPTY,
-				MasterDataManagement.MASTER_DATA_FOLDER));
-		for (File f : masterDataFolder.listFiles()) {
-			f.delete();
-		}
-
-		CoreDriver coreDriver = CoreDriver.getInstance();
-
-		// set root path
-		coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER_EMPTY);
-		// initialize
 		ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
-		coreDriver.init(messages);
-		if (messages.size() > 0) {
-			for (CoreMessage m : messages) {
-				System.out.println(m.toString());
-			}
-		}
-
-		/**
-		 * check the factory is initialized, and the factory with no master data
-		 * entities
-		 */
-		MasterDataManagement masterDataManagement = coreDriver
-				.getMasterDataManagement();
-		// vendor
-		VendorMasterDataFactory vendorFactory = (VendorMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.VENDOR);
-		assertEquals(0, vendorFactory.getMasterDataCount());
-		// customer
-		CustomerMasterDataFactory customerFactory = (CustomerMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.CUSTOMER);
-		assertEquals(0, customerFactory.getMasterDataCount());
-		// business area
-		BusinessAreaMasterDataFactory businessFactory = (BusinessAreaMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.BUSINESS_AREA);
-		assertEquals(0, businessFactory.getMasterDataCount());
-		// bank key
-		BankKeyMasterDataFactory bankKeyFactory = (BankKeyMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.BANK_KEY);
-		assertEquals(0, bankKeyFactory.getMasterDataCount());
-		// bank account
-		BankAccountMasterDataFactory bankAccountFactory = (BankAccountMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.BANK_ACCOUNT);
-		assertEquals(0, bankAccountFactory.getMasterDataCount());
-		// GL account group
-		GLAccountGroupMasterDataFactory groupFactory = (GLAccountGroupMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.GL_ACCOUNT_GROUP);
-		assertEquals(0, groupFactory.getMasterDataCount());
-		// GL account
-		GLAccountMasterDataFactory accountFactory = (GLAccountMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
-		assertEquals(0, accountFactory.getMasterDataCount());
-
-		/** add master data entities */
-		// vendor
-		for (String str : TestUtilities.VENDOR_IDS) {
-			VendorMasterData vendor = (VendorMasterData) vendorFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP);
-			assertTrue(vendor != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.VENDOR_IDS) {
-			try {
-				VendorMasterData vendor = (VendorMasterData) vendorFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP);
-				assertTrue(false);
-			} catch (MasterDataIdentityExists e) {
-
-			}
-		}
-
-		// customer
-		for (String str : TestUtilities.CUSTOMER_IDS) {
-			CustomerMasterData customer = (CustomerMasterData) customerFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP);
-			assertTrue(customer != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.CUSTOMER_IDS) {
-			try {
-				CustomerMasterData customer = (CustomerMasterData) customerFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP);
-				assertTrue(false);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
-		// bank key
-		for (String str : TestUtilities.BANK_KEY_IDS) {
-			BankKeyMasterData bankKey = (BankKeyMasterData) bankKeyFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP);
-			assertTrue(bankKey != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.BANK_KEY_IDS) {
-			try {
-				BankKeyMasterData bankKey = (BankKeyMasterData) bankKeyFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP);
-				assertTrue(false);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
-		// bank account
-		for (String str : TestUtilities.BANK_ACCOUNT_IDS) {
-			MasterDataIdentity bankKey = new MasterDataIdentity(
-					TestUtilities.TEST_BANK_KEY.toCharArray());
-			BankAccountNumber accountNum = new BankAccountNumber(
-					TestUtilities.TEST_ACCOUNT_NUMBER.toCharArray());
-			BankAccountMasterData vendor = (BankAccountMasterData) bankAccountFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP, accountNum, bankKey,
-							BankAccountType.SAVING_ACCOUNT);
-			assertTrue(vendor != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.BANK_ACCOUNT_IDS) {
-			try {
-				MasterDataIdentity bankKey = new MasterDataIdentity(
-						TestUtilities.TEST_BANK_KEY.toCharArray());
-				BankAccountNumber accountNum = new BankAccountNumber(
-						TestUtilities.TEST_ACCOUNT_NUMBER.toCharArray());
-				BankAccountMasterData vendor = (BankAccountMasterData) bankAccountFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP, accountNum, bankKey,
-								TestUtilities.TEST_BANK_ACCOUNT_TYPE);
-				assertTrue(false);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
-		// business area
-		for (String str : TestUtilities.BUSINESS_IDS) {
-			BusinessAreaMasterData businessArea = (BusinessAreaMasterData) businessFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP,
-							TestUtilities.TEST_CRITICAL_LEVEL);
-			assertTrue(businessArea != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.BUSINESS_IDS) {
-			try {
-				BusinessAreaMasterData businessArea = (BusinessAreaMasterData) businessFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP,
-								TestUtilities.TEST_CRITICAL_LEVEL);
-				assertTrue(false);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
-		// G/L account group
-		for (String str : TestUtilities.GL_GROUP_IDS) {
-			GLAccountGroupMasterData group = (GLAccountGroupMasterData) groupFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP);
-			assertTrue(group != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.GL_GROUP_IDS) {
-			try {
-				GLAccountGroupMasterData group = (GLAccountGroupMasterData) groupFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP);
-				assertTrue(false);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
-		// G/L account
-		for (String str : TestUtilities.GL_IDS) {
-			MasterDataIdentity group = new MasterDataIdentity(
-					TestUtilities.TEST_GL_ACCOUNT_GROUP.toCharArray());
-			GLAccountMasterData glAccount = (GLAccountMasterData) accountFactory
-					.createNewMasterDataBase(new MasterDataIdentity_GLAccount(
-							str.toCharArray()), TestUtilities.TEST_DESCP,
-							TestUtilities.TEST_GL_ACCOUNT_TYPE, group);
-			assertTrue(glAccount != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.GL_IDS) {
-			try {
-				MasterDataIdentity group = new MasterDataIdentity(
-						TestUtilities.TEST_GL_ACCOUNT_GROUP.toCharArray());
-				GLAccountMasterData glAccount = (GLAccountMasterData) accountFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity_GLAccount(str
-										.toCharArray()),
-								TestUtilities.TEST_DESCP,
-								TestUtilities.TEST_GL_ACCOUNT_TYPE, group);
-				assertTrue(false);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
+		CoreDriver coreDriver = TestUtilities.establishMasterData(messages);
 
 		// store
-		masterDataManagement.store();
-
+		coreDriver.getMasterDataManagement().store();
+		
+		messages.clear();
 		// reload & check
-		testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER_EMPTY);
+		testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER_EMPTY, messages);
 	}
 }
