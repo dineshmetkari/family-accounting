@@ -7,6 +7,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Element;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
@@ -57,7 +58,7 @@ public abstract class MasterDataFactoryBase {
 	 * @throws Exception
 	 */
 	public abstract MasterDataBase parseMasterData(CoreDriver coreDriver,
-			Element elem) throws Exception;
+			Element elem) throws MandatoryFieldIsMissing, SystemException;
 
 	/**
 	 * remove the master data entity from list

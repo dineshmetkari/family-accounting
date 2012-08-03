@@ -3,6 +3,9 @@ package com.jasonzqshen.familyaccounting.core.masterdata;
 import org.w3c.dom.Element;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
@@ -26,7 +29,8 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 	@Override
 	public MasterDataBase createNewMasterDataBase(MasterDataIdentity identity,
 			String descp, Object... objects) throws ParametersException,
-			MasterDataIdentityExists, MasterDataIdentityNotDefined, SystemException {
+			MasterDataIdentityExists, MasterDataIdentityNotDefined,
+			SystemException {
 		if (objects.length != 3) {
 			throw new ParametersException(String.format(
 					CoreMessage.ERR_PARAMETER_LENGTH, 3, objects.length));
@@ -76,7 +80,7 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 
 	@Override
 	public MasterDataBase parseMasterData(CoreDriver coreDriver, Element elem)
-			throws Exception {
+			throws MandatoryFieldIsMissing, SystemException {
 		String id = elem.getAttribute(MasterDataUtils.XML_ID);
 		String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
 		String bankKey = elem.getAttribute(MasterDataUtils.XML_BANK_KEY);
@@ -96,19 +100,37 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_TYPE);
 		}
 
-		MasterDataIdentity identity = new MasterDataIdentity(id.toCharArray());
+		MasterDataIdentity identity;
+		try {
+			identity = new MasterDataIdentity(id.toCharArray());
+			// bank key
+			MasterDataIdentity bankKeyId = new MasterDataIdentity(
+					bankKey.toCharArray());
+			// bank account
+			BankAccountNumber accNum = new BankAccountNumber(
+					bankAcc.toCharArray());
+			// bank type
+			BankAccountType type = BankAccountType.parse(typeStr.charAt(0));
 
-		// bank key
-		MasterDataIdentity bankKeyId = new MasterDataIdentity(
-				bankKey.toCharArray());
-		// bank account
-		BankAccountNumber accNum = new BankAccountNumber(bankAcc.toCharArray());
-		// bank type
-		BankAccountType type = BankAccountType.parse(typeStr.charAt(0));
+			BankAccountMasterData bankAccount = (BankAccountMasterData) this
+					.createNewMasterDataBase(identity, descp, accNum,
+							bankKeyId, type);
+			return bankAccount;
+		} catch (IdentityTooLong e) {
+			throw new SystemException(e);
+		} catch (IdentityNoData e) {
+			throw new SystemException(e);
+		} catch (IdentityInvalidChar e) {
+			throw new SystemException(e);
+		} catch (ParametersException e) {
+			throw new SystemException(e);
+		} catch (MasterDataIdentityExists e) {
+			throw new SystemException(e);
+		} catch (MasterDataIdentityNotDefined e) {
+			throw new SystemException(e);
+		} catch (SystemException e) {
+			throw new SystemException(e);
+		}
 
-		BankAccountMasterData bankAccount = (BankAccountMasterData) this
-				.createNewMasterDataBase(identity, descp, accNum, bankKeyId,
-						type);
-		return bankAccount;
 	}
 }

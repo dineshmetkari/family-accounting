@@ -11,4 +11,12 @@ public class SystemException extends Exception {
 		super(exp.getMessage());
 		_exp = exp;
 	}
+
+	@Override
+	public String toString() {
+		if (_exp == null) {
+			return "";
+		}
+		return _exp.toString();
+	}
 }
