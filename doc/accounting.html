@@ -29,6 +29,38 @@
 		<h2>Display: </h2>
 		<p> For display, user also has two options, record/accounting document.</p>
 		
+		<h2>Document: </h2>
+		<table class='Table' width='60%' border='1'>
+			<tr style="border-style: double"><td width='20%'>Field Name</td><td width='20%'>Tag Name</td><td width='40%'>Description</td><td width='20%'>Is Mandatory</td></tr>
+			<tr><td>Document Number</td><td>doc_num</td><td>Document number follow the certain order in one month.</td><td>Mandatory</td></tr>
+			<tr><td>Fiscal Year</td><td>fiscal_year</td><td>Fiscal year</td><td>Mandatory</td></tr>
+			<tr><td>Fiscal Month</td><td>fiscal_month</td><td>Fiscal month</td><td>Mandatory</td></tr>
+			<tr><td>Posting Date</td><td>date</td><td>Posting date of the document. Fiscal year and fiscal month related to the posting date.</td><td>Mandatory</td></tr>
+			<tr><td>Document Text</td><td>text</td><td>Description of the document</td><td>Option</td></tr>
+			<tr><td>Document Type</td><td>doc_type</td><td>Document type</td><td>Mandatory</td></tr>
+			<tr><td>Is Reversed</td><td>is_reversed</td><td>Indicator whether the document is reversed(true/false)</td><td>Mandatory</td></tr>
+			<tr><td>Document Reference</td><td>reference</td><td>The id of the document which has the reference to current document.(doc_num + fiscal_year + fiscal_month)</td><td>Option</td></tr>
+			<tr><td>Items</td><td>item</td><td>Line items</td><td>Mandatory</td></tr>
+		</table>
+		
+		<h2>Document Item: </h2>
+		<table class='Table' width='60%' border='1'>
+			<tr style="border-style: double"><td width='20%'>Field Name</td><td width='20%'>Tag Name</td><td width='40%'>Description</td><td width='20%'>Is Mandatory</td></tr>
+			<tr><td>Document Number</td><td>doc_num</td><td>Document number follow the certain order in one month.</td><td>Mandatory</td></tr>
+			<tr><td>Fiscal Year</td><td>fiscal_year</td><td>Fiscal year</td><td>Mandatory</td></tr>
+			<tr><td>Fiscal Month</td><td>fiscal_month</td><td>Fiscal month</td><td>Mandatory</td></tr>
+			<tr><td>Line number</td><td>line_num</td><td>Line number</td><td>Mandatory</td></tr>
+			<tr><td>Account Type</td><td>account_type</td><td>Account type of the line item. It has the constraint on Vendor and Customer. If it is the G/L account line item, vendor and customer must be 
+			empty. If it is vendor line item, vendor should contain value and customer must be null. If it is customer line item, customer should contain value and vendor must be null.</td><td>Mandatory</td></tr>
+			<tr><td>G/L account</td><td>gl_account</td><td>Financial account</td><td>Mandatory</td></tr>
+			<tr><td>Vendor</td><td>vendor</td><td>Vendor account</td><td>Option</td></tr>
+			<tr><td>Customer</td><td>account_type</td><td>Customer account</td><td>Option</td></tr>
+			<tr><td>Amount</td><td>amount</td><td>Amount</td><td>Mandatory</td></tr>
+			<tr><td>Credit/Debit Indicator</td><td>cd_indicator</td><td>Credit/Debit Indicator</td><td>Mandatory</td></tr>
+			<tr><td>Business Area</td><td>business_area</td><td>Business area</td><td>Option</td></tr>
+		</table>
+		
+		
 		<h2>How to store the records</h2>
 		<p>The Family Accounting system follows <a href='http://en.wikipedia.org/wiki/Double-entry_bookkeeping_system'>Double-entry bookkeeping system</a>. 
 		The records are called accounting documents in terms of Financial Accounting. For example, user enters the record below: 

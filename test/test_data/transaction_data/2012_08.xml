@@ -1,0 +1,10 @@
+<root>
+	<document doc_num="1000000000" fiscal_year="2012" fiscal_month="08" date="2012.08.02" text="test" doc_type="S" is_reversed="false">
+		<item line_num="0" account_type="S" gl_account="0000406002" amount="100" cd_indicator="D" business_area="WORK"/>
+		<item line_num="1" account_type="K" vendor="BUS" gl_account="0000140001" amount="100" cd_indicator="C" />
+	</document>
+	<document doc_num="1000000001" fiscal_year="2012" fiscal_month="08" date="2012.08.02" text="test" doc_type="S" is_reversed="false">
+		<item line_num="0" account_type="S" gl_account="0000406002" amount="100" cd_indicator="D" business_area="WORK"/>
+		<item line_num="1" account_type="D" customer="MS" gl_account="0000140001" amount="100" cd_indicator="C" />
+	</document>
+</root>
