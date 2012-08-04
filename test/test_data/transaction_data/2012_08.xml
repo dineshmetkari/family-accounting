@@ -3,7 +3,7 @@
 		<item line_num="0" account_type="S" gl_account="0000406002" amount="100" cd_indicator="D" business_area="WORK"/>
 		<item line_num="1" account_type="K" vendor="BUS" gl_account="0000140001" amount="100" cd_indicator="C" />
 	</document>
-	<document doc_num="1000000002" fiscal_year="2012" fiscal_month="08" date="2012.08.02" text="test" doc_type="S" is_reversed="true">
+	<document doc_num="1000000002" fiscal_year="2012" fiscal_month="08" date="2012.08.02" text="test" doc_type="S" is_reversed="true" ref="1000000002_2012_08">
 		<item line_num="0" account_type="S" gl_account="0000406002" amount="100" cd_indicator="C" business_area="WORK"/>
 		<item line_num="1" account_type="K" vendor="BUS" gl_account="0000140001" amount="100" cd_indicator="D" />
 	</document>
