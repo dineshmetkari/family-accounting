@@ -149,7 +149,7 @@ public class TestUtilities {
 				TestUtilities.TEST_ROOT_FOLDER_EMPTY,
 				TransactionDataManagement.TRANSACTION_DATA_FOLDER));
 		if (tranDataFolder.exists()) {
-			for (File f : masterDataFolder.listFiles()) {
+			for (File f : tranDataFolder.listFiles()) {
 				f.delete();
 			}
 		}
