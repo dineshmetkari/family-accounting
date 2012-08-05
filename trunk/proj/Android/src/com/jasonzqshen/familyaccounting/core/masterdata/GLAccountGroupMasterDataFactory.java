@@ -41,6 +41,8 @@ public class GLAccountGroupMasterDataFactory extends MasterDataFactoryBase {
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}
+		
+		this._containDirtyData = true;
 		this._list.put(id, group);
 		return group;
 	}

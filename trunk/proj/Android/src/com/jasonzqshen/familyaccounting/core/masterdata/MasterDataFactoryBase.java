@@ -23,6 +23,7 @@ import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 public abstract class MasterDataFactoryBase {
 	protected final CoreDriver _coreDriver;
 	protected final Hashtable<MasterDataIdentity, MasterDataBase> _list;
+	boolean _containDirtyData;
 
 	/**
 	 * constructor
@@ -33,6 +34,7 @@ public abstract class MasterDataFactoryBase {
 	protected MasterDataFactoryBase(CoreDriver coreDriver) {
 		_coreDriver = coreDriver;
 		_list = new Hashtable<MasterDataIdentity, MasterDataBase>();
+		_containDirtyData = false;
 	}
 
 	/**

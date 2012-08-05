@@ -220,6 +220,11 @@ public class MasterDataManagement {
 	 */
 	public void storeSingle(MasterDataType type) throws SystemException {
 		MasterDataFactoryBase factory = _factoryList.get(type);
+
+		if (factory._containDirtyData == false) {
+			return;
+		}
+
 		String xdoc = null;
 		try {
 			xdoc = factory.toXmlDocument();
@@ -244,6 +249,8 @@ public class MasterDataManagement {
 		} catch (IOException e) {
 			throw new SystemException(e);
 		}
+
+		factory._containDirtyData = false;
 
 	}
 

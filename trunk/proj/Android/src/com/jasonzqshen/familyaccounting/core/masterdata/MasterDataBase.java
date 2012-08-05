@@ -22,10 +22,11 @@ public abstract class MasterDataBase {
 		if (id == null) {
 			throw new NullValueNotAcceptable("Identity");
 		}
+		_coreDriver = coreDriver;
 		_identity = id;
 
-		setDescp(descp);
-		_coreDriver = coreDriver;
+		_descp = descp;
+
 	}
 
 	/**
@@ -47,7 +48,40 @@ public abstract class MasterDataBase {
 		if (descp == null) {
 			throw new NullValueNotAcceptable("Desciption");
 		}
+
+		setDirtyData();
 		_descp = descp;
+	}
+
+	/**
+	 * set dirty data
+	 */
+	protected void setDirtyData() {
+		MasterDataFactoryBase factory = null;
+		if (this instanceof BankAccountMasterData) {
+			factory = _coreDriver.getMasterDataManagement()
+					.getMasterDataFactory(MasterDataType.BANK_ACCOUNT);
+		} else if (this instanceof BankKeyMasterData) {
+			factory = _coreDriver.getMasterDataManagement()
+					.getMasterDataFactory(MasterDataType.BANK_KEY);
+		} else if (this instanceof BusinessAreaMasterData) {
+			factory = _coreDriver.getMasterDataManagement()
+					.getMasterDataFactory(MasterDataType.BUSINESS_AREA);
+		} else if (this instanceof CustomerMasterData) {
+			factory = _coreDriver.getMasterDataManagement()
+					.getMasterDataFactory(MasterDataType.CUSTOMER);
+		} else if (this instanceof GLAccountMasterData) {
+			factory = _coreDriver.getMasterDataManagement()
+					.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+		} else if (this instanceof GLAccountGroupMasterData) {
+			factory = _coreDriver.getMasterDataManagement()
+					.getMasterDataFactory(MasterDataType.GL_ACCOUNT_GROUP);
+		} else if (this instanceof VendorMasterData) {
+			factory = _coreDriver.getMasterDataManagement()
+					.getMasterDataFactory(MasterDataType.VENDOR);
+		}
+
+		factory._containDirtyData = true;
 	}
 
 	/**
@@ -56,6 +90,7 @@ public abstract class MasterDataBase {
 	 * @return
 	 */
 	public String getDescp() {
+
 		return _descp;
 	}
 

@@ -6,7 +6,7 @@ import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException
 import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.MonthIdentityFormatException;
 
-public class MonthIdentity implements Serializable {
+public class MonthIdentity implements Serializable, Comparable<MonthIdentity> {
 	/**
 	 * 
 	 */
@@ -85,8 +85,9 @@ public class MonthIdentity implements Serializable {
 	 *         than monthId, 0 when equal, -1 when smaller
 	 */
 	public int compareTo(MonthIdentity monthId) {
-		return (this._fiscalYear - monthId._fiscalYear) * 12
+		int ret = (this._fiscalYear - monthId._fiscalYear) * 12
 				+ this._fiscalMonth - monthId._fiscalMonth;
+		return ret;
 	}
 
 	/**

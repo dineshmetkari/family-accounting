@@ -87,6 +87,7 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 			throw new SystemException(e);
 		}
 
+		this._containDirtyData = true;
 		this._list.put(identity_gl, glAccount);
 		return glAccount;
 	}
@@ -121,14 +122,18 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 			MasterDataIdentity groupId = new MasterDataIdentity(
 					groupStr.toCharArray());
 
-			GLAccountMasterData glAccount = (GLAccountMasterData) this
-					.createNewMasterDataBase(identity, descp, type, groupId);
+			GLAccountMasterData glAccount = null;
 
 			// bank account
-			if (!StringUtility.isNullOrEmpty(bankAccStr)) {
+			if (StringUtility.isNullOrEmpty(bankAccStr)) {
+				glAccount = (GLAccountMasterData) this.createNewMasterDataBase(
+						identity, descp, type, groupId);
+			} else {
 				MasterDataIdentity bankAccId = new MasterDataIdentity(
 						bankAccStr.toCharArray());
-				glAccount.setBankAccount(bankAccId);
+				glAccount = (GLAccountMasterData) this.createNewMasterDataBase(
+						identity, descp, type, groupId, bankAccId);
+
 			}
 
 			return glAccount;

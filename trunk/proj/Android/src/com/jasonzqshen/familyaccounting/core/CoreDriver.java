@@ -79,6 +79,13 @@ public class CoreDriver {
 			masterFolder.mkdir();
 		}
 
+		String transFolderPath = String.format("%s/%s", _applicationRootPath,
+				TransactionDataManagement.TRANSACTION_DATA_FOLDER);
+		File transFolder = new File(transFolderPath);
+		if (!transFolder.exists()) {
+			transFolder.mkdir();
+		}
+		
 		_masterDataManagement.load(messages);
 		_transDataManagement.load(messages);
 	}

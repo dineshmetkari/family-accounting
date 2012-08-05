@@ -35,9 +35,17 @@ public class BankAccountMasterData extends MasterDataBase {
 			throws MasterDataIdentityNotDefined, NullValueNotAcceptable {
 		super(coreDriver, id, descp);
 
-		setBankAccountNumber(accNumber);
-		setBankAccType(type);
-		setBankKey(bankKey);
+		_accNumber = accNumber;
+		_bankAccType = type;
+
+		MasterDataManagement management = _coreDriver.getMasterDataManagement();
+		MasterDataBase bankKeyId = management.getMasterData(bankKey,
+				MasterDataType.BANK_KEY);
+		if (bankKeyId == null) {
+			throw new MasterDataIdentityNotDefined(bankKey,
+					MasterDataType.BANK_KEY);
+		}
+		_bankKey = bankKeyId.getIdentity();
 	}
 
 	/**
@@ -52,6 +60,8 @@ public class BankAccountMasterData extends MasterDataBase {
 		if (accNum == null) {
 			throw new NullValueNotAcceptable("Bank Account Number");
 		}
+
+		this.setDirtyData();
 		_accNumber = accNum;
 	}
 
@@ -81,13 +91,15 @@ public class BankAccountMasterData extends MasterDataBase {
 		}
 
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataIdentity bankKeyId = management.getMasterData(bankKey,
-				MasterDataType.BANK_KEY).getIdentity();
+		MasterDataBase bankKeyId = management.getMasterData(bankKey,
+				MasterDataType.BANK_KEY);
 		if (bankKeyId == null) {
 			throw new MasterDataIdentityNotDefined(bankKey,
 					MasterDataType.BANK_KEY);
 		}
-		_bankKey = bankKeyId;
+
+		this.setDirtyData();
+		_bankKey = bankKeyId.getIdentity();
 	}
 
 	/**
@@ -111,6 +123,7 @@ public class BankAccountMasterData extends MasterDataBase {
 		if (bankAccType == null) {
 			throw new NullValueNotAcceptable("Bank Account Type");
 		}
+		this.setDirtyData();
 		_bankAccType = bankAccType;
 	}
 

@@ -40,6 +40,8 @@ public class BankKeyMasterDataFactory extends MasterDataFactoryBase {
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}
+		
+		this._containDirtyData = true;
 		this._list.put(id, bankKey);
 		return bankKey;
 	}

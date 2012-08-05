@@ -20,7 +20,7 @@ public class BusinessAreaMasterData extends MasterDataBase {
 			String descp, CriticalLevel level) throws NullValueNotAcceptable {
 		super(coreDriver, id, descp);
 
-		setCriticalLevel(level);
+		_criticalLevel = level;
 	}
 
 	/**
@@ -34,6 +34,7 @@ public class BusinessAreaMasterData extends MasterDataBase {
 		if (l == null) {
 			throw new NullValueNotAcceptable("Critical Level");
 		}
+		this.setDirtyData();
 		_criticalLevel = l;
 	}
 
