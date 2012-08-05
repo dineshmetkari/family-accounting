@@ -1,9 +1,11 @@
 package com.jasonzqshen.familyaccounting.core.transaction;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,13 +19,22 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.BalanceNotZero;
 import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
+import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NoRootElem;
+import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
+import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage.MessageType;
+import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 
 public class TransactionDataManagement {
 
@@ -162,19 +173,144 @@ public class TransactionDataManagement {
 	}
 
 	/**
-	 * store all data
+	 * save document
+	 * 
+	 * @param head
 	 */
-	public void store() {
+	boolean saveDocument(HeadEntity head) {
+		if (head.isSaved() == false) {
+			MonthIdentity monthId = head.getMonthId();
+			HeadEntityCollection collection = _list.get(monthId);
 
+			// set document number
+			DocumentNumber num = null;
+			HeadEntity[] entities = collection.getEntities();
+			if (entities.length == 0) {
+				try {
+					num = new DocumentNumber("1000000001".toCharArray());
+				} catch (IdentityTooLong e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IdentityNoData e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IdentityInvalidChar e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				HeadEntity last = entities[entities.length - 1];
+				num = last.getDocumentNumber().next();
+			}
+
+			head._docNumber = num;
+
+			collection.add(head);
+		}
+
+		try {
+			store(head.getMonthId());
+		} catch (SystemException e) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
 	 * store based on month identity
 	 * 
 	 * @param monthId
+	 * @throws SystemException
 	 */
-	public void store(MonthIdentity monthId) {
+	public void store(MonthIdentity monthId) throws SystemException {
+		// store master data
+		MasterDataManagement manage = _coreDriver.getMasterDataManagement();
+		manage.store();
 
+		HeadEntityCollection collection = _list.get(monthId);
+
+		String filePath = this.generateFilePath(monthId);
+		File file = new File(filePath);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				throw new SystemException(e);
+			}
+		}
+		String xdoc = collection.toXML();
+		FileWriter writer;
+		try {
+			writer = new FileWriter(file);
+			writer.write(xdoc, 0, xdoc.length());
+			writer.close();
+		} catch (IOException e) {
+			throw new SystemException(e);
+		}
+
+	}
+
+	/**
+	 * reverse document
+	 * 
+	 * @param head
+	 * @return
+	 * @throws
+	 */
+	public HeadEntity reverseDocument(DocumentIdentity docId) {
+		try {
+			HeadEntity orgHead = this.getEntity(docId);
+
+			HeadEntity head = new HeadEntity(_coreDriver);
+			head.setPostingDate(orgHead.getPostingDate());
+			head.setDocumentType(orgHead.getDocumentType());
+
+			// items
+			ItemEntity[] items = orgHead.getItems();
+			for (int i = 0; i < items.length; ++i) {
+				ItemEntity newItem = head.createEntity();
+				newItem.setBusinessArea(items[i].getBusinessArea());
+				AccountType type = items[i].getAccountType();
+				if (type == AccountType.GL_ACCOUNT) {
+					newItem.setGLAccount(items[i].getGLAccount());
+				} else if (type == AccountType.VENDOR) {
+					newItem.setVendor(items[i].getVendor(),
+							items[i].getGLAccount());
+				} else if (type == AccountType.CUSTOMER) {
+					newItem.setCustomer(items[i].getCustomer(),
+							items[i].getGLAccount());
+				}
+
+				CreditDebitIndicator cd_indicator = items[i].getCDIndicator();
+				if (cd_indicator == CreditDebitIndicator.DEBIT) {
+					newItem.setAmount(CreditDebitIndicator.CREDIT,
+							items[i].getAmount());
+				} else if (cd_indicator == CreditDebitIndicator.CREDIT) {
+					newItem.setAmount(CreditDebitIndicator.DEBIT,
+							items[i].getAmount());
+				}
+			}
+
+			head.save();
+
+			head._isReversed = true;
+			orgHead._isReversed = true;
+			head._ref = head.getDocIdentity();
+			orgHead._ref = head.getDocIdentity();
+
+			this.store(head.getMonthId());
+			return head;
+		} catch (MasterDataIdentityNotDefined e) {
+			return null;
+		} catch (NullValueNotAcceptable e) {
+			return null;
+		} catch (MandatoryFieldIsMissing e) {
+			return null;
+		} catch (BalanceNotZero e) {
+			return null;
+		} catch (SystemException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -214,9 +350,12 @@ public class TransactionDataManagement {
 	 * @return
 	 */
 	public MonthIdentity[] getAllMonthIds() {
-		MonthIdentity[] ids = new MonthIdentity[_list.size()];
+		ArrayList<MonthIdentity> idArray = new ArrayList<MonthIdentity>(
+				_list.keySet());
+		Collections.sort(idArray);
+		MonthIdentity[] ids = new MonthIdentity[idArray.size()];
 		int i = 0;
-		for (MonthIdentity id : _list.keySet()) {
+		for (MonthIdentity id : idArray) {
 			ids[i++] = id;
 		}
 

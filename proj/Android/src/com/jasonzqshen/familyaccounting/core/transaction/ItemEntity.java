@@ -10,6 +10,7 @@ import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
@@ -17,8 +18,9 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
+import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
-public class ItemEntity {
+public class ItemEntity implements Comparable<ItemEntity> {
 	public final CoreDriver _coreDriver;
 	private final HeadEntity _head;
 	private final int _lineNum;
@@ -28,6 +30,7 @@ public class ItemEntity {
 	private double _amount;
 	private CreditDebitIndicator _cdIndicator;
 	private MasterDataIdentity _businessArea;
+	boolean _isSaved = false;
 
 	/**
 	 * the value is based on the G/L account, customer and vendor
@@ -45,6 +48,14 @@ public class ItemEntity {
 
 		_head = head;
 		_lineNum = lineNum;
+
+		_type = null;
+		_glAccount = null;
+		_customer = null;
+		_vendor = null;
+		_amount = 0;
+		_businessArea = null;
+		_cdIndicator = null;
 	}
 
 	/**
@@ -74,15 +85,19 @@ public class ItemEntity {
 	 * @throws MasterDataIdentityNotDefined
 	 *             GL account must be defined
 	 */
-	public void setGLAccount(MasterDataIdentity_GLAccount glAccount)
+	public boolean setGLAccount(MasterDataIdentity_GLAccount glAccount)
 			throws NullValueNotAcceptable, MasterDataIdentityNotDefined {
+		if (_isSaved) {
+			return false;
+		}
+
 		// check G/L account
 		if (glAccount == null) {
 			throw new NullValueNotAcceptable("G/L account");
 		}
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataIdentity accountId = management.getMasterData(glAccount,
-				MasterDataType.GL_ACCOUNT).getIdentity();
+		MasterDataBase accountId = management.getMasterData(glAccount,
+				MasterDataType.GL_ACCOUNT);
 		if (accountId == null) {
 			throw new MasterDataIdentityNotDefined(glAccount,
 					MasterDataType.GL_ACCOUNT);
@@ -90,6 +105,10 @@ public class ItemEntity {
 
 		_type = AccountType.GL_ACCOUNT;
 		_glAccount = glAccount;
+		_vendor = null;
+		_customer = null;
+
+		return true;
 	}
 
 	/**
@@ -107,18 +126,22 @@ public class ItemEntity {
 	 * @throws NullValueNotAcceptable
 	 * @throws MasterDataIdentityNotDefined
 	 */
-	public void setCustomer(MasterDataIdentity customer,
+	public boolean setCustomer(MasterDataIdentity customer,
 			MasterDataIdentity_GLAccount glAccount)
 			throws NullValueNotAcceptable, MasterDataIdentityNotDefined {
+		if (_isSaved) {
+			return false;
+		}
+
 		// check customer
 		if (customer == null) {
 			throw new NullValueNotAcceptable("Customer");
 		}
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataIdentity customerId = management.getMasterData(customer,
-				MasterDataType.CUSTOMER).getIdentity();
+		MasterDataBase customerId = management.getMasterData(customer,
+				MasterDataType.CUSTOMER);
 		if (customerId == null) {
-			throw new MasterDataIdentityNotDefined(customerId,
+			throw new MasterDataIdentityNotDefined(customer,
 					MasterDataType.CUSTOMER);
 		}
 
@@ -136,6 +159,9 @@ public class ItemEntity {
 		_type = AccountType.CUSTOMER;
 		_glAccount = glAccount;
 		_customer = customer;
+		_vendor = null;
+
+		return true;
 	}
 
 	/**
@@ -153,18 +179,22 @@ public class ItemEntity {
 	 * @throws NullValueNotAcceptable
 	 * @throws MasterDataIdentityNotDefined
 	 */
-	public void setVendor(MasterDataIdentity vendor,
+	public boolean setVendor(MasterDataIdentity vendor,
 			MasterDataIdentity_GLAccount glAccount)
 			throws NullValueNotAcceptable, MasterDataIdentityNotDefined {
+		if (_isSaved) {
+			return false;
+		}
+
 		// check customer
 		if (vendor == null) {
 			throw new NullValueNotAcceptable("Vendor");
 		}
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataIdentity vendorId = management.getMasterData(vendor,
-				MasterDataType.VENDOR).getIdentity();
+		MasterDataBase vendorId = management.getMasterData(vendor,
+				MasterDataType.VENDOR);
 		if (vendorId == null) {
-			throw new MasterDataIdentityNotDefined(vendorId,
+			throw new MasterDataIdentityNotDefined(vendor,
 					MasterDataType.VENDOR);
 		}
 
@@ -182,6 +212,9 @@ public class ItemEntity {
 		_type = AccountType.VENDOR;
 		_glAccount = glAccount;
 		_vendor = vendor;
+		_customer = null;
+
+		return true;
 	}
 
 	/**
@@ -207,6 +240,10 @@ public class ItemEntity {
 	 *            amount should positive number or zero
 	 */
 	public boolean setAmount(CreditDebitIndicator indicator, double amount) {
+		if (_isSaved) {
+			return false;
+		}
+
 		if (amount < 0) {
 			return false;
 		}
@@ -237,17 +274,27 @@ public class ItemEntity {
 	 * @param businessArea
 	 * @throws MasterDataIdentityNotDefined
 	 */
-	public void setBusinessArea(MasterDataIdentity businessArea)
+	public boolean setBusinessArea(MasterDataIdentity businessArea)
 			throws MasterDataIdentityNotDefined {
+		if (_isSaved) {
+			return false;
+		}
+
+		if (businessArea == null) {
+			_businessArea = null;
+			return true;
+		}
+
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataIdentity accountId = management.getMasterData(businessArea,
-				MasterDataType.BUSINESS_AREA).getIdentity();
+		MasterDataBase accountId = management.getMasterData(businessArea,
+				MasterDataType.BUSINESS_AREA);
 		if (accountId == null) {
 			throw new MasterDataIdentityNotDefined(businessArea,
 					MasterDataType.BUSINESS_AREA);
 		}
 
 		_businessArea = businessArea;
+		return true;
 	}
 
 	/**
@@ -257,6 +304,44 @@ public class ItemEntity {
 	 */
 	public MasterDataIdentity getBusinessArea() {
 		return _businessArea;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws MandatoryFieldIsMissing
+	 */
+	public boolean checkMandatory() throws MandatoryFieldIsMissing {
+
+		// check account
+		if (_type == null) {
+			throw new MandatoryFieldIsMissing("Account Type");
+		}
+
+		if (_type == AccountType.GL_ACCOUNT) {
+			if (!(_glAccount != null && _customer == null && _vendor == null)) {
+				throw new MandatoryFieldIsMissing("G/L Account");
+			}
+		} else if (_type == AccountType.CUSTOMER) {
+			if (!(_glAccount != null && _customer != null && _vendor == null)) {
+				throw new MandatoryFieldIsMissing("Customer");
+			}
+		} else {
+			if (!(_glAccount != null && _customer == null && _vendor != null)) {
+				throw new MandatoryFieldIsMissing("Vendor");
+			}
+		}
+
+		// check amount
+		if (_cdIndicator == null) {
+			throw new MandatoryFieldIsMissing("Credit/Debit Indicator");
+		}
+		int amount = (int) (_amount * 100);
+		if (amount * 100 == 0) {
+			throw new MandatoryFieldIsMissing("Amount");
+		}
+
+		return true;
 	}
 
 	/**
@@ -343,5 +428,64 @@ public class ItemEntity {
 			throw new SystemException(e);
 		}
 
+	}
+
+	public int compareTo(ItemEntity another) {
+		return _lineNum - another._lineNum;
+	}
+
+	/**
+	 * parse to XML
+	 * 
+	 * @return
+	 */
+	public String toXML() {
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append(String.format("%s%s ", XMLTransfer.SINGLE_TAG_LEFT,
+				TransDataUtils.XML_ITEM));
+
+		// line number
+		strBuilder.append(String.format("%s=\"%d\" ",
+				TransDataUtils.XML_LINE_NUM, _lineNum));
+
+		// account type
+		strBuilder.append(String.format("%s=\"%s\" ",
+				TransDataUtils.XML_ACCOUNT_TYPE, _type.toString()));
+
+		// g/l account
+		strBuilder.append(String.format("%s=\"%s\" ",
+				TransDataUtils.XML_GL_ACCOUNT, _glAccount.toString()));
+
+		// customer
+		if (_customer != null) {
+			strBuilder.append(String.format("%s=\"%s\" ",
+					TransDataUtils.XML_CUSTOMER, _customer.toString()));
+		}
+
+		// vendor
+		if (_vendor != null) {
+			strBuilder.append(String.format("%s=\"%s\" ",
+					TransDataUtils.XML_VENDOR, _vendor.toString()));
+		}
+
+		// amount
+		strBuilder.append(String.format("%s=\"%f\" ",
+				TransDataUtils.XML_AMOUNT, _amount));
+
+		// credit debit indicator
+		strBuilder.append(String.format("%s=\"%s\" ",
+				TransDataUtils.XML_CD_INDICATOR, _cdIndicator.toString()));
+
+		// business area
+		if (_businessArea != null) {
+			strBuilder
+					.append(String.format("%s=\"%s\" ",
+							TransDataUtils.XML_BUSINESS_AREA,
+							_businessArea.toString()));
+
+		}
+
+		strBuilder.append(XMLTransfer.SINGLE_TAG_RIGHT);
+		return strBuilder.toString();
 	}
 }

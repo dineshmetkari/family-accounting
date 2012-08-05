@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 
+import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
+
 public class HeadEntityCollection {
 
 	private final Hashtable<DocumentIdentity, HeadEntity> _list;
@@ -31,8 +33,7 @@ public class HeadEntityCollection {
 		HeadEntity[] heads = new HeadEntity[_list.size()];
 		ArrayList<HeadEntity> headArray = new ArrayList<HeadEntity>(
 				_list.values());
-		HeadEntityComparator comparator = new HeadEntityComparator();
-		Collections.sort(headArray, comparator);
+		Collections.sort(headArray);
 		int index = 0;
 		for (HeadEntity h : headArray) {
 			heads[index++] = h;
@@ -51,4 +52,24 @@ public class HeadEntityCollection {
 		return head;
 	}
 
+	/**
+	 * parse to XML
+	 * 
+	 * @return
+	 */
+	public String toXML() {
+		HeadEntity[] entities = this.getEntities();
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append(String.format("%s%s %s",
+				XMLTransfer.BEGIN_TAG_LEFT, TransDataUtils.XML_ROOT,
+				XMLTransfer.BEGIN_TAG_RIGHT));
+
+		for (HeadEntity head : entities) {
+			strBuilder.append(head.toXml());
+		}
+
+		strBuilder.append(String.format("%s%s %s", XMLTransfer.END_TAG_LEFT,
+				TransDataUtils.XML_ROOT, XMLTransfer.END_TAG_RIGHT));
+		return strBuilder.toString();
+	}
 }

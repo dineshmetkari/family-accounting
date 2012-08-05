@@ -75,6 +75,8 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 
 		// add to list
 		this._list.put(identity, bankAccount);
+		
+		this._containDirtyData = true;
 		return bankAccount;
 	}
 

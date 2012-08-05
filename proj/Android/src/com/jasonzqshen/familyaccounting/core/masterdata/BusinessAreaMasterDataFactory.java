@@ -49,6 +49,8 @@ public class BusinessAreaMasterDataFactory extends MasterDataFactoryBase {
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}
+		
+		this._containDirtyData = true;
 		this._list.put(identity, businessArea);
 		return businessArea;
 	}

@@ -43,9 +43,28 @@ public class GLAccountMasterData extends MasterDataBase {
 			throws NullValueNotAcceptable, MasterDataIdentityNotDefined {
 		super(coreDriver, id, descp);
 
-		this.setBankAccount(bankAccount);
-		this.setGLAccountType(type);
-		this.setAccountGroup(group);
+		MasterDataManagement management = _coreDriver.getMasterDataManagement();
+		if (bankAccount == null) {
+			_bankAccount = null;
+		} else {
+			MasterDataBase bankAccountId = management.getMasterData(
+					bankAccount, MasterDataType.BANK_ACCOUNT);
+			if (bankAccountId == null) {
+				throw new MasterDataIdentityNotDefined(bankAccount,
+						MasterDataType.BANK_ACCOUNT);
+			}
+			_bankAccount = bankAccountId.getIdentity();
+		}
+
+		_type = type;
+
+		MasterDataBase groupId = management.getMasterData(group,
+				MasterDataType.GL_ACCOUNT_GROUP);
+		if (groupId == null) {
+			throw new MasterDataIdentityNotDefined(group,
+					MasterDataType.GL_ACCOUNT_GROUP);
+		}
+		_group = groupId.getIdentity();
 	}
 
 	/**
@@ -68,6 +87,8 @@ public class GLAccountMasterData extends MasterDataBase {
 		if (type == null) {
 			throw new NullValueNotAcceptable("GL account type");
 		}
+
+		this.setDirtyData();
 		_type = type;
 	}
 
@@ -94,14 +115,14 @@ public class GLAccountMasterData extends MasterDataBase {
 			return;
 		}
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataIdentity bankAccountId = management.getMasterData(
-				bankAccount, MasterDataType.BANK_ACCOUNT).getIdentity();
+		MasterDataBase bankAccountId = management.getMasterData(bankAccount,
+				MasterDataType.BANK_ACCOUNT);
 		if (bankAccountId == null) {
 			throw new MasterDataIdentityNotDefined(bankAccount,
 					MasterDataType.BANK_ACCOUNT);
 		}
-
-		_bankAccount = bankAccountId;
+		this.setDirtyData();
+		_bankAccount = bankAccountId.getIdentity();
 	}
 
 	/**
@@ -128,13 +149,14 @@ public class GLAccountMasterData extends MasterDataBase {
 			throw new NullValueNotAcceptable("G/L account group");
 		}
 		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataIdentity groupId = management.getMasterData(group,
-				MasterDataType.GL_ACCOUNT_GROUP).getIdentity();
+		MasterDataBase groupId = management.getMasterData(group,
+				MasterDataType.GL_ACCOUNT_GROUP);
 		if (groupId == null) {
 			throw new MasterDataIdentityNotDefined(group,
 					MasterDataType.GL_ACCOUNT_GROUP);
 		}
-		_group = groupId;
+		this.setDirtyData();
+		_group = groupId.getIdentity();
 		return true;
 	}
 

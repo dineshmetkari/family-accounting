@@ -41,6 +41,8 @@ public class VendorMasterDataFactory extends MasterDataFactoryBase {
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}
+
+		this._containDirtyData = true;
 		this._list.put(id, vendor);
 		return vendor;
 	}
@@ -55,7 +57,8 @@ public class VendorMasterDataFactory extends MasterDataFactoryBase {
 		}
 
 		try {
-			MasterDataIdentity identity = new MasterDataIdentity(id.toCharArray());
+			MasterDataIdentity identity = new MasterDataIdentity(
+					id.toCharArray());
 			VendorMasterData vendor = (VendorMasterData) this
 					.createNewMasterDataBase(identity, descp);
 			return vendor;
@@ -73,7 +76,6 @@ public class VendorMasterDataFactory extends MasterDataFactoryBase {
 			throw new SystemException(e);
 		}
 
-		
 	}
 
 }
