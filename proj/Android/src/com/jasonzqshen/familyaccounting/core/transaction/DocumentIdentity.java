@@ -8,6 +8,12 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MonthIdentityFormatException;
 
+/**
+ * document identity
+ * 
+ * @author I072485
+ * 
+ */
 public class DocumentIdentity {
 	public final DocumentNumber _docNumber;
 	public final MonthIdentity _monthIdentity;
@@ -59,26 +65,28 @@ public class DocumentIdentity {
 	 * @return
 	 * @throws DocumentIdentityFormatException
 	 */
-	public static DocumentIdentity parse(String string)
+	public static DocumentIdentity parse(String docIdStr)
 			throws DocumentIdentityFormatException {
-		String docNumStr = string.substring(0, 10);
-		String monthIdStr = string.substring(11, 18);
-
 		try {
+			String docNumStr = docIdStr.substring(0, 10);
+			String monthIdStr = docIdStr.substring(11, 18);
+
 			DocumentNumber id = new DocumentNumber(docNumStr.toCharArray());
 			MonthIdentity monthId = MonthIdentity.parse(monthIdStr);
 
 			return new DocumentIdentity(id, monthId);
 		} catch (IdentityTooLong e) {
-			throw new DocumentIdentityFormatException();
+			throw new DocumentIdentityFormatException(docIdStr);
 		} catch (IdentityNoData e) {
-			throw new DocumentIdentityFormatException();
+			throw new DocumentIdentityFormatException(docIdStr);
 		} catch (IdentityInvalidChar e) {
-			throw new DocumentIdentityFormatException();
+			throw new DocumentIdentityFormatException(docIdStr);
 		} catch (NumberFormatException e) {
-			throw new DocumentIdentityFormatException();
+			throw new DocumentIdentityFormatException(docIdStr);
 		} catch (MonthIdentityFormatException e) {
-			throw new DocumentIdentityFormatException();
+			throw new DocumentIdentityFormatException(docIdStr);
+		} catch (IndexOutOfBoundsException e) {
+			throw new DocumentIdentityFormatException(docIdStr);
 		}
 	}
 }

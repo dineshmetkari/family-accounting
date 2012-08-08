@@ -7,9 +7,6 @@ public class CoreMessage {
 	public static final String ERR_PARAMETER_LENGTH = "The length of parameters should be %d, but it is %d.";
 	public static final String ERR_PARAMETER_TYPE = "The parameter is not instance of %s";
 
-	public enum MessageType {
-		INFO, WARNING, ERROR
-	}
 
 	public final String _msg;
 	public final Exception _exp;

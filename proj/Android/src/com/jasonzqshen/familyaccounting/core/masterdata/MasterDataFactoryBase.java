@@ -2,16 +2,14 @@ package com.jasonzqshen.familyaccounting.core.masterdata;
 
 import java.util.Hashtable;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Element;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
-import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
 /**
@@ -57,10 +55,10 @@ public abstract class MasterDataFactoryBase {
 	 * @param coreDriver
 	 * @param elem
 	 * @return
-	 * @throws Exception
+	 * @throws MasterDataFileFormatException
 	 */
 	public abstract MasterDataBase parseMasterData(CoreDriver coreDriver,
-			Element elem) throws MandatoryFieldIsMissing, SystemException;
+			Element elem) throws MasterDataFileFormatException;
 
 	/**
 	 * remove the master data entity from list
@@ -76,10 +74,8 @@ public abstract class MasterDataFactoryBase {
 	 * parse memory to XML
 	 * 
 	 * @return
-	 * @throws SystemException
-	 * @throws ParserConfigurationException
 	 */
-	public String toXmlDocument() throws SystemException {
+	public String toXmlDocument() {
 
 		if (_list.size() == 0) {
 			return String.format("%s%s %s", XMLTransfer.SINGLE_TAG_LEFT,

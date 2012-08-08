@@ -6,13 +6,13 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
-import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
+import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
 public class VendorMasterDataFactory extends MasterDataFactoryBase {
 
@@ -23,7 +23,7 @@ public class VendorMasterDataFactory extends MasterDataFactoryBase {
 	@Override
 	public MasterDataBase createNewMasterDataBase(MasterDataIdentity id,
 			String descp, Object... objects) throws ParametersException,
-			MasterDataIdentityExists, SystemException {
+			MasterDataIdentityExists {
 		// check parameters
 		if (objects.length != 0) {
 			throw new ParametersException(String.format(
@@ -44,36 +44,52 @@ public class VendorMasterDataFactory extends MasterDataFactoryBase {
 
 		this._containDirtyData = true;
 		this._list.put(id, vendor);
+
+		_coreDriver.logDebugInfo(this.getClass(), 84,
+				String.format("Create vendor (%s).", vendor.toXML()),
+				MessageType.INFO);
 		return vendor;
 	}
 
 	@Override
 	public MasterDataBase parseMasterData(CoreDriver coreDriver, Element elem)
-			throws MandatoryFieldIsMissing, SystemException {
+			throws MasterDataFileFormatException {
 		String id = elem.getAttribute(MasterDataUtils.XML_ID);
 		String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
-		if (StringUtility.isNullOrEmpty(descp)) {
-			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_DESCP);
-		}
 
 		try {
 			MasterDataIdentity identity = new MasterDataIdentity(
 					id.toCharArray());
 			VendorMasterData vendor = (VendorMasterData) this
 					.createNewMasterDataBase(identity, descp);
+
+			_coreDriver.logDebugInfo(this.getClass(), 62,
+					String.format("Parse vendor (%s).", vendor.toXML()),
+					MessageType.INFO);
 			return vendor;
 		} catch (IdentityTooLong e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 150,
+					"Master data identity is too long.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.VENDOR);
 		} catch (IdentityNoData e) {
-			throw new SystemException(e);
+			_coreDriver
+					.logDebugInfo(this.getClass(), 154,
+							"Master data identity is with no value.",
+							MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.VENDOR);
 		} catch (IdentityInvalidChar e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 160,
+					"Invalid character in identity.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.VENDOR);
 		} catch (ParametersException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 164,
+					"Function parameter set error: " + e.toString(),
+					MessageType.ERROR);
 			throw new SystemException(e);
 		} catch (MasterDataIdentityExists e) {
-			throw new SystemException(e);
-		} catch (SystemException e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 168,
+					"Master data identity duplicated.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.VENDOR);
 		}
 
 	}

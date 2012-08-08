@@ -6,13 +6,14 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CriticalLevel;
+import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 
 public class BusinessAreaMasterDataFactory extends MasterDataFactoryBase {
@@ -49,50 +50,74 @@ public class BusinessAreaMasterDataFactory extends MasterDataFactoryBase {
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}
-		
+
 		this._containDirtyData = true;
 		this._list.put(identity, businessArea);
+
+		_coreDriver.logDebugInfo(
+				this.getClass(),
+				59,
+				String.format("Create business area (%s).",
+						businessArea.toXML()), MessageType.INFO);
 		return businessArea;
 	}
 
 	@Override
 	public MasterDataBase parseMasterData(CoreDriver coreDriver, Element elem)
-			throws MandatoryFieldIsMissing, SystemException {
+			throws MasterDataFileFormatException {
 		String id = elem.getAttribute(MasterDataUtils.XML_ID);
 		String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
 		String criticalLevel = elem
 				.getAttribute(MasterDataUtils.XML_CRITICAL_LEVEL);
 		// check attribute
-		if (StringUtility.isNullOrEmpty(descp)) {
-			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_DESCP);
-		}
 		if (StringUtility.isNullOrEmpty(criticalLevel)) {
-			throw new MandatoryFieldIsMissing(
-					MasterDataUtils.XML_CRITICAL_LEVEL);
+			throw new MasterDataFileFormatException(
+					MasterDataType.BUSINESS_AREA);
 		}
 
 		CriticalLevel l = CriticalLevel.parse(criticalLevel.charAt(0));
 		try {
-			MasterDataIdentity identity = new MasterDataIdentity(id.toCharArray());
-			
+			MasterDataIdentity identity = new MasterDataIdentity(
+					id.toCharArray());
+
 			BusinessAreaMasterData businessArea = (BusinessAreaMasterData) this
 					.createNewMasterDataBase(identity, descp, l);
 
+			_coreDriver.logDebugInfo(
+					this.getClass(),
+					130,
+					String.format("Parse business area (%s).",
+							businessArea.toXML()), MessageType.INFO);
 			return businessArea;
 		} catch (IdentityTooLong e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 150,
+					"Master data identity is too long.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(
+					MasterDataType.BUSINESS_AREA);
 		} catch (IdentityNoData e) {
-			throw new SystemException(e);
+			_coreDriver
+					.logDebugInfo(this.getClass(), 154,
+							"Master data identity is with no value.",
+							MessageType.ERROR);
+			throw new MasterDataFileFormatException(
+					MasterDataType.BUSINESS_AREA);
 		} catch (IdentityInvalidChar e) {
-			throw new SystemException(e);
-		} catch (SystemException e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 160,
+					"Invalid character in identity.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(
+					MasterDataType.BUSINESS_AREA);
 		} catch (ParametersException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 164,
+					"Function parameter set error: " + e.toString(),
+					MessageType.ERROR);
 			throw new SystemException(e);
 		} catch (MasterDataIdentityExists e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 168,
+					"Master data identity duplicated.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(
+					MasterDataType.BUSINESS_AREA);
 		}
-		
+
 	}
 
 }
