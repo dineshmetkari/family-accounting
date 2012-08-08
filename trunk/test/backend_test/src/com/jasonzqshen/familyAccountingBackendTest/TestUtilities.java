@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
@@ -12,12 +14,14 @@ import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
-import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFactoryClass;
+import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFileException;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
 import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterDataFactory;
 import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountNumber;
@@ -42,6 +46,7 @@ import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManageme
 import com.jasonzqshen.familyaccounting.core.utils.BankAccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CriticalLevel;
+import com.jasonzqshen.familyaccounting.core.utils.DebugInformation;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountType;
 
 public class TestUtilities {
@@ -170,13 +175,16 @@ public class TestUtilities {
 	 * @throws MasterDataIdentityNotDefined
 	 * @throws FiscalMonthRangeException
 	 * @throws FiscalYearRangeException
+	 * @throws MasterDataFileFormatException
+	 * @throws NoMasterDataFileException
 	 */
 	public static CoreDriver establishMasterData(ArrayList<CoreMessage> messages)
 			throws NoMasterDataFactoryClass, SystemException,
 			RootFolderNotExsits, IdentityTooLong, IdentityNoData,
 			IdentityInvalidChar, ParametersException, MasterDataIdentityExists,
 			MasterDataIdentityNotDefined, FiscalYearRangeException,
-			FiscalMonthRangeException {
+			FiscalMonthRangeException, NoMasterDataFileException,
+			MasterDataFileFormatException {
 		CoreDriver coreDriver = CoreDriver.getInstance();
 
 		// set root path
@@ -243,6 +251,7 @@ public class TestUtilities {
 								new MasterDataIdentity(str.toCharArray()),
 								TestUtilities.TEST_DESCP);
 				assertTrue(false);
+				assertEquals(null, vendor);
 			} catch (MasterDataIdentityExists e) {
 
 			}
@@ -263,7 +272,9 @@ public class TestUtilities {
 						.createNewMasterDataBase(
 								new MasterDataIdentity(str.toCharArray()),
 								TestUtilities.TEST_DESCP);
+
 				assertTrue(false);
+				assertEquals(null, customer);
 			} catch (MasterDataIdentityExists e) {
 			}
 		}
@@ -284,6 +295,7 @@ public class TestUtilities {
 								new MasterDataIdentity(str.toCharArray()),
 								TestUtilities.TEST_DESCP);
 				assertTrue(false);
+				assertEquals(null, bankKey);
 			} catch (MasterDataIdentityExists e) {
 			}
 		}
@@ -314,6 +326,7 @@ public class TestUtilities {
 								TestUtilities.TEST_DESCP, accountNum, bankKey,
 								TestUtilities.TEST_BANK_ACCOUNT_TYPE);
 				assertTrue(false);
+				assertEquals(null, vendor);
 			} catch (MasterDataIdentityExists e) {
 			}
 		}
@@ -336,6 +349,7 @@ public class TestUtilities {
 								TestUtilities.TEST_DESCP,
 								TestUtilities.TEST_CRITICAL_LEVEL);
 				assertTrue(false);
+				assertEquals(null, businessArea);
 			} catch (MasterDataIdentityExists e) {
 			}
 		}
@@ -356,6 +370,7 @@ public class TestUtilities {
 								new MasterDataIdentity(str.toCharArray()),
 								TestUtilities.TEST_DESCP);
 				assertTrue(false);
+				assertEquals(null, group);
 			} catch (MasterDataIdentityExists e) {
 			}
 		}
@@ -382,9 +397,28 @@ public class TestUtilities {
 								TestUtilities.TEST_DESCP,
 								TestUtilities.TEST_GL_ACCOUNT_TYPE, group);
 				assertTrue(false);
+				assertEquals(null, glAccount);
 			} catch (MasterDataIdentityExists e) {
 			}
 		}
 		return coreDriver;
+	}
+
+	public static void saveLogFile(String fileName, CoreDriver coreDriver) {
+		StringBuilder strBuilder = new StringBuilder();
+		for (DebugInformation info : coreDriver.getDebugInfos()) {
+			strBuilder.append(info.toString());
+			strBuilder.append("\n");
+		}
+
+		File file = new File(fileName);
+		FileWriter writer;
+		try {
+			writer = new FileWriter(file);
+			writer.write(strBuilder.toString());
+			writer.close();
+		} catch (IOException e) {
+			throw new SystemException(e);
+		}
 	}
 }
