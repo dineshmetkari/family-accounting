@@ -1,6 +1,6 @@
-package com.jasonzqshen.familyaccounting.core.exception;
+package com.jasonzqshen.familyaccounting.core.exception.runtime;
 
-public class SystemException extends Exception {
+public class SystemException extends RuntimeException {
 	/**
 	 * 
 	 */

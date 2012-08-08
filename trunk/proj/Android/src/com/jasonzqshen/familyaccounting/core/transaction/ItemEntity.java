@@ -9,7 +9,8 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.TransactionDataFileFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
@@ -17,8 +18,8 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
+import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
-import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
 public class ItemEntity implements Comparable<ItemEntity> {
 	public final CoreDriver _coreDriver;
@@ -311,71 +312,133 @@ public class ItemEntity implements Comparable<ItemEntity> {
 	 * @return
 	 * @throws MandatoryFieldIsMissing
 	 */
-	public boolean checkMandatory() throws MandatoryFieldIsMissing {
+	public void checkMandatory() throws MandatoryFieldIsMissing {
 
 		// check account
 		if (_type == null) {
+			_coreDriver.logDebugInfo(this.getClass(), 319,
+					"Check line item before save, account type is null.",
+					MessageType.ERROR);
 			throw new MandatoryFieldIsMissing("Account Type");
 		}
 
 		if (_type == AccountType.GL_ACCOUNT) {
 			if (!(_glAccount != null && _customer == null && _vendor == null)) {
+				_coreDriver
+						.logDebugInfo(
+								this.getClass(),
+								319,
+								"Check line item before save, account error when account type is G/L account.",
+								MessageType.ERROR);
 				throw new MandatoryFieldIsMissing("G/L Account");
 			}
 		} else if (_type == AccountType.CUSTOMER) {
 			if (!(_glAccount != null && _customer != null && _vendor == null)) {
+				_coreDriver
+						.logDebugInfo(
+								this.getClass(),
+								319,
+								"Check line item before save, account error when account type is customer.",
+								MessageType.ERROR);
 				throw new MandatoryFieldIsMissing("Customer");
 			}
 		} else {
 			if (!(_glAccount != null && _customer == null && _vendor != null)) {
+				_coreDriver
+						.logDebugInfo(
+								this.getClass(),
+								319,
+								"Check line item before save, account error when account type is vendor.",
+								MessageType.ERROR);
 				throw new MandatoryFieldIsMissing("Vendor");
 			}
 		}
 
 		// check amount
 		if (_cdIndicator == null) {
+			_coreDriver
+					.logDebugInfo(
+							this.getClass(),
+							319,
+							"Check line item before save, credit/debit indicator is null.",
+							MessageType.ERROR);
 			throw new MandatoryFieldIsMissing("Credit/Debit Indicator");
 		}
 		int amount = (int) (_amount * 100);
-		if (amount * 100 == 0) {
+		if (amount * 100 <= 0) {
+			_coreDriver.logDebugInfo(this.getClass(), 319,
+					"Check line item before save, amount <= 0.",
+					MessageType.ERROR);
 			throw new MandatoryFieldIsMissing("Amount");
 		}
 
-		return true;
+		_coreDriver.logDebugInfo(this.getClass(), 319, String.format(
+				"Check line item %d before save successfully", _lineNum),
+				MessageType.INFO);
 	}
 
 	/**
 	 * Parse XML to item
 	 * 
 	 * @return
+	 * @throws TransactionDataFileFormatException
 	 */
 	public static ItemEntity parse(CoreDriver coreDriver, HeadEntity head,
-			Element elem) throws MandatoryFieldIsMissing, SystemException {
+			Element elem) throws TransactionDataFileFormatException {
+		// line number
 		String lineNumStr = elem.getAttribute(TransDataUtils.XML_LINE_NUM);
+		if (StringUtility.isNullOrEmpty(lineNumStr)) {
+			coreDriver.logDebugInfo(HeadEntity.class, 363, String.format(
+					"Field %s is missing in.", TransDataUtils.XML_LINE_NUM),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// account type
 		String typeStr = elem.getAttribute(TransDataUtils.XML_ACCOUNT_TYPE);
-		String glAccountStr = elem.getAttribute(TransDataUtils.XML_GL_ACCOUNT);
-		String vendorStr = elem.getAttribute(TransDataUtils.XML_VENDOR);
-		String customerStr = elem.getAttribute(TransDataUtils.XML_CUSTOMER);
+		if (StringUtility.isNullOrEmpty(typeStr)) {
+			coreDriver
+					.logDebugInfo(HeadEntity.class, 375, String.format(
+							"Field %s is missing in.",
+							TransDataUtils.XML_ACCOUNT_TYPE), MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// amount
 		String amountStr = elem.getAttribute(TransDataUtils.XML_AMOUNT);
+		if (StringUtility.isNullOrEmpty(amountStr)) {
+			coreDriver.logDebugInfo(HeadEntity.class, 375, String.format(
+					"Field %s is missing in.", TransDataUtils.XML_AMOUNT),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// credit debit indicator
 		String cdIndStr = elem.getAttribute(TransDataUtils.XML_CD_INDICATOR);
+		if (StringUtility.isNullOrEmpty(cdIndStr)) {
+			coreDriver
+					.logDebugInfo(HeadEntity.class, 375, String.format(
+							"Field %s is missing in.",
+							TransDataUtils.XML_CD_INDICATOR), MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// G/L account
+		String glAccountStr = elem.getAttribute(TransDataUtils.XML_GL_ACCOUNT);
+		if (StringUtility.isNullOrEmpty(glAccountStr)) {
+			coreDriver.logDebugInfo(HeadEntity.class, 414, String.format(
+					"Field %s is missing in.", TransDataUtils.XML_GL_ACCOUNT),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// vendor
+		String vendorStr = elem.getAttribute(TransDataUtils.XML_VENDOR);
+		// customer
+		String customerStr = elem.getAttribute(TransDataUtils.XML_CUSTOMER);
+
 		String businessAreaStr = elem
 				.getAttribute(TransDataUtils.XML_BUSINESS_AREA);
-		// check mandatory
-		if (StringUtility.isNullOrEmpty(lineNumStr)) {
-			throw new MandatoryFieldIsMissing("Line Number");
-		}
-		if (StringUtility.isNullOrEmpty(typeStr)) {
-			throw new MandatoryFieldIsMissing("Account Type");
-		}
-		if (StringUtility.isNullOrEmpty(glAccountStr)) {
-			throw new MandatoryFieldIsMissing("G/L account");
-		}
-		if (StringUtility.isNullOrEmpty(amountStr)) {
-			throw new MandatoryFieldIsMissing("Amount");
-		}
-		if (StringUtility.isNullOrEmpty(cdIndStr)) {
-			throw new MandatoryFieldIsMissing("Credit/Debit Indicator");
-		}
 
 		try {
 			int lineNum = Integer.parseInt(lineNumStr);
@@ -388,14 +451,22 @@ public class ItemEntity implements Comparable<ItemEntity> {
 				newItem.setGLAccount(glAccount);
 			} else if (type == AccountType.VENDOR) {
 				if (StringUtility.isNullOrEmpty(vendorStr)) {
-					throw new MandatoryFieldIsMissing("Vendor");
+					coreDriver.logDebugInfo(HeadEntity.class, 414, String
+							.format("Field %s is missing in.",
+									TransDataUtils.XML_VENDOR),
+							MessageType.ERROR);
+					throw new TransactionDataFileFormatException("");
 				}
 				MasterDataIdentity vendorId = new MasterDataIdentity(
 						vendorStr.toCharArray());
 				newItem.setVendor(vendorId, glAccount);
 			} else if (type == AccountType.CUSTOMER) {
 				if (StringUtility.isNullOrEmpty(customerStr)) {
-					throw new MandatoryFieldIsMissing("Customer");
+					coreDriver.logDebugInfo(HeadEntity.class, 414, String
+							.format("Field %s is missing in.",
+									TransDataUtils.XML_CUSTOMER),
+							MessageType.ERROR);
+					throw new TransactionDataFileFormatException("");
 				}
 				MasterDataIdentity customerId = new MasterDataIdentity(
 						customerStr.toCharArray());
@@ -412,20 +483,38 @@ public class ItemEntity implements Comparable<ItemEntity> {
 						.toCharArray()));
 			}
 
+			coreDriver.logDebugInfo(
+					ItemEntity.class,
+					455,
+					String.format("Parse line Item %d (%s).",
+							newItem.getLineNum(), newItem.toXML()),
+					MessageType.INFO);
 			return newItem;
 
 		} catch (NumberFormatException e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(ItemEntity.class, 455, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (IdentityTooLong e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(ItemEntity.class, 463, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (IdentityNoData e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(ItemEntity.class, 463, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (IdentityInvalidChar e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(ItemEntity.class, 463, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (NullValueNotAcceptable e) {
+			coreDriver.logDebugInfo(ItemEntity.class, 463, e.toString(),
+					MessageType.ERROR);
 			throw new SystemException(e);
 		} catch (MasterDataIdentityNotDefined e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(ItemEntity.class, 463, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		}
 
 	}
@@ -441,8 +530,6 @@ public class ItemEntity implements Comparable<ItemEntity> {
 	 */
 	public String toXML() {
 		StringBuilder strBuilder = new StringBuilder();
-		strBuilder.append(String.format("%s%s ", XMLTransfer.SINGLE_TAG_LEFT,
-				TransDataUtils.XML_ITEM));
 
 		// line number
 		strBuilder.append(String.format("%s=\"%d\" ",
@@ -485,7 +572,6 @@ public class ItemEntity implements Comparable<ItemEntity> {
 
 		}
 
-		strBuilder.append(XMLTransfer.SINGLE_TAG_RIGHT);
 		return strBuilder.toString();
 	}
 }

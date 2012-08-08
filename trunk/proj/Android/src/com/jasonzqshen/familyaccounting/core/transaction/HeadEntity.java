@@ -20,9 +20,12 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.TransactionDataFileFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
+import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
+import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
@@ -69,6 +72,10 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	 * @return
 	 */
 	public DocumentIdentity getDocIdentity() {
+		if(_docNumber == null || _monthId == null)
+		{
+			return null;
+		}
 		return new DocumentIdentity(_docNumber, _monthId);
 	}
 
@@ -252,43 +259,74 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	 * 
 	 * @param elem
 	 * @return
-	 * @throws MandatoryFieldIsMissing
+	 * @throws TransactionDataFileFormatException
 	 * @throws SystemException
 	 */
 	public static HeadEntity parse(CoreDriver coreDriver, Element elem)
-			throws MandatoryFieldIsMissing, SystemException {
+			throws TransactionDataFileFormatException {
 		HeadEntity head = new HeadEntity(coreDriver);
 		head._isSaved = true;
 
+		// document number
 		String docNumStr = elem.getAttribute(TransDataUtils.XML_DOC_NUM);
+		if (StringUtility.isNullOrEmpty(docNumStr)) {
+			coreDriver.logDebugInfo(HeadEntity.class, 271, String.format(
+					"Field %s is missing in.", TransDataUtils.XML_DOC_NUM),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// fiscal year
 		String yearStr = elem.getAttribute(TransDataUtils.XML_YEAR);
+		if (StringUtility.isNullOrEmpty(yearStr)) {
+			coreDriver.logDebugInfo(HeadEntity.class, 283, String.format(
+					"Field %s is missing in.", TransDataUtils.XML_YEAR),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// fiscal month
 		String monthStr = elem.getAttribute(TransDataUtils.XML_MONTH);
+		if (StringUtility.isNullOrEmpty(monthStr)) {
+			coreDriver.logDebugInfo(HeadEntity.class, 295, String.format(
+					"Field %s is missing in.", TransDataUtils.XML_MONTH),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// posting date
 		String dateStr = elem.getAttribute(TransDataUtils.XML_DATE);
+		if (StringUtility.isNullOrEmpty(dateStr)) {
+			coreDriver.logDebugInfo(HeadEntity.class, 307, String.format(
+					"Field %s is missing in.", TransDataUtils.XML_DATE),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// text
 		String text = elem.getAttribute(TransDataUtils.XML_TEXT);
+
+		// document type
 		String docTypeStr = elem.getAttribute(TransDataUtils.XML_DOC_TYPE);
+		if (StringUtility.isNullOrEmpty(docTypeStr)) {
+			coreDriver.logDebugInfo(HeadEntity.class, 325, String.format(
+					"Field %s is missing in.", TransDataUtils.XML_DOC_TYPE),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
+		}
+
+		// is reversed
 		String isReversedStr = elem
 				.getAttribute(TransDataUtils.XML_IS_REVERSED);
-		String refStr = elem.getAttribute(TransDataUtils.XML_REF);
-
-		// check mandatory
-		if (StringUtility.isNullOrEmpty(docNumStr)) {
-			throw new MandatoryFieldIsMissing("Document Number");
-		}
-		if (StringUtility.isNullOrEmpty(yearStr)) {
-			throw new MandatoryFieldIsMissing("Fiscal Year");
-		}
-		if (StringUtility.isNullOrEmpty(monthStr)) {
-			throw new MandatoryFieldIsMissing("Fiscal Month");
-		}
-		if (StringUtility.isNullOrEmpty(dateStr)) {
-			throw new MandatoryFieldIsMissing("Posting Date");
-		}
-		if (StringUtility.isNullOrEmpty(docTypeStr)) {
-			throw new MandatoryFieldIsMissing("Document Type");
-		}
 		if (StringUtility.isNullOrEmpty(isReversedStr)) {
-			throw new MandatoryFieldIsMissing("Is Reversed");
+			coreDriver.logDebugInfo(HeadEntity.class, 338, String.format(
+					"Field %s is missing in.", TransDataUtils.XML_IS_REVERSED),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		}
+
+		// reference
+		String refStr = elem.getAttribute(TransDataUtils.XML_REF);
 
 		try {
 			head._docNumber = new DocumentNumber(docNumStr.toCharArray());
@@ -316,27 +354,64 @@ public class HeadEntity implements Comparable<HeadEntity> {
 						ItemEntity item = ItemEntity.parse(coreDriver, head,
 								itemElem);
 						item._isSaved = true;
+
+						coreDriver
+								.logDebugInfo(
+										HeadEntity.class,
+										377,
+										String.format(
+												"Line Item %d appended during parsing document.",
+												item.getLineNum()),
+										MessageType.INFO);
 						head._items.add(item);
 					}
 				}
 			}
+			StringBuilder strBuilder = new StringBuilder(
+					String.format(
+							"Parse document %s with posting date %s, text %s, type %s, is_reversed %s",
+							head.getDocIdentity(), head.getPostingDate(),
+							head.getDocText(), head.getDocumentType(),
+							head.IsReversed()));
+			if (head.getReference() != null) {
+				strBuilder.append(String.format(", reference %s",
+						head.getReference()));
+			}
+			coreDriver.logDebugInfo(HeadEntity.class, 377,
+					strBuilder.toString(), MessageType.INFO);
 			return head;
 		} catch (IdentityTooLong e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(HeadEntity.class, 382, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (IdentityNoData e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(HeadEntity.class, 386, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (IdentityInvalidChar e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(HeadEntity.class, 389, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (NumberFormatException e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(HeadEntity.class, 393, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (FiscalYearRangeException e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(HeadEntity.class, 398, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (FiscalMonthRangeException e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(HeadEntity.class, 402, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (DocumentIdentityFormatException e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(HeadEntity.class, 406, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		} catch (ParseException e) {
-			throw new SystemException(e);
+			coreDriver.logDebugInfo(HeadEntity.class, 410, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		}
 
 	}
@@ -349,21 +424,51 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	/**
 	 * save document
 	 * 
+	 * @param messages
+	 *            message generated during the saving process
+	 * @param needStore
+	 *            the flag whether to store the memory to disk
 	 * @return
-	 * @throws MandatoryFieldIsMissing
-	 * @throws BalanceNotZero
 	 */
-	public boolean save() throws MandatoryFieldIsMissing, BalanceNotZero {
-		if (checkBeforeSave() == false) {
+	public boolean save(ArrayList<CoreMessage> messages, boolean needStore) {
+		_coreDriver.logDebugInfo(this.getClass(), 427,
+				"Starting to save document...", MessageType.INFO);
+
+		try {
+			checkBeforeSave();
+		} catch (MandatoryFieldIsMissing e) {
+			messages.add(new CoreMessage(e.toString(), MessageType.ERROR, e));
+			_coreDriver.logDebugInfo(this.getClass(), 433,
+					"Check failed during saving document " + e.toString(),
+					MessageType.ERROR);
+			return false;
+		} catch (BalanceNotZero e) {
+			_coreDriver.logDebugInfo(this.getClass(), 437,
+					"Check failed during saving document " + e.toString(),
+					MessageType.INFO);
+			messages.add(new CoreMessage(e.toString(), MessageType.ERROR, e));
 			return false;
 		}
 
 		TransactionDataManagement transaction = _coreDriver
 				.getTransDataManagement();
-		if (transaction.saveDocument(this) == false) {
+
+		_coreDriver
+				.logDebugInfo(
+						this.getClass(),
+						450,
+						"Check is OK. Then get the transaction management and then all the transaction to save the document.",
+						MessageType.INFO);
+		if (transaction.saveDocument(this, needStore) == false) {
+			_coreDriver.logDebugInfo(this.getClass(), 454,
+					"Save document with errors", MessageType.INFO);
 			return false;
 		}
 
+		String info = String.format("Document %s in %s saved successfully.",
+				_docNumber, _monthId);
+		_coreDriver.logDebugInfo(this.getClass(), 459, info, MessageType.INFO);
+		messages.add(new CoreMessage(info, MessageType.INFO, null));
 		_isSaved = true;
 		return true;
 	}
@@ -375,15 +480,21 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	 * @throws MandatoryFieldIsMissing
 	 * @throws BalanceNotZero
 	 */
-	public boolean checkBeforeSave() throws MandatoryFieldIsMissing,
+	public void checkBeforeSave() throws MandatoryFieldIsMissing,
 			BalanceNotZero {
 		// check posting date
 		if (_postingDate == null) {
+			_coreDriver.logDebugInfo(this.getClass(), 478,
+					"Check document before save, posting date is null",
+					MessageType.ERROR);
 			throw new MandatoryFieldIsMissing("Posting Date");
 		}
 
 		// check document type
 		if (_type == null) {
+			_coreDriver.logDebugInfo(this.getClass(), 478,
+					"Check document before save, document type is null",
+					MessageType.ERROR);
 			throw new MandatoryFieldIsMissing("Document Type");
 		}
 
@@ -401,10 +512,14 @@ public class HeadEntity implements Comparable<HeadEntity> {
 
 		// check balance
 		if (creditSum != debitSum) {
+			_coreDriver.logDebugInfo(this.getClass(), 478,
+					"Check document before save, balance is not zero",
+					MessageType.ERROR);
 			throw new BalanceNotZero();
 		}
 
-		return true;
+		_coreDriver.logDebugInfo(this.getClass(), 319,
+				"Check document before save successfully", MessageType.INFO);
 	}
 
 	/**
@@ -447,7 +562,10 @@ public class HeadEntity implements Comparable<HeadEntity> {
 
 		// items
 		for (ItemEntity item : _items) {
+			strBuilder.append(String.format("%s%s ",
+					XMLTransfer.SINGLE_TAG_LEFT, TransDataUtils.XML_ITEM));
 			strBuilder.append(item.toXML());
+			strBuilder.append(XMLTransfer.SINGLE_TAG_RIGHT);
 		}
 
 		strBuilder.append(String.format("%s%s %s", XMLTransfer.END_TAG_LEFT,

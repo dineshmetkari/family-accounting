@@ -6,13 +6,13 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
-import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
+import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
 public class GLAccountGroupMasterDataFactory extends MasterDataFactoryBase {
 
@@ -23,7 +23,7 @@ public class GLAccountGroupMasterDataFactory extends MasterDataFactoryBase {
 	@Override
 	public MasterDataBase createNewMasterDataBase(MasterDataIdentity id,
 			String descp, Object... objects) throws ParametersException,
-			MasterDataIdentityExists, SystemException {
+			MasterDataIdentityExists {
 		// check parameters
 		if (objects.length != 0) {
 			throw new ParametersException(String.format(
@@ -41,37 +41,61 @@ public class GLAccountGroupMasterDataFactory extends MasterDataFactoryBase {
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}
-		
+
 		this._containDirtyData = true;
 		this._list.put(id, group);
+
+		_coreDriver.logDebugInfo(this.getClass(), 48,
+				String.format("Create G/L account group (%s).", group.toXML()),
+				MessageType.INFO);
 		return group;
 	}
 
 	@Override
 	public MasterDataBase parseMasterData(CoreDriver coreDriver, Element elem)
-			throws MandatoryFieldIsMissing, SystemException {
+			throws MasterDataFileFormatException {
 		String id = elem.getAttribute(MasterDataUtils.XML_ID);
 		String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
-		// check attribute
-		if (StringUtility.isNullOrEmpty(descp)) {
-			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_DESCP);
-		}
 
 		try {
-			MasterDataIdentity identity = new MasterDataIdentity(id.toCharArray());
-			GLAccountGroupMasterData group = new GLAccountGroupMasterData(
-					coreDriver, identity, descp);
+			MasterDataIdentity identity = new MasterDataIdentity(
+					id.toCharArray());
+			GLAccountGroupMasterData group = (GLAccountGroupMasterData) this
+					.createNewMasterDataBase(identity, descp);
 
-			this._list.put(identity, group);
+			_coreDriver.logDebugInfo(
+					this.getClass(),
+					62,
+					String.format("Parse G/L account group (%s).",
+							group.toXML()), MessageType.INFO);
 			return group;
 		} catch (IdentityTooLong e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 150,
+					"Master data identity is too long.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(
+					MasterDataType.GL_ACCOUNT_GROUP);
 		} catch (IdentityNoData e) {
-			throw new SystemException(e);
+			_coreDriver
+					.logDebugInfo(this.getClass(), 154,
+							"Master data identity is with no value.",
+							MessageType.ERROR);
+			throw new MasterDataFileFormatException(
+					MasterDataType.GL_ACCOUNT_GROUP);
 		} catch (IdentityInvalidChar e) {
+			_coreDriver.logDebugInfo(this.getClass(), 160,
+					"Invalid character in identity.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(
+					MasterDataType.GL_ACCOUNT_GROUP);
+		} catch (ParametersException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 164,
+					"Function parameter set error: " + e.toString(),
+					MessageType.ERROR);
 			throw new SystemException(e);
-		} catch (NullValueNotAcceptable e) {
-			throw new SystemException(e);
+		} catch (MasterDataIdentityExists e) {
+			_coreDriver.logDebugInfo(this.getClass(), 168,
+					"Master data identity duplicated.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(
+					MasterDataType.GL_ACCOUNT_GROUP);
 		}
 
 	}

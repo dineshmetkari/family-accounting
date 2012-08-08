@@ -1,8 +1,8 @@
-package com.jasonzqshen.familyaccounting.core.exception;
+package com.jasonzqshen.familyaccounting.core.exception.runtime;
 
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 
-public class NoMasterDataFactoryClass extends Exception {
+public class NoMasterDataFactoryClass extends RuntimeException {
 	/**
 	 * 
 	 */

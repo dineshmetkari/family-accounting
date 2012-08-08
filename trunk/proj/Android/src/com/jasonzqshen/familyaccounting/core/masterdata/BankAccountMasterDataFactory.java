@@ -6,14 +6,15 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.BankAccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
+import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 
 public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
@@ -29,8 +30,7 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 	@Override
 	public MasterDataBase createNewMasterDataBase(MasterDataIdentity identity,
 			String descp, Object... objects) throws ParametersException,
-			MasterDataIdentityExists, MasterDataIdentityNotDefined,
-			SystemException {
+			MasterDataIdentityExists, MasterDataIdentityNotDefined {
 		if (objects.length != 3) {
 			throw new ParametersException(String.format(
 					CoreMessage.ERR_PARAMETER_LENGTH, 3, objects.length));
@@ -75,31 +75,47 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 
 		// add to list
 		this._list.put(identity, bankAccount);
-		
+
 		this._containDirtyData = true;
+
+		_coreDriver
+				.logDebugInfo(
+						this.getClass(),
+						84,
+						String.format("Create bank account (%s).",
+								bankAccount.toXML()), MessageType.INFO);
 		return bankAccount;
 	}
 
 	@Override
 	public MasterDataBase parseMasterData(CoreDriver coreDriver, Element elem)
-			throws MandatoryFieldIsMissing, SystemException {
+			throws MasterDataFileFormatException {
 		String id = elem.getAttribute(MasterDataUtils.XML_ID);
 		String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
 		String bankKey = elem.getAttribute(MasterDataUtils.XML_BANK_KEY);
 		String bankAcc = elem.getAttribute(MasterDataUtils.XML_BANK_ACCOUNT);
 		String typeStr = elem.getAttribute(MasterDataUtils.XML_TYPE);
+
 		// check attribute
-		if (StringUtility.isNullOrEmpty(descp)) {
-			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_DESCP);
-		}
 		if (StringUtility.isNullOrEmpty(bankKey)) {
-			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_BANK_KEY);
+			_coreDriver.logDebugInfo(this.getClass(), 93, String.format(
+					"Mandatory Field %s with no value",
+					MasterDataUtils.XML_BANK_KEY), MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.BANK_ACCOUNT);
 		}
+
 		if (StringUtility.isNullOrEmpty(bankAcc)) {
-			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_BANK_ACCOUNT);
+			_coreDriver.logDebugInfo(this.getClass(), 100, String.format(
+					"Mandatory Field %s with no value",
+					MasterDataUtils.XML_BANK_ACCOUNT), MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.BANK_ACCOUNT);
 		}
+
 		if (StringUtility.isNullOrEmpty(typeStr)) {
-			throw new MandatoryFieldIsMissing(MasterDataUtils.XML_TYPE);
+			_coreDriver.logDebugInfo(this.getClass(), 114, String.format(
+					"Mandatory Field %s with no value",
+					MasterDataUtils.XML_TYPE), MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.BANK_ACCOUNT);
 		}
 
 		MasterDataIdentity identity;
@@ -117,21 +133,40 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 			BankAccountMasterData bankAccount = (BankAccountMasterData) this
 					.createNewMasterDataBase(identity, descp, accNum,
 							bankKeyId, type);
+
+			_coreDriver.logDebugInfo(
+					this.getClass(),
+					130,
+					String.format("Parse bank account (%s).",
+							bankAccount.toXML()), MessageType.INFO);
 			return bankAccount;
 		} catch (IdentityTooLong e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 150,
+					"Master data identity is too long.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.BANK_ACCOUNT);
 		} catch (IdentityNoData e) {
-			throw new SystemException(e);
+			_coreDriver
+					.logDebugInfo(this.getClass(), 154,
+							"Master data identity is with no value.",
+							MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.BANK_ACCOUNT);
 		} catch (IdentityInvalidChar e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 160,
+					"Invalid character in identity.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.BANK_ACCOUNT);
 		} catch (ParametersException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 164,
+					"Function parameter set error: " + e.toString(),
+					MessageType.ERROR);
 			throw new SystemException(e);
 		} catch (MasterDataIdentityExists e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 168,
+					"Master data identity duplicated.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.BANK_ACCOUNT);
 		} catch (MasterDataIdentityNotDefined e) {
-			throw new SystemException(e);
-		} catch (SystemException e) {
-			throw new SystemException(e);
+			_coreDriver.logDebugInfo(this.getClass(), 173,
+					"Identity has not been defined.", MessageType.ERROR);
+			throw new MasterDataFileFormatException(MasterDataType.BANK_ACCOUNT);
 		}
 
 	}
