@@ -16,12 +16,14 @@ import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
-import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFactoryClass;
+import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFileException;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
 import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterDataFactory;
 import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountNumber;
@@ -279,16 +281,30 @@ public class MasterDataTestCases {
 	/**
 	 * test master data loading
 	 * 
+	 * @throws Exception
+	 * 
 	 * @throws SystemException
 	 * @throws NoMasterDataFactoryClass
 	 * @throws RootFolderNotExsits
+	 * @throws MasterDataFileFormatException
+	 * @throws NoMasterDataFileException
 	 */
 	@Test
-	public void testMasterDataInit() throws NoMasterDataFactoryClass,
-			SystemException, RootFolderNotExsits {
-		ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
-		testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER, messages);
-		assertEquals(0, messages.size());
+	public void testMasterDataInit() throws Exception {
+		CoreDriver coreDriver = CoreDriver.getInstance();
+		coreDriver.clear();
+		try {
+
+			ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
+			testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER, messages);
+			assertEquals(0, messages.size());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+
+			TestUtilities.saveLogFile("testMasterDataInit.txt", coreDriver);
+		}
 	}
 
 	/**
@@ -297,10 +313,13 @@ public class MasterDataTestCases {
 	 * @throws SystemException
 	 * @throws NoMasterDataFactoryClass
 	 * @throws RootFolderNotExsits
+	 * @throws MasterDataFileFormatException
+	 * @throws NoMasterDataFileException
 	 */
 	public void testMasterDataLoad(String rootFile,
 			ArrayList<CoreMessage> messages) throws NoMasterDataFactoryClass,
-			SystemException, RootFolderNotExsits {
+			SystemException, RootFolderNotExsits, NoMasterDataFileException,
+			MasterDataFileFormatException {
 		CoreDriver coreDriver = CoreDriver.getInstance();
 
 		// set root path
@@ -421,6 +440,7 @@ public class MasterDataTestCases {
 	/**
 	 * test master initialize with empty folder; add new master data entity;
 	 * store them into empty folder; re-load from folder and then check;
+	 * @throws Exception 
 	 * 
 	 * @throws SystemException
 	 * @throws NoMasterDataFactoryClass
@@ -433,23 +453,31 @@ public class MasterDataTestCases {
 	 * @throws RootFolderNotExsits
 	 * @throws FiscalMonthRangeException
 	 * @throws FiscalYearRangeException
+	 * @throws MasterDataFileFormatException
+	 * @throws NoMasterDataFileException
 	 */
 	@Test
-	public void testMasterDataStore() throws NoMasterDataFactoryClass,
-			SystemException, IdentityTooLong, IdentityNoData,
-			IdentityInvalidChar, ParametersException, MasterDataIdentityExists,
-			MasterDataIdentityNotDefined, RootFolderNotExsits,
-			FiscalYearRangeException, FiscalMonthRangeException {
-		TestUtilities.clearTestingRootFolder();
+	public void testMasterDataStore() throws Exception {
+		CoreDriver coreDriver = CoreDriver.getInstance();
+		coreDriver.clear();
+		try {
+			TestUtilities.clearTestingRootFolder();
 
-		ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
-		CoreDriver coreDriver = TestUtilities.establishMasterData(messages);
+			ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
+			TestUtilities.establishMasterData(messages);
 
-		// store
-		coreDriver.getMasterDataManagement().store();
-		
-		messages.clear();
-		// reload & check
-		testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER_EMPTY, messages);
+			// store
+			coreDriver.getMasterDataManagement().store();
+
+			messages.clear();
+			// reload & check
+			testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER_EMPTY, messages);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			TestUtilities.saveLogFile("testMasterDataStore.txt", coreDriver);
+		}
+
 	}
 }

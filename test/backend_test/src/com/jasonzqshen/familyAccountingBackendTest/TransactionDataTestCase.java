@@ -19,13 +19,13 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
-import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
-import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFactoryClass;
+import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFileException;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
-import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
 import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
-import com.jasonzqshen.familyaccounting.core.exception.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentIdentity;
@@ -54,41 +54,55 @@ public class TransactionDataTestCase {
 	}
 
 	@Test
-	public void testLoad() throws NoMasterDataFactoryClass, SystemException,
-			RootFolderNotExsits, FiscalYearRangeException,
-			FiscalMonthRangeException, ParseException, IdentityTooLong,
-			IdentityNoData, IdentityInvalidChar {
-		load(TestUtilities.TEST_ROOT_FOLDER);
+	public void testLoad() throws Exception {
+		CoreDriver coreDriver = CoreDriver.getInstance();
+		coreDriver.clear();
+		try {
+			load(TestUtilities.TEST_ROOT_FOLDER);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			TestUtilities
+					.saveLogFile("testTransactionDataLoad.txt", coreDriver);
+		}
 	}
 
 	@Test
-	public void testStore() throws NoMasterDataFactoryClass, SystemException,
-			RootFolderNotExsits, IdentityTooLong, IdentityNoData,
-			IdentityInvalidChar, ParametersException, MasterDataIdentityExists,
-			MasterDataIdentityNotDefined, FiscalYearRangeException,
-			FiscalMonthRangeException, ParseException, NullValueNotAcceptable,
-			MandatoryFieldIsMissing, BalanceNotZero {
-		ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
-		TestUtilities.clearTestingRootFolder();
-		CoreDriver coreDriver = TestUtilities.establishMasterData(messages);
+	public void testStore() throws Exception {
+		CoreDriver coreDriver = CoreDriver.getInstance();
+		coreDriver.clear();
+		try {
+			ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
+			TestUtilities.clearTestingRootFolder();
+			TestUtilities.establishMasterData(messages);
 
-		// create new transaction data
+			// create new transaction data
 
-		// month 07
-		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-		Date date = format.parse("2012.07.02");
-		createHeadEntity(coreDriver, date, 0);
-		createHeadEntity(coreDriver, date, 1);
+			// month 07
+			SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+			Date date = format.parse("2012.07.02");
+			createHeadEntity(coreDriver, date, 0);
+			createHeadEntity(coreDriver, date, 1);
 
-		// month 08, reverse document
-		date = format.parse("2012.08.02");
-		HeadEntity headEntity = createHeadEntity(coreDriver, date, 0);
-		DocumentIdentity docId = headEntity.getDocIdentity();
-		TransactionDataManagement management = coreDriver
-				.getTransDataManagement();
-		HeadEntity reverseEntity = management.reverseDocument(docId);
-		reverseEntity.setDocText(TestUtilities.TEST_DESCP);
-		reverseEntity.save();
+			// month 08, reverse document
+			date = format.parse("2012.08.02");
+			HeadEntity headEntity = createHeadEntity(coreDriver, date, 0);
+			DocumentIdentity docId = headEntity.getDocIdentity();
+			TransactionDataManagement management = coreDriver
+					.getTransDataManagement();
+			HeadEntity reverseEntity = management.reverseDocument(docId,
+					messages);
+			reverseEntity.setDocText(TestUtilities.TEST_DESCP);
+			reverseEntity.save(messages, true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			TestUtilities.saveLogFile("testTransactionDataStore.txt",
+					coreDriver);
+		}
 
 		// reload
 		load(TestUtilities.TEST_ROOT_FOLDER_EMPTY);
@@ -138,7 +152,8 @@ public class TransactionDataTestCase {
 					account2);
 		}
 		item2.setAmount(CreditDebitIndicator.CREDIT, 100);
-		boolean ret = headEntity.save();
+		ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
+		boolean ret = headEntity.save(messages, true);
 		assertEquals(true, ret);
 		return headEntity;
 	}
@@ -156,12 +171,16 @@ public class TransactionDataTestCase {
 	 * @throws IdentityInvalidChar
 	 * @throws IdentityNoData
 	 * @throws IdentityTooLong
+	 * @throws MasterDataFileFormatException
+	 * @throws NoMasterDataFileException
 	 */
 	public void load(String rootFile) throws NoMasterDataFactoryClass,
 			SystemException, RootFolderNotExsits, FiscalYearRangeException,
 			FiscalMonthRangeException, ParseException, IdentityTooLong,
-			IdentityNoData, IdentityInvalidChar {
+			IdentityNoData, IdentityInvalidChar, NoMasterDataFileException,
+			MasterDataFileFormatException {
 		CoreDriver coreDriver = CoreDriver.getInstance();
+		coreDriver.clear();
 
 		// set root path
 		coreDriver.setRootPath(rootFile);
@@ -169,6 +188,7 @@ public class TransactionDataTestCase {
 
 		// initialize
 		ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
+
 		coreDriver.init(messages);
 		if (messages.size() > 0) {
 			for (CoreMessage m : messages) {
@@ -338,4 +358,5 @@ public class TransactionDataTestCase {
 			}
 		}
 	}
+
 }
