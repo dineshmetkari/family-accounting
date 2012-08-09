@@ -45,6 +45,8 @@ public class GLAccountGroupMasterDataFactory extends MasterDataFactoryBase {
 		this._containDirtyData = true;
 		this._list.put(id, group);
 
+		// raise create master data
+		_coreDriver.getListenersManagement().createMasterData(this, group);
 		_coreDriver.logDebugInfo(this.getClass(), 48,
 				String.format("Create G/L account group (%s).", group.toXML()),
 				MessageType.INFO);

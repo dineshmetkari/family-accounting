@@ -45,6 +45,8 @@ public class VendorMasterDataFactory extends MasterDataFactoryBase {
 		this._containDirtyData = true;
 		this._list.put(id, vendor);
 
+		// raise create master data
+		_coreDriver.getListenersManagement().createMasterData(this, vendor);
 		_coreDriver.logDebugInfo(this.getClass(), 84,
 				String.format("Create vendor (%s).", vendor.toXML()),
 				MessageType.INFO);
