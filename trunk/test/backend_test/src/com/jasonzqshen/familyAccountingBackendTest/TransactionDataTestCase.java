@@ -2,10 +2,8 @@ package com.jasonzqshen.familyAccountingBackendTest;
 
 import static org.junit.Assert.*;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
@@ -19,22 +17,15 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
-import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
-import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFileException;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
-import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
-import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
-import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentNumber;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
-import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
-import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
@@ -58,7 +49,7 @@ public class TransactionDataTestCase {
 		CoreDriver coreDriver = CoreDriver.getInstance();
 		coreDriver.clear();
 		try {
-			load(TestUtilities.TEST_ROOT_FOLDER);
+			TestUtilities.loadTransaction(TestUtilities.TEST_ROOT_FOLDER);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -105,7 +96,7 @@ public class TransactionDataTestCase {
 		}
 
 		// reload
-		load(TestUtilities.TEST_ROOT_FOLDER_EMPTY);
+		TestUtilities.loadTransaction(TestUtilities.TEST_ROOT_FOLDER_EMPTY);
 	}
 
 	/**
@@ -174,189 +165,5 @@ public class TransactionDataTestCase {
 	 * @throws MasterDataFileFormatException
 	 * @throws NoMasterDataFileException
 	 */
-	public void load(String rootFile) throws NoMasterDataFactoryClass,
-			SystemException, RootFolderNotExsits, FiscalYearRangeException,
-			FiscalMonthRangeException, ParseException, IdentityTooLong,
-			IdentityNoData, IdentityInvalidChar, NoMasterDataFileException,
-			MasterDataFileFormatException {
-		CoreDriver coreDriver = CoreDriver.getInstance();
-		coreDriver.clear();
-
-		// set root path
-		coreDriver.setRootPath(rootFile);
-		coreDriver.setStartMonthID(new MonthIdentity(2012, 7));
-
-		// initialize
-		ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
-
-		coreDriver.init(messages);
-		if (messages.size() > 0) {
-			for (CoreMessage m : messages) {
-				System.out.println(m.toString());
-			}
-		}
-		assertEquals(0, messages.size());
-
-		// get the count of identity
-		final Calendar calendar = Calendar.getInstance();
-		int curYear = calendar.get(Calendar.YEAR);
-		int curMonth = calendar.get(Calendar.MONTH) + 1;
-		int monthCount = curMonth - 7 + (curYear - 2012) * 12 + 1;
-
-		TransactionDataManagement transManagement = coreDriver
-				.getTransDataManagement();
-		MonthIdentity[] monthIds = transManagement.getAllMonthIds();
-		assertEquals(monthCount, monthIds.length);
-
-		int monthIndex = 0;
-		for (MonthIdentity monthId : monthIds) {
-			if (monthIndex == 0) {
-				assertEquals(2012, monthId._fiscalYear);
-				assertEquals(7, monthId._fiscalMonth);
-			} else if (monthIndex == 1) {
-				assertEquals(2012, monthId._fiscalYear);
-				assertEquals(8, monthId._fiscalMonth);
-			} else {
-				break;
-			}
-			monthIndex++;
-
-			HeadEntity[] collection = transManagement.getDocs(
-					monthId._fiscalYear, monthId._fiscalMonth);
-			assertEquals(TestUtilities.DOCUMNET_NUMS.length, collection.length);
-
-			// check values
-			for (int i = 0; i < collection.length; ++i) {
-				HeadEntity head = collection[i];
-				assertEquals(true, head.isSaved());
-				assertEquals(TestUtilities.DOCUMNET_NUMS[i], head
-						.getDocumentNumber().toString());
-				assertEquals(TestUtilities.TEST_DESCP, head.getDocText());
-				assertEquals(monthId._fiscalYear, head.getFiscalYear());
-				assertEquals(monthId._fiscalMonth, head.getFiscalMonth());
-				// date
-				SimpleDateFormat dateForm = new SimpleDateFormat("yyyy.MM.dd");
-				Date date = null;
-				if (monthId._fiscalMonth < 10) {
-					date = dateForm.parse(String.format("%d.0%d.0%d",
-							monthId._fiscalYear, monthId._fiscalMonth, 2));
-				} else {
-					date = dateForm.parse(String.format("%d.%d.0%d",
-							monthId._fiscalYear, monthId._fiscalMonth, 2));
-				}
-				assertEquals(date, head.getPostingDate());
-
-				assertEquals(DocumentType.GL, head.getDocumentType());
-				if (monthId._fiscalMonth == 8) {
-					assertEquals(true, head.IsReversed());
-
-					DocumentIdentity refId = head.getReference();
-					HeadEntity refEntity = transManagement.getEntity(refId);
-					assertEquals(collection[1], refEntity);
-				} else {
-					assertEquals(false, head.IsReversed());
-				}
-
-				ItemEntity[] items = head.getItems();
-				assertEquals(2, items.length);
-
-				for (int j = 0; j < items.length; ++j) {
-					ItemEntity item = items[j];
-
-					assertEquals(j, item.getLineNum());
-
-					if (monthId._fiscalMonth == 7) { // for first month
-						// check account
-						if (j == 0) { // first line item
-							assertEquals(AccountType.GL_ACCOUNT,
-									item.getAccountType());
-							assertEquals(new MasterDataIdentity_GLAccount(
-									TestUtilities.GL_ACCOUNT1.toCharArray()),
-									item.getGLAccount());
-							assertEquals(null, item.getCustomer());
-							assertEquals(null, item.getVendor());
-							assertEquals(CreditDebitIndicator.DEBIT,
-									item.getCDIndicator());
-							assertEquals(new MasterDataIdentity(
-									TestUtilities.BUSINESS_AREA.toCharArray()),
-									item.getBusinessArea());
-						} else {
-							assertEquals(new MasterDataIdentity_GLAccount(
-									TestUtilities.GL_ACCOUNT2.toCharArray()),
-									item.getGLAccount());
-							if (i == 0) {
-								assertEquals(AccountType.VENDOR,
-										item.getAccountType());
-
-								assertEquals(new MasterDataIdentity(
-										TestUtilities.VENDOR.toCharArray()),
-										item.getVendor());
-								assertEquals(null, item.getCustomer());
-
-							} else {
-								assertEquals(AccountType.CUSTOMER,
-										item.getAccountType());
-								assertEquals(new MasterDataIdentity(
-										TestUtilities.CUSTOMER.toCharArray()),
-										item.getCustomer());
-								assertEquals(null, item.getVendor());
-							}
-
-							assertEquals(CreditDebitIndicator.CREDIT,
-									item.getCDIndicator());
-							assertEquals(null, item.getBusinessArea());
-						}
-					} else { // for the reversed document
-						if (j == 0) { // first line item
-							assertEquals(AccountType.GL_ACCOUNT,
-									item.getAccountType());
-							assertEquals(new MasterDataIdentity_GLAccount(
-									TestUtilities.GL_ACCOUNT1.toCharArray()),
-									item.getGLAccount());
-							assertEquals(null, item.getCustomer());
-							assertEquals(null, item.getVendor());
-
-							assertEquals(new MasterDataIdentity(
-									TestUtilities.BUSINESS_AREA.toCharArray()),
-									item.getBusinessArea());
-
-							if (i == 0) {
-								assertEquals(CreditDebitIndicator.DEBIT,
-										item.getCDIndicator());
-							} else {
-								assertEquals(CreditDebitIndicator.CREDIT,
-										item.getCDIndicator());
-							}
-						} else {
-							assertEquals(new MasterDataIdentity_GLAccount(
-									TestUtilities.GL_ACCOUNT2.toCharArray()),
-									item.getGLAccount());
-							assertEquals(AccountType.VENDOR,
-									item.getAccountType());
-
-							assertEquals(new MasterDataIdentity(
-									TestUtilities.VENDOR.toCharArray()),
-									item.getVendor());
-							assertEquals(null, item.getCustomer());
-
-							assertEquals(null, item.getBusinessArea());
-							if (i == 0) {
-								assertEquals(CreditDebitIndicator.CREDIT,
-										item.getCDIndicator());
-							} else {
-								assertEquals(CreditDebitIndicator.DEBIT,
-										item.getCDIndicator());
-							}
-						}
-
-					}
-
-					assertEquals((int) (TestUtilities.AMOUNT * 100),
-							(int) (item.getAmount() * 100));
-
-				}
-			}
-		}
-	}
 
 }

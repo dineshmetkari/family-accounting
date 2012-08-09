@@ -294,10 +294,31 @@ public class MasterDataTestCases {
 		CoreDriver coreDriver = CoreDriver.getInstance();
 		coreDriver.clear();
 		try {
+			ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
+			testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER, messages);
+			assertEquals(0, messages.size());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			TestUtilities.saveLogFile("testMasterDataInit.txt", coreDriver);
+		}
+	}
+
+	@Test
+	public void testGLAccountGroup() throws Exception {
+		CoreDriver coreDriver = CoreDriver.getInstance();
+		coreDriver.clear();
+		try {
 
 			ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
 			testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER, messages);
 			assertEquals(0, messages.size());
+
+			MasterDataIdentity id = new MasterDataIdentity("1010".toCharArray());
+			MasterDataIdentity_GLAccount[] accounts = coreDriver
+					.getMasterDataManagement().getGLAccountsBasedGroup(id);
+			assertEquals(2, accounts.length);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -440,7 +461,8 @@ public class MasterDataTestCases {
 	/**
 	 * test master initialize with empty folder; add new master data entity;
 	 * store them into empty folder; re-load from folder and then check;
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 * 
 	 * @throws SystemException
 	 * @throws NoMasterDataFactoryClass
