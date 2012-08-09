@@ -45,6 +45,8 @@ public class CustomerMasterDataFactory extends MasterDataFactoryBase {
 		this._containDirtyData = true;
 		this._list.put(id, customer);
 
+		// raise create master data
+		_coreDriver.getListenersManagement().createMasterData(this, customer);
 		_coreDriver.logDebugInfo(this.getClass(), 84,
 				String.format("Create customer (%s).", customer.toXML()),
 				MessageType.INFO);

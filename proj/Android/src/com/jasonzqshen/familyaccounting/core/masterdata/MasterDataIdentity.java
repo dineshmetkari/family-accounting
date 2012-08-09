@@ -11,7 +11,7 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
  * @author I072485
  * 
  */
-public class MasterDataIdentity {
+public class MasterDataIdentity implements Comparable<MasterDataIdentity> {
 	public final static int LENGTH = 10;
 	private final char[] _identity = new char[LENGTH];
 
@@ -107,6 +107,10 @@ public class MasterDataIdentity {
 			return true;
 		}
 		return false;
+	}
+
+	public int compareTo(MasterDataIdentity another) {
+		return this.toString().compareTo(another.toString());
 	}
 
 }

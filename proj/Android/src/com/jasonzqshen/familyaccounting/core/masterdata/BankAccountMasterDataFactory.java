@@ -78,6 +78,9 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 
 		this._containDirtyData = true;
 
+		// raise create master data
+		_coreDriver.getListenersManagement().createMasterData(this, bankAccount);
+
 		_coreDriver
 				.logDebugInfo(
 						this.getClass(),

@@ -19,6 +19,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.ManagementBase;
 import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
@@ -37,10 +38,9 @@ import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
-public class TransactionDataManagement {
+public class TransactionDataManagement extends ManagementBase {
 
 	public static final String TRANSACTION_DATA_FOLDER = "transaction_data";
-	public final CoreDriver _coreDriver;
 	private final Hashtable<MonthIdentity, HeadEntityCollection> _list;
 
 	/**
@@ -49,7 +49,7 @@ public class TransactionDataManagement {
 	 * @param coreDriver
 	 */
 	public TransactionDataManagement(CoreDriver coreDriver) {
-		_coreDriver = coreDriver;
+		super(coreDriver);
 		_list = new Hashtable<MonthIdentity, HeadEntityCollection>();
 	}
 
@@ -59,7 +59,7 @@ public class TransactionDataManagement {
 	 * @throws SystemException
 	 *             bug
 	 */
-	public void load(ArrayList<CoreMessage> messages) {
+	public void initialize(ArrayList<CoreMessage> messages) {
 		// get the collection for each month
 		final Calendar calendar = Calendar.getInstance();
 		int curYear = calendar.get(Calendar.YEAR);
@@ -178,6 +178,10 @@ public class TransactionDataManagement {
 														.toString()),
 										MessageType.INFO);
 						colletion.add(head);
+
+						// raise load document
+						_coreDriver.getListenersManagement()
+								.loadDoc(this, head);
 					}
 				}
 			}
@@ -444,6 +448,11 @@ public class TransactionDataManagement {
 		return collection.getEntities();
 	}
 
+	public ArrayList<HeadEntity> getDocsArrayList(MonthIdentity monthId) {
+		HeadEntityCollection collection = _list.get(monthId);
+		return collection.getEntitiesArrayList();
+	}
+
 	/**
 	 * get documents
 	 * 
@@ -462,6 +471,16 @@ public class TransactionDataManagement {
 		}
 
 		return getDocs(monthId);
+	}
+
+	public ArrayList<HeadEntity> getAllDocuments() {
+		ArrayList<HeadEntity> ret = new ArrayList<HeadEntity>();
+		MonthIdentity[] monthIds = this.getAllMonthIds();
+		for (MonthIdentity m : monthIds) {
+			ret.addAll(getDocsArrayList(m));
+		}
+		
+		return ret;
 	}
 
 	/**

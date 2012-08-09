@@ -90,6 +90,8 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 		this._containDirtyData = true;
 		this._list.put(identity_gl, glAccount);
 
+		// raise create master data
+		_coreDriver.getListenersManagement().createMasterData(this, glAccount);
 		_coreDriver.logDebugInfo(this.getClass(), 84,
 				String.format("Create G/L account (%s).", glAccount.toXML()),
 				MessageType.INFO);

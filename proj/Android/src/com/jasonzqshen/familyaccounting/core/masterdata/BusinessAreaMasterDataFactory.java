@@ -54,6 +54,9 @@ public class BusinessAreaMasterDataFactory extends MasterDataFactoryBase {
 		this._containDirtyData = true;
 		this._list.put(identity, businessArea);
 
+		// raise create master data
+		_coreDriver.getListenersManagement().createMasterData(this,
+				businessArea);
 		_coreDriver.logDebugInfo(
 				this.getClass(),
 				59,

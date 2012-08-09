@@ -8,7 +8,9 @@ import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFileException
 import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
+import com.jasonzqshen.familyaccounting.core.listeners.ListenersManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
+import com.jasonzqshen.familyaccounting.core.reports.ReportsManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
@@ -40,10 +42,11 @@ public class CoreDriver {
 		return _instance;
 	}
 
-	private final MasterDataManagement _masterDataManagement;
-	private final TransactionDataManagement _transDataManagement;
+	private final ListenersManagement _listenerManagement;
 	private String _applicationRootPath;
 	private MonthIdentity _monthId;
+
+	private final ArrayList<ManagementBase> _managements;
 
 	private ArrayList<DebugInformation> _infos;
 
@@ -53,8 +56,13 @@ public class CoreDriver {
 	private CoreDriver() {
 		_infos = new ArrayList<DebugInformation>();
 
-		_masterDataManagement = new MasterDataManagement(this);
-		_transDataManagement = new TransactionDataManagement(this);
+		_listenerManagement = new ListenersManagement();
+
+		// managements
+		_managements = new ArrayList<ManagementBase>();
+		_managements.add(new MasterDataManagement(this)); // 0
+		_managements.add(new TransactionDataManagement(this)); // 1
+		_managements.add(new ReportsManagement(this));// 2
 	}
 
 	/**
@@ -131,9 +139,11 @@ public class CoreDriver {
 					MessageType.INFO);
 			transFolder.mkdir();
 		}
+
 		// initialize management
-		_masterDataManagement.load(messages);
-		_transDataManagement.load(messages);
+		for (ManagementBase m : _managements) {
+			m.initialize(messages);
+		}
 
 		this.logDebugInfo(this.getClass(), 134,
 				"Core driver initializing completed.", MessageType.INFO);
@@ -181,7 +191,7 @@ public class CoreDriver {
 	 * @return
 	 */
 	public MasterDataManagement getMasterDataManagement() {
-		return _masterDataManagement;
+		return (MasterDataManagement) _managements.get(0);
 	}
 
 	/**
@@ -190,15 +200,35 @@ public class CoreDriver {
 	 * @return
 	 */
 	public TransactionDataManagement getTransDataManagement() {
-		return _transDataManagement;
+		return (TransactionDataManagement) _managements.get(1);
+	}
+
+	/**
+	 * get reports management
+	 * 
+	 * @return
+	 */
+	public ReportsManagement getReportsManagement() {
+		return (ReportsManagement) _managements.get(2);
+	}
+
+	/**
+	 * get listener management
+	 * 
+	 * @return
+	 */
+	public ListenersManagement getListenersManagement() {
+		return _listenerManagement;
 	}
 
 	/**
 	 * clear
 	 */
 	public void clear() {
-		_masterDataManagement.clear();
-		_transDataManagement.clear();
+		for (ManagementBase m : _managements) {
+			m.clear();
+		}
+
 		_infos.clear();
 	}
 

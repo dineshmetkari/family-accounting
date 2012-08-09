@@ -469,6 +469,9 @@ public class HeadEntity implements Comparable<HeadEntity> {
 		_coreDriver.logDebugInfo(this.getClass(), 459, info, MessageType.INFO);
 		messages.add(new CoreMessage(info, MessageType.INFO, null));
 		_isSaved = true;
+
+		// raise saved document
+		_coreDriver.getListenersManagement().saveDoc(this);
 		return true;
 	}
 

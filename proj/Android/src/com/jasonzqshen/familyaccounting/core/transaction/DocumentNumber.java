@@ -5,8 +5,7 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 
-public class DocumentNumber extends MasterDataIdentity_GLAccount implements
-		Comparable<DocumentNumber> {
+public class DocumentNumber extends MasterDataIdentity_GLAccount {
 
 	/**
 	 * document number
@@ -19,13 +18,6 @@ public class DocumentNumber extends MasterDataIdentity_GLAccount implements
 	public DocumentNumber(char[] id) throws IdentityTooLong, IdentityNoData,
 			IdentityInvalidChar {
 		super(id);
-	}
-
-	public int compareTo(DocumentNumber another) {
-		String str0 = this.toString();
-		String str1 = another.toString();
-
-		return str0.compareToIgnoreCase(str1);
 	}
 
 	/**

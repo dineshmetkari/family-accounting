@@ -19,6 +19,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.ManagementBase;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
@@ -34,10 +35,9 @@ import com.jasonzqshen.familyaccounting.core.utils.MessageType;
  * @author I072485
  * 
  */
-public class MasterDataManagement {
+public class MasterDataManagement extends ManagementBase{
 	public static final String MASTER_DATA_FOLDER = "master_data";
 
-	private final CoreDriver _coreDriver;
 	private final Hashtable<MasterDataType, MasterDataFactoryBase> _factoryList;
 	private final Hashtable<MasterDataType, Class<?>> _registerFactorys;
 
@@ -46,7 +46,7 @@ public class MasterDataManagement {
 	 * @param coreDriver
 	 */
 	public MasterDataManagement(CoreDriver coreDriver) {
-		_coreDriver = coreDriver;
+		super(coreDriver);
 		_factoryList = new Hashtable<MasterDataType, MasterDataFactoryBase>();
 		_registerFactorys = new Hashtable<MasterDataType, Class<?>>();
 		// initialize the hash table
@@ -124,7 +124,12 @@ public class MasterDataManagement {
 					Element elem = (Element) child;
 					if (elem.getNodeName().equals(MasterDataUtils.XML_ENTITY)) {
 						// parse master data entity
-						newFactory.parseMasterData(_coreDriver, elem);
+						MasterDataBase masterData = newFactory.parseMasterData(
+								_coreDriver, elem);
+
+						// raise load master data
+						_coreDriver.getListenersManagement().loadMasterData(
+								this, masterData);
 					}
 				}
 			}
@@ -167,7 +172,7 @@ public class MasterDataManagement {
 	 *             if the exception raised from the function, it is the bug.
 	 * 
 	 */
-	public void load(ArrayList<CoreMessage> messages) {
+	public void initialize(ArrayList<CoreMessage> messages) {
 		_coreDriver.logDebugInfo(this.getClass(), 141,
 				"Master data loading...", MessageType.INFO);
 

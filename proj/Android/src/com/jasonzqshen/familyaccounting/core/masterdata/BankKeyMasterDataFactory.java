@@ -44,6 +44,8 @@ public class BankKeyMasterDataFactory extends MasterDataFactoryBase {
 		this._containDirtyData = true;
 		this._list.put(id, bankKey);
 
+		// raise create master data
+		_coreDriver.getListenersManagement().createMasterData(this, bankKey);
 		_coreDriver.logDebugInfo(this.getClass(), 47,
 				String.format("Create bank key (%s).", bankKey.toXML()),
 				MessageType.INFO);
