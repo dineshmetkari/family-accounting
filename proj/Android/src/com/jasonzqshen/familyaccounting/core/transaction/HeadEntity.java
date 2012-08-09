@@ -72,8 +72,7 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	 * @return
 	 */
 	public DocumentIdentity getDocIdentity() {
-		if(_docNumber == null || _monthId == null)
-		{
+		if (_docNumber == null || _monthId == null) {
 			return null;
 		}
 		return new DocumentIdentity(_docNumber, _monthId);
@@ -132,9 +131,9 @@ public class HeadEntity implements Comparable<HeadEntity> {
 			int month = cal.get(Calendar.MONTH) + 1;
 			_monthId = new MonthIdentity(year, month);
 		} catch (FiscalYearRangeException e) {
-			e.printStackTrace();
+			throw new SystemException(e);
 		} catch (FiscalMonthRangeException e) {
-			e.printStackTrace();
+			throw new SystemException(e);
 		}
 
 		return true;

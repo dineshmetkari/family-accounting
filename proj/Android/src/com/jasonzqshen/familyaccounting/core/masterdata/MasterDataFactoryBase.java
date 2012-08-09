@@ -136,7 +136,20 @@ public abstract class MasterDataFactoryBase {
 	 * @return master data entity
 	 */
 	public MasterDataBase getEntity(MasterDataIdentity id) {
+		if (!contains(id)) {
+			return null;
+		}
 		return _list.get(id);
+	}
+
+	/**
+	 * contains value with master data identity
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean contains(MasterDataIdentity id) {
+		return _list.containsKey(id);
 	}
 
 }
