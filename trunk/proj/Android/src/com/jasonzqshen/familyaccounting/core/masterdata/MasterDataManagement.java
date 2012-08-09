@@ -438,9 +438,12 @@ public class MasterDataManagement {
 	}
 
 	/**
+	 * get master data based on identity and data type
 	 * 
 	 * @param id
+	 *            identity
 	 * @param type
+	 *            master data type
 	 * @return
 	 * 
 	 */
@@ -448,6 +451,47 @@ public class MasterDataManagement {
 			MasterDataType type) {
 		MasterDataFactoryBase factory = this.getMasterDataFactory(type);
 		return factory.getEntity(id);
+	}
+
+	/**
+	 * contains master data
+	 * 
+	 * @param id
+	 * @param type
+	 * @return
+	 */
+	public boolean containsMasterData(MasterDataIdentity id, MasterDataType type) {
+		MasterDataFactoryBase factory = this.getMasterDataFactory(type);
+		return factory.contains(id);
+	}
+
+	/**
+	 * get G/L accounts based on G/L account group
+	 * 
+	 * @param group
+	 *            G/L account group
+	 * @return
+	 */
+	public MasterDataIdentity_GLAccount[] getGLAccountsBasedGroup(
+			MasterDataIdentity group) {
+		MasterDataFactoryBase factory = getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+		MasterDataBase[] datas = factory.getAllEntities();
+		ArrayList<MasterDataIdentity_GLAccount> array = new ArrayList<MasterDataIdentity_GLAccount>();
+
+		for (MasterDataBase data : datas) {
+			GLAccountMasterData glAccount = (GLAccountMasterData) data;
+			if (glAccount.getAccountGroup().equals(group)) {
+				array.add((MasterDataIdentity_GLAccount) glAccount
+						.getIdentity());
+			}
+		}
+
+		MasterDataIdentity_GLAccount[] ret = new MasterDataIdentity_GLAccount[array
+				.size()];
+		for (int i = 0; i < ret.length; ++i) {
+			ret[i] = array.get(i);
+		}
+		return ret;
 	}
 
 	/**
