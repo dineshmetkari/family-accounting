@@ -25,9 +25,9 @@
 	<entity id="4010100004" name="Bank product investment revenue" />
 	<entity id="5000100001" name="Traffic cost" />
 	<entity id="5000100002" name="Dinner cost" />
-	<entity id="5000100002" name="Sports cost" />
-	<entity id="5000100003" name="Other entertainment cost(KTV...)" />
-	<entity id="5000100004" name="Clothing cost" />
-	<entity id="5000100005" name="Electronic equipments cost" />
-	<entity id="5000100006" name="Telecommunication" />
+	<entity id="5000100003" name="Sports cost" />
+	<entity id="5000100004" name="Other entertainment cost(KTV...)" />
+	<entity id="5000100005" name="Clothing cost" />
+	<entity id="5000100006" name="Electronic equipments cost" />
+	<entity id="5000100007" name="Telecommunication" />
 </root>
