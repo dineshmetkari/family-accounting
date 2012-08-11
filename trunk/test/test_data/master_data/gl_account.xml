@@ -1,14 +1,33 @@
 <root>
-	<entity id='0000101001' name="Jason's cash on hands" type='B' group='1010'/> 
-	<entity id='0000101002' name="Shirley's cash on hands" type='B' group='1010' /> 
-	<entity id="0000104001" name="Jason's CMB bank account 6235" bank_account='CMB_6235' type='B' group='1040'/>
-	<entity id="0000104002" name="Jason's SPDB bank account 3704" bank_account='SPDB_3704' type='B' group='1040'/>
-	<entity id="0000107001" name="Deposites in ICBC" bank_account='ICBC_0000' type='B' group='1070'/>
-	<entity id="0000140001" name="Jason's traffic card" type='B' group='1400'/>
-	<entity id="0000140002" name="Shirley's traffic card" type='B' group='1400'/>
-	<entity id="0000270801" name="Jason's credit card" bank_account='CMB_6620' type='B' group='2708'/>
-	<entity id="0000400001" name="Jason's salary incoming" type='B' group='4000'/>
-	<entity id="0000400002" name="Shirley's salary imcoming" type='B' group='4000'/>
-	<entity id="0000406001" name="Deposit interest incoming" type='B' group='4060'/>
-	<entity id="0000406002" name="Other! interest incoming" type='B' group='4060'/>
+	<entity id="1000100001" name="Jason's cash on hands"  /> 
+	<entity id="1000100002" name="Shirley's cash on hands"   /> 
+	<entity id="1010100001" name="Jason's CMB bank account 6235" bank_account='CMB_6235'  />
+	<entity id="1010100002" name="Jason's SPDB bank account 3704" bank_account='SPDB_3704'  />
+	<entity id="1010100003" name="Shirley's CMB bank account 1001" bank_account='CMB_1001'  />
+	<entity id="1010100004" name="Shirley's ICBC bank account 3704" bank_account='ICBC_1001'  />
+	<entity id="1060100001" name="Deposites in ICBC" bank_account='ICBC_0000' />
+	<entity id="1060100002" name="Share investment" />
+	<entity id="1060100003" name="Housing investment" />
+	<entity id="1060100004" name="Gold investment" />
+	<entity id="1060100005" name="Bank products investment" />
+	<entity id="1430100001" name="Jason's traffic card" />
+	<entity id="1430100002" name="Shirley's traffic card" />
+	<entity id="1500100001" name="Electronic equipments" />
+	<entity id="1500100002" name="Car" />
+	<entity id="2000100001" name="Jason's credit card" bank_account='CMB_6620' />
+	<entity id="2000100002" name="Shirley's credit card" bank_account='CMB_1002' />
+	<entity id="3010100001" name="Equity"  />
+	<entity id="4000100001" name="Jason's salary incoming" />
+	<entity id="4000100002" name="Shirley's salary imcoming" />
+	<entity id="4010100001" name="Interest incoming" />
+	<entity id="4010100002" name="Housing investment revenue" />
+	<entity id="4010100003" name="Gold investment revenue" />
+	<entity id="4010100004" name="Bank product investment revenue" />
+	<entity id="5000100001" name="Traffic cost" />
+	<entity id="5000100002" name="Dinner cost" />
+	<entity id="5000100002" name="Sports cost" />
+	<entity id="5000100003" name="Other entertainment cost(KTV...)" />
+	<entity id="5000100004" name="Clothing cost" />
+	<entity id="5000100005" name="Electronic equipments cost" />
+	<entity id="5000100006" name="Telecommunication" />
 </root>
