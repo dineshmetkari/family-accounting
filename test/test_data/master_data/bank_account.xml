@@ -2,7 +2,7 @@
 	<entity id="CMB_6620" name="Jason's CMB credit card" bank_key='CMB' bank_account='0000000000006620' type='C'/>
 	<entity id="CMB_1002" name="Shirley's CMB credit card" bank_key='CMB' bank_account='0000000000001002' type='C'/>
 	<entity id="CMB_6235" name="Jason's CMB bank account" bank_key='CMB' bank_account='0000000000006235' type='D'/>
-	<entity id="CMB_1001" name="Shirley's CMB bank account" bank_key='CMB' bank_account='0000000000001001' type='D/>
+	<entity id="CMB_1001" name="Shirley's CMB bank account" bank_key='CMB' bank_account='0000000000001001' type='D'/>
 	<entity id="SPDB_3704" name="Jason's SPDB bank account" bank_key='SPDB' bank_account='0000000000003704' type='D'/>
 	<entity id="ICBC_0001" name="Deposite ICBC" bank_key='ICBC' bank_account='0000000000000001' type='D'/>
 	<entity id="ICBC_1001" name="Shirley's ICBC bank account" bank_key='ICBC' bank_account='0000000000001001' type='D'/>
