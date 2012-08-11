@@ -6,22 +6,17 @@
 	<body>
 		<p><a href='./index.html'>Home</a>/</p>
 		<h1>Accounting Entry/Display</h1>
-		<h2>Entry: </h2>
-		<p>User have the two options to entry a expense record. One is to enter the record directly, like below, the other is enter the 
-			accounting document directly(Not supported in 1.0).</p>
-		<table class='Table'>
-			<tr><td>Outgoing: </td><td>Subway</td></tr>
-			<tr><td>Account: </td><td>Cash</td></tr>
-			<tr><td>Amount: </td><td>5.00</td></tr>
-			<tr><td>Segment: </td><td>For work</td></tr>
-		</table>
-		<p>It means that user spend 5.00 yuan on subway for work purpose. In this option of entering, there are three types of 
-		records for difference cases. Each type of records contains its own input fields, according the <a href='./customizing.html'>customizing</a>.
+		<p>
+			<img src="./imgs/sys_ledge.png" width="50%"/><br/>
 		</p>
+		<h2>Entry: </h2>
+		<p>Document entries provide the function that user can move amount from one G/L account to other account.</p>
 		<table class='Table'>
-			<tr><td>1. Incoming Recording: </td><td>salary, bonus, award, adhoc incoming;</td></tr>
-			<tr><td>2. Outgoting Recroding: </td><td>expence;</td></tr>
-			<tr><td>3. Internal Transfer: </td><td>withdraw money;</td></tr>
+			<tr><td>1. Incoming Recording: </td><td>salary, bonus, award, adhoc incoming; transafer REVENUE to CASH, BANK, INVESTMENT or PREPAID accounts.</td></tr>
+			<tr><td>2. Outgoting Recroding: </td><td>transfer money from CASH, BANK, INVESTMENT or PREPAID accounts to COST.</td></tr>
+			<tr><td>3. Internal Transfer: </td><td>Money transfer between CASH, BANK, INVESTMENT or PREPAID accounts;</td></tr>
+			<tr><td>4. Investment Entry: </td><td>Money transfer between CASH or BANK accounts to investment; Besides that, system will save specific information of investemnt.</td></tr>
+			<tr><td>5. Asset Transfer: </td><td>Money transfer between CASH or BANK accounts to fixed assets; Besides that, system will save specific information of assets.</td></tr>
 		</table>
 		<p>The Family Accounting system follows <a href='http://en.wikipedia.org/wiki/Double-entry_bookkeeping_system'>Double-entry bookkeeping system</a>.
 		If you have the knowledge of accounting, you can enter the accounting document directly.</p>
