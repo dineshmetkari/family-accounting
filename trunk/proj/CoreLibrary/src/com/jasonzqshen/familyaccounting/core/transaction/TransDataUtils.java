@@ -21,4 +21,5 @@ public class TransDataUtils {
 	public static final String XML_AMOUNT = "amount";
 	public static final String XML_CD_INDICATOR = "cd_indicator";
 	public static final String XML_BUSINESS_AREA = "business_area";
+	
 }

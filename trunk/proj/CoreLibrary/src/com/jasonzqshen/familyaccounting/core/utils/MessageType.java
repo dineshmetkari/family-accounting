@@ -1,6 +1,7 @@
 package com.jasonzqshen.familyaccounting.core.utils;
 
 public enum MessageType {
+	
 	INFO("INFO"), WARNING("WARN"), ERROR("ERRO");
 	private final String _str;
 

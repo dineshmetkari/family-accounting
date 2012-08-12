@@ -29,5 +29,6 @@ public enum DocumentType {
 			return DocumentType.CUSTOMER_INVOICE;
 		}
 		return null;
+		
 	}
 }

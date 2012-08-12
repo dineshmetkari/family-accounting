@@ -3,6 +3,7 @@ package com.jasonzqshen.familyaccounting.core.utils;
 public enum AccountType {
 	GL_ACCOUNT('S'), VENDOR('K'), CUSTOMER('D');
 
+	
 	public final char _value;
 
 	private AccountType(char ch) {

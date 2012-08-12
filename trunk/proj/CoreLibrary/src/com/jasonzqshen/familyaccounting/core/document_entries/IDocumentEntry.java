@@ -16,6 +16,8 @@ public interface IDocumentEntry {
 	Object getValue(String fieldName) throws NoFieldNameException;
 
 	Object getDefaultValue(String fieldName) throws NoFieldNameException;
+	
+	Object[] getValueSet(String fieldName) throws NoFieldNameException;
 
 	/**
 	 * check before save

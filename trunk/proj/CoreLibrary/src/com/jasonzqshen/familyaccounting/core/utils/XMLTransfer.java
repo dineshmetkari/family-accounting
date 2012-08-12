@@ -10,6 +10,7 @@ public class XMLTransfer {
 	private XMLTransfer() {
 	}
 
+	
 	public static final String BEGIN_TAG_LEFT = "<";
 	public static final String BEGIN_TAG_RIGHT = ">\n";
 	public static final String END_TAG_LEFT = "</";

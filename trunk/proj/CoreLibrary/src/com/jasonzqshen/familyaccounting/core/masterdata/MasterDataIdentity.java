@@ -15,6 +15,11 @@ public class MasterDataIdentity implements Comparable<MasterDataIdentity> {
 	public final static int LENGTH = 10;
 	private final char[] _identity = new char[LENGTH];
 
+	public MasterDataIdentity(String id) throws IdentityTooLong,
+			IdentityNoData, IdentityInvalidChar {
+		this(id.toCharArray());
+	}
+
 	/**
 	 * Construct identity
 	 * 
@@ -30,7 +35,7 @@ public class MasterDataIdentity implements Comparable<MasterDataIdentity> {
 			throw new IdentityNoData();
 		}
 		if (id.length > LENGTH) {
-			throw new IdentityTooLong();
+			throw new IdentityTooLong(id.length, LENGTH);
 		}
 
 		int l = id.length;
@@ -39,7 +44,7 @@ public class MasterDataIdentity implements Comparable<MasterDataIdentity> {
 				// check character valid
 				boolean flag = isValidChar(id[l + i - LENGTH]);
 				if (flag == false) {
-					throw new IdentityInvalidChar();
+					throw new IdentityInvalidChar(id[l + i - LENGTH]);
 				}
 
 				// check whether contains data

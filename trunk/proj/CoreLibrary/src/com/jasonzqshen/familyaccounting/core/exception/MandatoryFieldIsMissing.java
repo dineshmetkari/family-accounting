@@ -10,5 +10,6 @@ public class MandatoryFieldIsMissing extends Exception {
 	public MandatoryFieldIsMissing(String fieldName) {
 		super(String.format("Mandatory field %s is missing", fieldName));
 		_fieldName = fieldName;
+		
 	}
 }

@@ -11,6 +11,10 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
  * 
  */
 public class MasterDataIdentity_GLAccount extends MasterDataIdentity {
+	public MasterDataIdentity_GLAccount(String id) throws IdentityTooLong,
+			IdentityNoData, IdentityInvalidChar {
+		super(id);
+	}
 
 	public MasterDataIdentity_GLAccount(char[] id) throws IdentityTooLong,
 			IdentityNoData, IdentityInvalidChar {

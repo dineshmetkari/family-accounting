@@ -37,11 +37,10 @@ public enum BankAccountType {
 	}
 
 	public static BankAccountType parse(char ch) {
-		switch (ch) {
-		case 'C':
-			return BankAccountType.SAVING_ACCOUNT;
-		case 'D':
-			return BankAccountType.DEBIT_CARD;
+		for (BankAccountType t : BankAccountType.values()) {
+			if (t.toString().equals(String.valueOf(ch))) {
+				return t;
+			}
 		}
 		return null;
 	}

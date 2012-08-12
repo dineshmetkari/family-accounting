@@ -28,7 +28,7 @@ public class BankAccountNumber {
 			throw new IdentityNoData();
 		}
 		if (id.length > LENGTH) {
-			throw new IdentityTooLong();
+			throw new IdentityTooLong(id.length, LENGTH);
 		}
 
 		int l = id.length;
@@ -37,7 +37,7 @@ public class BankAccountNumber {
 				// check character valid
 				boolean flag = isValidChar(id[l + i - LENGTH]);
 				if (flag == false) {
-					throw new IdentityInvalidChar();
+					throw new IdentityInvalidChar(id[l + i - LENGTH]);
 				}
 
 				_identity[i] = id[l + i - LENGTH];

@@ -9,7 +9,7 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
-import com.jasonzqshen.familyaccounting.core.exception.TransactionDataFileFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.format.TransactionDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
