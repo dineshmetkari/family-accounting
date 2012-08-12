@@ -18,33 +18,15 @@ import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFileException;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
 import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
+import com.jasonzqshen.familyaccounting.core.exception.format.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountNumber;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankKeyMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankKeyMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.BusinessAreaMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.BusinessAreaMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.CustomerMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.CustomerMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountGroupMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountGroupMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
-import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
-import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
-import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
-import com.jasonzqshen.familyaccounting.core.masterdata.VendorMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.VendorMasterDataFactory;
+import com.jasonzqshen.familyaccounting.core.masterdata.*;
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
@@ -57,7 +39,6 @@ import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CriticalLevel;
 import com.jasonzqshen.familyaccounting.core.utils.DebugInformation;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
-import com.jasonzqshen.familyaccounting.core.utils.GLAccountType;
 
 public class TestUtilities {
 	private TestUtilities() {
@@ -71,31 +52,33 @@ public class TestUtilities {
 	public static final CriticalLevel TEST_CRITICAL_LEVEL = CriticalLevel.LOW;
 	public static final String TEST_BANK_KEY_ID = "CMB_6620";
 	public static final String TEST_GL_ACCOUNT_GROUP = "1010";
-	public static final GLAccountType TEST_GL_ACCOUNT_TYPE = GLAccountType.BALANCE;
 	public static final String TEST_DOC_NUM = "1000000000";
 	public static final String TEST_DOC_ID = "1000000000_2012_07";
 
 	public static final String TEST_DESCP = "test";
 
-	public static final String[] GL_IDS = { "0000101001", "0000101002",
-			"0000104001", "0000104002", "0000107001", "0000140001",
-			"0000140002", "0000270801", "0000400001", "0000400002",
-			"0000406001", "0000406002", };
+	public static final String[] GL_IDS = { "1000100001", "1000100002",
+			"1010100001", "1010100002", "1010100003", "1010100004",
+			"1060100001", "1060100002", "1060100003", "1060100004",
+			"1060100005", "1430100001", "1430100002", "1500100001",
+			"1500100002", "2000100001", "2000100002", "3010100001",
+			"4000100001", "4000100002", "4010100001", "4010100002",
+			"4010100003", "4010100004", "5000100001", "5000100002",
+			"5000100003", "5000100004", "5000100005", "5000100006",
+			"5000100007" };
 	public static final String[] VENDOR_IDS = { "SUBWAY", "BUS" };
 	public static final String[] CUSTOMER_IDS = { "MS", "SAP" };
 	public static final String[] BUSINESS_IDS = { "WORK", "ENTERTAIN",
 			"FAMILY", "TEAM_MATES", "FRIENDS", "SNACKS", "HEALTH",
 			"DAILY_LIFE", "LUX_LIFE" };
 	public static final String[] BANK_KEY_IDS = { "CMB", "SPDB", "ICBC" };
-	public static final String[] BANK_ACCOUNT_IDS = { "CMB_6620", "CMB_6235",
-			"SPDB_3704", "ICBC_0000" };
-	public static final String[] GL_GROUP_IDS = { "1010", "1040", "1060",
-			"1070", "1400", "1500", "1510", "1520", "1550", "2480", "2708",
-			"2740", "4000", "4020", "4060", "4080", "5000", "5001", "5002",
-			"5003" };
+	public static final String[] BANK_ACCOUNT_IDS = { "CMB_6620", "CMB_1002",
+			"CMB_6235", "CMB_1001", "SPDB_3704", "ICBC_0001", "ICBC_1001" };
 	public static final String[] DOCUMNET_NUMS = { "1000000001", "1000000002" };
-	public static final String GL_ACCOUNT1 = "0000406002";
-	public static final String GL_ACCOUNT2 = "0000140001";
+	public static final String GL_ACCOUNT1 = "1000100001";
+	public static final String GL_ACCOUNT2 = "1000100002";
+	public static final String GL_ACCOUNT3 = "5000100001";
+	public static final String GL_ACCOUNT4 = "4010100001";
 	public static final double AMOUNT = 100;
 	public static final String VENDOR = "BUS";
 	public static final String CUSTOMER = "MS";
@@ -119,8 +102,6 @@ public class TestUtilities {
 			data = BUSINESS_IDS;
 		} else if (type == MasterDataType.GL_ACCOUNT) {
 			data = GL_IDS;
-		} else if (type == MasterDataType.GL_ACCOUNT_GROUP) {
-			data = GL_GROUP_IDS;
 		} else if (type == MasterDataType.VENDOR) {
 			data = VENDOR_IDS;
 		}
@@ -235,10 +216,6 @@ public class TestUtilities {
 		BankAccountMasterDataFactory bankAccountFactory = (BankAccountMasterDataFactory) masterDataManagement
 				.getMasterDataFactory(MasterDataType.BANK_ACCOUNT);
 		assertEquals(0, bankAccountFactory.getMasterDataCount());
-		// GL account group
-		GLAccountGroupMasterDataFactory groupFactory = (GLAccountGroupMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.GL_ACCOUNT_GROUP);
-		assertEquals(0, groupFactory.getMasterDataCount());
 		// GL account
 		GLAccountMasterDataFactory accountFactory = (GLAccountMasterDataFactory) masterDataManagement
 				.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
@@ -364,48 +341,21 @@ public class TestUtilities {
 			}
 		}
 
-		// G/L account group
-		for (String str : TestUtilities.GL_GROUP_IDS) {
-			GLAccountGroupMasterData group = (GLAccountGroupMasterData) groupFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP);
-			assertTrue(group != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.GL_GROUP_IDS) {
-			try {
-				GLAccountGroupMasterData group = (GLAccountGroupMasterData) groupFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP);
-				assertTrue(false);
-				assertEquals(null, group);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
 		// G/L account
 		for (String str : TestUtilities.GL_IDS) {
-			MasterDataIdentity group = new MasterDataIdentity(
-					TestUtilities.TEST_GL_ACCOUNT_GROUP.toCharArray());
 			GLAccountMasterData glAccount = (GLAccountMasterData) accountFactory
 					.createNewMasterDataBase(new MasterDataIdentity_GLAccount(
-							str.toCharArray()), TestUtilities.TEST_DESCP,
-							TestUtilities.TEST_GL_ACCOUNT_TYPE, group);
+							str.toCharArray()), TestUtilities.TEST_DESCP);
 			assertTrue(glAccount != null);
 		}
 		// duplicate id
 		for (String str : TestUtilities.GL_IDS) {
 			try {
-				MasterDataIdentity group = new MasterDataIdentity(
-						TestUtilities.TEST_GL_ACCOUNT_GROUP.toCharArray());
 				GLAccountMasterData glAccount = (GLAccountMasterData) accountFactory
 						.createNewMasterDataBase(
 								new MasterDataIdentity_GLAccount(str
 										.toCharArray()),
-								TestUtilities.TEST_DESCP,
-								TestUtilities.TEST_GL_ACCOUNT_TYPE, group);
+								TestUtilities.TEST_DESCP);
 				assertTrue(false);
 				assertEquals(null, glAccount);
 			} catch (MasterDataIdentityExists e) {

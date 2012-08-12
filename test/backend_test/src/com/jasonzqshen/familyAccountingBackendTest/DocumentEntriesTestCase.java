@@ -40,16 +40,15 @@ public class DocumentEntriesTestCase {
 			Date date = format.parse("2012.07.02");
 
 			/**
-			 * test G/L account entry. move 100 RMB from account 0000270801 to
-			 * 0000406002
+			 * test G/L account entry. move 100 RMB from account GL1 to GL2
 			 */
 			GLAccountEntry entry = new GLAccountEntry(coreDriver);
 			entry.setValue(GLAccountEntry.AMOUNT, 100);
 			entry.setValue(GLAccountEntry.POSTING_DATE, date);
-			entry.setDstAccount(new MasterDataIdentity_GLAccount("0000406002"
-					.toCharArray()));
+			entry.setDstAccount(new MasterDataIdentity_GLAccount(
+					TestUtilities.GL_ACCOUNT1.toCharArray()));
 			entry.setSourceAccount(new MasterDataIdentity_GLAccount(
-					"0000270801".toCharArray()));
+					TestUtilities.GL_ACCOUNT2.toCharArray()));
 			entry.setValue(GLAccountEntry.TEXT, TestUtilities.TEST_DESCP);
 			ArrayList<CoreMessage> msg = new ArrayList<CoreMessage>();
 			entry.save(msg);
@@ -82,11 +81,13 @@ public class DocumentEntriesTestCase {
 		ItemEntity[] items = head.getItems();
 		for (ItemEntity item : items) {
 			if (item.getCDIndicator() == CreditDebitIndicator.CREDIT) {
-				assertEquals("0000270801", item.getGLAccount().toString());
+				assertEquals(TestUtilities.GL_ACCOUNT2, item.getGLAccount()
+						.toString());
 				assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
 				assertEquals(100, (int) item.getAmount());
 			} else {
-				assertEquals("0000406002", item.getGLAccount().toString());
+				assertEquals(TestUtilities.GL_ACCOUNT1, item.getGLAccount()
+						.toString());
 				assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
 				assertEquals(100, (int) item.getAmount());
 			}
@@ -111,12 +112,10 @@ public class DocumentEntriesTestCase {
 			VendorEntry entry = new VendorEntry(coreDriver);
 			entry.setValue(VendorEntry.AMOUNT, 100);
 			entry.setValue(VendorEntry.POSTING_DATE, date);
-			entry.setValue(
-					VendorEntry.REC_ACC,
-					new MasterDataIdentity_GLAccount("0000406002".toCharArray()));
-			entry.setValue(
-					VendorEntry.GL_ACCOUNT,
-					new MasterDataIdentity_GLAccount("0000270801".toCharArray()));
+			entry.setValue(VendorEntry.REC_ACC,
+					new MasterDataIdentity_GLAccount(TestUtilities.GL_ACCOUNT1));
+			entry.setValue(VendorEntry.GL_ACCOUNT,
+					new MasterDataIdentity_GLAccount(TestUtilities.GL_ACCOUNT3));
 			entry.setValue(VendorEntry.VENDOR,
 					new MasterDataIdentity("BUS".toCharArray()));
 			entry.setValue(VendorEntry.TEXT, TestUtilities.TEST_DESCP);
@@ -153,12 +152,14 @@ public class DocumentEntriesTestCase {
 		ItemEntity[] items = head.getItems();
 		for (ItemEntity item : items) {
 			if (item.getCDIndicator() == CreditDebitIndicator.CREDIT) {
-				assertEquals("0000406002", item.getGLAccount().toString());
+				assertEquals(TestUtilities.GL_ACCOUNT1, item.getGLAccount()
+						.toString());
 				assertEquals("0000000BUS", item.getVendor().toString());
 				assertEquals(AccountType.VENDOR, item.getAccountType());
 				assertEquals(100, (int) item.getAmount());
 			} else {
-				assertEquals("0000270801", item.getGLAccount().toString());
+				assertEquals(TestUtilities.GL_ACCOUNT3, item.getGLAccount()
+						.toString());
 				assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
 				assertEquals(100, (int) item.getAmount());
 				assertEquals("0000SNACKS", item.getBusinessArea().toString());
@@ -186,10 +187,12 @@ public class DocumentEntriesTestCase {
 			entry.setValue(CustomerEntry.POSTING_DATE, date);
 			entry.setValue(
 					CustomerEntry.REC_ACC,
-					new MasterDataIdentity_GLAccount("0000406002".toCharArray()));
+					new MasterDataIdentity_GLAccount(TestUtilities.GL_ACCOUNT1
+							.toCharArray()));
 			entry.setValue(
 					CustomerEntry.GL_ACCOUNT,
-					new MasterDataIdentity_GLAccount("0000270801".toCharArray()));
+					new MasterDataIdentity_GLAccount(TestUtilities.GL_ACCOUNT4
+							.toCharArray()));
 			entry.setValue(CustomerEntry.CUSTOMER, new MasterDataIdentity(
 					"00000000MS".toCharArray()));
 			entry.setValue(CustomerEntry.TEXT, TestUtilities.TEST_DESCP);
@@ -224,11 +227,13 @@ public class DocumentEntriesTestCase {
 		ItemEntity[] items = head.getItems();
 		for (ItemEntity item : items) {
 			if (item.getCDIndicator() == CreditDebitIndicator.CREDIT) {
-				assertEquals("0000270801", item.getGLAccount().toString());
+				assertEquals(TestUtilities.GL_ACCOUNT4, item.getGLAccount()
+						.toString());
 				assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
 				assertEquals(100, (int) item.getAmount());
 			} else {
-				assertEquals("0000406002", item.getGLAccount().toString());
+				assertEquals(TestUtilities.GL_ACCOUNT1, item.getGLAccount()
+						.toString());
 				assertEquals("00000000MS", item.getCustomer().toString());
 				assertEquals(AccountType.CUSTOMER, item.getAccountType());
 				assertEquals(100, (int) item.getAmount());

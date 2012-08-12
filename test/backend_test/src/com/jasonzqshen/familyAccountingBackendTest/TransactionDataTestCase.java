@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.BalanceNotZero;
-import com.jasonzqshen.familyaccounting.core.exception.DocumentIdentityFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
@@ -19,6 +18,7 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
+import com.jasonzqshen.familyaccounting.core.exception.format.DocumentIdentityFormatException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentIdentity;
@@ -125,21 +125,19 @@ public class TransactionDataTestCase {
 
 		ItemEntity item1 = headEntity.createEntity();
 		item1.setGLAccount(new MasterDataIdentity_GLAccount(
-				TestUtilities.GL_ACCOUNT1.toCharArray()));
+				TestUtilities.GL_ACCOUNT1));
 		item1.setAmount(CreditDebitIndicator.DEBIT, 100);
 		item1.setBusinessArea(new MasterDataIdentity(
-				TestUtilities.BUSINESS_AREA.toCharArray()));
+				TestUtilities.BUSINESS_AREA));
 
 		ItemEntity item2 = headEntity.createEntity();
 		MasterDataIdentity_GLAccount account2 = new MasterDataIdentity_GLAccount(
-				TestUtilities.GL_ACCOUNT2.toCharArray());
+				TestUtilities.GL_ACCOUNT2);
 		if (index == 0) {
-			item2.setVendor(
-					new MasterDataIdentity(TestUtilities.VENDOR.toCharArray()),
+			item2.setVendor(new MasterDataIdentity(TestUtilities.VENDOR),
 					account2);
 		} else {
-			item2.setCustomer(
-					new MasterDataIdentity(TestUtilities.CUSTOMER.toCharArray()),
+			item2.setCustomer(new MasterDataIdentity(TestUtilities.CUSTOMER),
 					account2);
 		}
 		item2.setAmount(CreditDebitIndicator.CREDIT, 100);
