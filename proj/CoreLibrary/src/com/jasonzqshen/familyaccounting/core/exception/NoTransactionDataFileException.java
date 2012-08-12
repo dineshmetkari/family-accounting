@@ -7,6 +7,7 @@ public class NoTransactionDataFileException extends Exception {
 	private static final long serialVersionUID = -7787046276282971224L;
 	public final String FILE_PATH;
 
+	
 	/**
 	 * 
 	 * @param type

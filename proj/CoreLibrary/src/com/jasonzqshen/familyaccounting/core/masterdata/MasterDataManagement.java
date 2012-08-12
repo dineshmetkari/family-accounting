@@ -23,10 +23,11 @@ import com.jasonzqshen.familyaccounting.core.ManagementBase;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.format.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
+import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
 /**
@@ -35,7 +36,7 @@ import com.jasonzqshen.familyaccounting.core.utils.MessageType;
  * @author I072485
  * 
  */
-public class MasterDataManagement extends ManagementBase{
+public class MasterDataManagement extends ManagementBase {
 	public static final String MASTER_DATA_FOLDER = "master_data";
 
 	private final Hashtable<MasterDataType, MasterDataFactoryBase> _factoryList;
@@ -68,8 +69,6 @@ public class MasterDataManagement extends ManagementBase{
 				BusinessAreaMasterDataFactory.class);
 		_registerFactorys.put(MasterDataType.BANK_ACCOUNT,
 				BankAccountMasterDataFactory.class);
-		_registerFactorys.put(MasterDataType.GL_ACCOUNT_GROUP,
-				GLAccountGroupMasterDataFactory.class);
 		_registerFactorys.put(MasterDataType.GL_ACCOUNT,
 				GLAccountMasterDataFactory.class);
 	}
@@ -401,8 +400,6 @@ public class MasterDataManagement extends ManagementBase{
 			path = BankKeyMasterData.FILE_NAME;
 		} else if (type == MasterDataType.BANK_ACCOUNT) {
 			path = BankAccountMasterData.FILE_NAME;
-		} else if (type == MasterDataType.GL_ACCOUNT_GROUP) {
-			path = GLAccountGroupMasterData.FILE_NAME;
 		} else if (type == MasterDataType.GL_ACCOUNT) {
 			path = GLAccountMasterData.FILE_NAME;
 		}
@@ -478,16 +475,15 @@ public class MasterDataManagement extends ManagementBase{
 	 * @return
 	 */
 	public MasterDataIdentity_GLAccount[] getGLAccountsBasedGroup(
-			MasterDataIdentity group) {
+			GLAccountGroup group) {
 		MasterDataFactoryBase factory = getMasterDataFactory(MasterDataType.GL_ACCOUNT);
 		MasterDataBase[] datas = factory.getAllEntities();
 		ArrayList<MasterDataIdentity_GLAccount> array = new ArrayList<MasterDataIdentity_GLAccount>();
 
 		for (MasterDataBase data : datas) {
 			GLAccountMasterData glAccount = (GLAccountMasterData) data;
-			if (glAccount.getAccountGroup().equals(group)) {
-				array.add((MasterDataIdentity_GLAccount) glAccount
-						.getIdentity());
+			if (glAccount.getGroup() == group) {
+				array.add(glAccount.getGLIdentity());
 			}
 		}
 
@@ -497,6 +493,62 @@ public class MasterDataManagement extends ManagementBase{
 			ret[i] = array.get(i);
 		}
 		return ret;
+	}
+
+	/**
+	 * get G/L accounts based on G/L account group
+	 * 
+	 * @param group
+	 *            G/L account group
+	 * @return
+	 */
+	public GLAccountMasterData[] getBalanceAccounts() {
+		GLAccountMasterDataFactory factory = (GLAccountMasterDataFactory) getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+		return factory.getBalanceAccounts();
+	}
+
+	/**
+	 * get liquidity
+	 * 
+	 * @param group
+	 * @return
+	 */
+	public GLAccountMasterData[] getLiquidityAccounts() {
+		GLAccountMasterDataFactory factory = (GLAccountMasterDataFactory) getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+		return factory.getLiquidityAccounts();
+	}
+
+	/**
+	 * get liability
+	 * 
+	 * @param group
+	 * @return
+	 */
+	public GLAccountMasterData[] getLiabilityAccounts() {
+		GLAccountMasterDataFactory factory = (GLAccountMasterDataFactory) getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+		return factory.getLiabilityAccounts();
+	}
+
+	/**
+	 * get cost accounts
+	 * 
+	 * @param group
+	 * @return
+	 */
+	public GLAccountMasterData[] getCostAccounts() {
+		GLAccountMasterDataFactory factory = (GLAccountMasterDataFactory) getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+		return factory.getCostAccounts();
+	}
+
+	/**
+	 * get revenue accounts
+	 * 
+	 * @param group
+	 * @return
+	 */
+	public GLAccountMasterData[] getRevenueAccounts() {
+		GLAccountMasterDataFactory factory = (GLAccountMasterDataFactory) getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+		return factory.getRevenueAccounts();
 	}
 
 	/**

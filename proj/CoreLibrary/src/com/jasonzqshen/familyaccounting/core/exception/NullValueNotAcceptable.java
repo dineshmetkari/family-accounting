@@ -15,5 +15,6 @@ public class NullValueNotAcceptable extends Exception {
 	public NullValueNotAcceptable(String fieldName) {
 		super(String.format("Field %s is mandatory. Null is not acceptable.",
 				fieldName));
+		
 	}
 }

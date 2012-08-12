@@ -73,9 +73,6 @@ public abstract class MasterDataBase {
 		} else if (this instanceof GLAccountMasterData) {
 			factory = _coreDriver.getMasterDataManagement()
 					.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
-		} else if (this instanceof GLAccountGroupMasterData) {
-			factory = _coreDriver.getMasterDataManagement()
-					.getMasterDataFactory(MasterDataType.GL_ACCOUNT_GROUP);
 		} else if (this instanceof VendorMasterData) {
 			factory = _coreDriver.getMasterDataManagement()
 					.getMasterDataFactory(MasterDataType.VENDOR);

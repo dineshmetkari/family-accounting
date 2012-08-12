@@ -11,7 +11,6 @@ public class MasterDataUtils {
 	public static final String XML_BANK_ACCOUNT = "bank_account"; // bank
 																	// account
 	public static final String XML_TYPE = "type"; 
-	public static final String XML_GROUP = "group";
 	
 	
 	private MasterDataUtils() {

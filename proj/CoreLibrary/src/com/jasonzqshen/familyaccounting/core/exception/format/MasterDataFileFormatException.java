@@ -1,9 +1,8 @@
-package com.jasonzqshen.familyaccounting.core.exception;
+package com.jasonzqshen.familyaccounting.core.exception.format;
 
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 
 public class MasterDataFileFormatException extends Exception {
-
 	/**
 	 * 
 	 */

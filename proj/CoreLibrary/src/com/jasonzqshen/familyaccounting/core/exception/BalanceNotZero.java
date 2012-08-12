@@ -10,5 +10,6 @@ public class BalanceNotZero extends Exception {
 	public BalanceNotZero() {
 		super("Balance is not zero.");
 	}
+	
 
 }

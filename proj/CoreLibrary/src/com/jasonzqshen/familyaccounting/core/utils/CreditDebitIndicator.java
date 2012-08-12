@@ -3,6 +3,7 @@ package com.jasonzqshen.familyaccounting.core.utils;
 public enum CreditDebitIndicator {
 	CREDIT('C'), DEBIT('D');
 
+	
 	public final char _value;
 
 	private CreditDebitIndicator(char ch) {

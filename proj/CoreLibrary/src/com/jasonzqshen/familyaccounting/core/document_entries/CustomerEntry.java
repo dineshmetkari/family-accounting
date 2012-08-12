@@ -10,6 +10,7 @@ import com.jasonzqshen.familyaccounting.core.exception.NoFieldNameException;
 import com.jasonzqshen.familyaccounting.core.exception.NotInValueRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
+import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
@@ -67,19 +68,24 @@ public class CustomerEntry implements IDocumentEntry {
 	 * set G/L account
 	 * 
 	 * @param glAccount
+	 * @throws NoFieldNameException
 	 */
 	public void setGLAccount(MasterDataIdentity_GLAccount glAccount)
-			throws NotInValueRangeException {
+			throws NotInValueRangeException, NoFieldNameException {
 		if (glAccount == null) {
 			throw new NotInValueRangeException(GL_ACCOUNT, "");
 		}
 
-		MasterDataManagement master = _coreDriver.getMasterDataManagement();
-		if (!master.containsMasterData(glAccount, MasterDataType.GL_ACCOUNT)) {
-			throw new NotInValueRangeException(GL_ACCOUNT, glAccount);
+		Object[] valueSet = this.getValueSet(GL_ACCOUNT);
+		for (Object obj : valueSet) {
+			GLAccountMasterData glAcc = (GLAccountMasterData) obj;
+			if (glAcc.getGLIdentity().equals(glAccount)) {
+				_glAccount = glAccount;
+				return;
+			}
 		}
 
-		_glAccount = glAccount;
+		throw new NotInValueRangeException(GL_ACCOUNT, glAccount);
 	}
 
 	/**
@@ -87,19 +93,24 @@ public class CustomerEntry implements IDocumentEntry {
 	 * 
 	 * @param recAcc
 	 * @throws NotInValueRangeException
+	 * @throws NoFieldNameException 
 	 */
 	public void setRecAccount(MasterDataIdentity_GLAccount recAcc)
-			throws NotInValueRangeException {
+			throws NotInValueRangeException, NoFieldNameException {
 		if (recAcc == null) {
 			throw new NotInValueRangeException(REC_ACC, "");
 		}
 
-		MasterDataManagement master = _coreDriver.getMasterDataManagement();
-		if (!master.containsMasterData(recAcc, MasterDataType.GL_ACCOUNT)) {
-			throw new NotInValueRangeException(GL_ACCOUNT, recAcc);
+		Object[] valueSet = this.getValueSet(REC_ACC);
+		for (Object obj : valueSet) {
+			GLAccountMasterData glAccount = (GLAccountMasterData) obj;
+			if (glAccount.getGLIdentity().equals(recAcc)) {
+				_recAcc = recAcc;
+				return;
+			}
 		}
 
-		_recAcc = recAcc;
+		throw new NotInValueRangeException(REC_ACC, recAcc);
 	}
 
 	public void setValue(String fieldName, Object value)
@@ -236,6 +247,17 @@ public class CustomerEntry implements IDocumentEntry {
 		}
 
 		return null;
+	}
+
+	public Object[] getValueSet(String fieldName) throws NoFieldNameException {
+		if (fieldName.equals(GL_ACCOUNT)) {
+			MasterDataManagement manage = _coreDriver.getMasterDataManagement();
+			return manage.getRevenueAccounts();
+		} else if (fieldName.equals(REC_ACC)) {
+			MasterDataManagement manage = _coreDriver.getMasterDataManagement();
+			return manage.getLiquidityAccounts();
+		}
+		throw new NoFieldNameException(fieldName);
 	}
 
 }

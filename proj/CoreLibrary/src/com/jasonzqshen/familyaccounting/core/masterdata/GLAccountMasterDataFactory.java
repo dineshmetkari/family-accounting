@@ -1,19 +1,22 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
+import java.util.ArrayList;
+
 import org.w3c.dom.Element;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
+import com.jasonzqshen.familyaccounting.core.exception.NoGLAccountGroupException;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
+import com.jasonzqshen.familyaccounting.core.exception.format.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
-import com.jasonzqshen.familyaccounting.core.utils.GLAccountType;
+import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 
@@ -43,48 +46,32 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 
 		MasterDataIdentity_GLAccount identity_gl = (MasterDataIdentity_GLAccount) identity;
 
-		GLAccountType type = null;
-		MasterDataIdentity group = null;
 		MasterDataIdentity bankAccount = null;
 
-		if (objects.length == 2 || objects.length == 3) {
+		if (objects.length == 0 || objects.length == 1) {
 		} else {
 			throw new ParametersException(String.format(
-					CoreMessage.ERR_PARAMETER_LENGTH, 3, objects.length));
+					CoreMessage.ERR_PARAMETER_LENGTH, 1, objects.length));
 		}
 
-		// gl account type
-		if (!(objects[0] instanceof GLAccountType)) {
-			throw new ParametersException(String.format(
-					CoreMessage.ERR_PARAMETER_TYPE,
-					GLAccountType.class.getName()));
-		}
-		type = (GLAccountType) objects[0];
-
-		// group
-		if (!(objects[1] instanceof MasterDataIdentity)) {
-			throw new ParametersException(String.format(
-					CoreMessage.ERR_PARAMETER_TYPE,
-					MasterDataIdentity.class.getName()));
-		}
-		group = (MasterDataIdentity) objects[1];
-
-		if (objects.length == 3) {
+		if (objects.length == 1) {
 			// bank account
-			if (!(objects[2] instanceof MasterDataIdentity)) {
+			if (!(objects[0] instanceof MasterDataIdentity)) {
 				throw new ParametersException(String.format(
 						CoreMessage.ERR_PARAMETER_TYPE,
 						MasterDataIdentity.class.getName()));
 			}
-			bankAccount = (MasterDataIdentity) objects[2];
+			bankAccount = (MasterDataIdentity) objects[0];
 		}
 
 		GLAccountMasterData glAccount;
 		try {
 			glAccount = new GLAccountMasterData(_coreDriver, identity_gl,
-					descp, type, group, bankAccount);
+					descp, bankAccount);
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
+		} catch (NoGLAccountGroupException e) {
+			throw new ParametersException(identity_gl.toString());
 		}
 
 		this._containDirtyData = true;
@@ -103,46 +90,24 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 			throws MasterDataFileFormatException {
 		String id = elem.getAttribute(MasterDataUtils.XML_ID);
 		String descp = elem.getAttribute(MasterDataUtils.XML_DESCP);
-		String typeStr = elem.getAttribute(MasterDataUtils.XML_TYPE);
-		String groupStr = elem.getAttribute(MasterDataUtils.XML_GROUP);
-		// check attribute
-		if (StringUtility.isNullOrEmpty(typeStr)) {
-			_coreDriver.logDebugInfo(this.getClass(), 111064, String.format(
-					"Mandatory Field %s with no value",
-					MasterDataUtils.XML_TYPE), MessageType.ERROR);
-			throw new MasterDataFileFormatException(MasterDataType.GL_ACCOUNT);
-		}
 
 		String bankAccStr = elem.getAttribute(MasterDataUtils.XML_BANK_ACCOUNT);
-		if (StringUtility.isNullOrEmpty(groupStr)) {
-			_coreDriver.logDebugInfo(this.getClass(), 111064, String.format(
-					"Mandatory Field %s with no value",
-					MasterDataUtils.XML_GROUP), MessageType.ERROR);
-			throw new MasterDataFileFormatException(MasterDataType.GL_ACCOUNT);
-		}
 
 		try {
 			MasterDataIdentity_GLAccount identity = new MasterDataIdentity_GLAccount(
 					id.toCharArray());
-
-			// G/L account type
-			GLAccountType type = GLAccountType.parse(typeStr.charAt(0));
-
-			// G/L account group
-			MasterDataIdentity groupId = new MasterDataIdentity(
-					groupStr.toCharArray());
 
 			GLAccountMasterData glAccount = null;
 
 			// bank account
 			if (StringUtility.isNullOrEmpty(bankAccStr)) {
 				glAccount = (GLAccountMasterData) this.createNewMasterDataBase(
-						identity, descp, type, groupId);
+						identity, descp);
 			} else {
 				MasterDataIdentity bankAccId = new MasterDataIdentity(
 						bankAccStr.toCharArray());
 				glAccount = (GLAccountMasterData) this.createNewMasterDataBase(
-						identity, descp, type, groupId, bankAccId);
+						identity, descp, bankAccId);
 
 			}
 
@@ -183,4 +148,73 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 		}
 	}
 
+	/**
+	 * get balance accounts
+	 * 
+	 * @return
+	 */
+	public GLAccountMasterData[] getBalanceAccounts() {
+		return getAccounts(GLAccountGroup.BALANCE_GROUP);
+	}
+
+	/**
+	 * get liquidity accounts
+	 * 
+	 * @return
+	 */
+	public GLAccountMasterData[] getLiquidityAccounts() {
+		return getAccounts(GLAccountGroup.Liquidity_GROUP);
+	}
+
+	/**
+	 * get liability account
+	 * 
+	 * @return
+	 */
+	public GLAccountMasterData[] getLiabilityAccounts() {
+		return getAccounts(GLAccountGroup.LIABILITIES_GROUP);
+	}
+
+	/**
+	 * get revenue account
+	 * 
+	 * @return
+	 */
+	public GLAccountMasterData[] getRevenueAccounts() {
+		return getAccounts(GLAccountGroup.REVENUE_GROUP);
+	}
+
+	/**
+	 * get cost account
+	 * 
+	 * @return
+	 */
+	public GLAccountMasterData[] getCostAccounts() {
+		return getAccounts(GLAccountGroup.COST_GROUP);
+	}
+
+	/**
+	 * get G/L accounts base on the group
+	 * 
+	 * @param groups
+	 * @return
+	 */
+	private GLAccountMasterData[] getAccounts(GLAccountGroup[] groups) {
+		ArrayList<GLAccountMasterData> array = new ArrayList<GLAccountMasterData>();
+		for (MasterDataBase master : this._list.values()) {
+			GLAccountMasterData glAccount = (GLAccountMasterData) master;
+			for (int i = 0; i < groups.length; ++i) {
+				if (glAccount.getGroup() == groups[i]) {
+					array.add(glAccount);
+					break;
+				}
+			}
+		}
+
+		GLAccountMasterData[] ret = new GLAccountMasterData[array.size()];
+		for (int i = 0; i < array.size(); ++i) {
+			ret[i] = array.get(i);
+		}
+		return ret;
+	}
 }

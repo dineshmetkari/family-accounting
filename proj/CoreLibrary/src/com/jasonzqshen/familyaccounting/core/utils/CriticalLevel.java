@@ -9,6 +9,7 @@ package com.jasonzqshen.familyaccounting.core.utils;
  * 
  */
 public enum CriticalLevel {
+	
 	HIGH('H'), MEDIUM('M'), LOW('L');
 
 	private char _value;

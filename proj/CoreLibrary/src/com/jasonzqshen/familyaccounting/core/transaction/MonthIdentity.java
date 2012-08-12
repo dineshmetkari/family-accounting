@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
-import com.jasonzqshen.familyaccounting.core.exception.MonthIdentityFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.format.MonthIdentityFormatException;
 
 public class MonthIdentity implements Serializable, Comparable<MonthIdentity> {
 	/**
@@ -13,6 +13,7 @@ public class MonthIdentity implements Serializable, Comparable<MonthIdentity> {
 	private static final long serialVersionUID = -1145199479960583527L;
 	public final int _fiscalYear;
 	public final int _fiscalMonth;
+	
 
 	public MonthIdentity(int fiscalYear, int fiscalMonth)
 			throws FiscalYearRangeException, FiscalMonthRangeException {

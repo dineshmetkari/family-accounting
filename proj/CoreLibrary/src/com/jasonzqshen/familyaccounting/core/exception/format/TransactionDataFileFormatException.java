@@ -1,4 +1,4 @@
-package com.jasonzqshen.familyaccounting.core.exception;
+package com.jasonzqshen.familyaccounting.core.exception.format;
 
 public class TransactionDataFileFormatException extends Exception {
 
@@ -11,6 +11,7 @@ public class TransactionDataFileFormatException extends Exception {
 	public TransactionDataFileFormatException(String filePath) {
 		super(String.format("Transaction data file %s contains format error",
 				filePath));
+		
 		FILE_PATH = filePath;
 	}
 }

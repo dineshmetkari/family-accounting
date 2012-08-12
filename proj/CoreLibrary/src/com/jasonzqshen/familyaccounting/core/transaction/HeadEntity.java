@@ -13,14 +13,14 @@ import org.w3c.dom.NodeList;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.BalanceNotZero;
-import com.jasonzqshen.familyaccounting.core.exception.DocumentIdentityFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
-import com.jasonzqshen.familyaccounting.core.exception.TransactionDataFileFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.format.DocumentIdentityFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.format.TransactionDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
