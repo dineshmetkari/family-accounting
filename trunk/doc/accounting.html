@@ -12,9 +12,12 @@
 		<h2>Entry: </h2>
 		<p>Document entries provide the function that user can move amount from one G/L account to other account.</p>
 		<table class='Table'>
-			<tr><td>1. Incoming Recording: </td><td>salary, bonus, award, adhoc incoming; transafer REVENUE to CASH, BANK, INVESTMENT or PREPAID accounts.</td></tr>
-			<tr><td>2. Outgoting Recroding: </td><td>transfer money from CASH, BANK, INVESTMENT or PREPAID accounts to COST.</td></tr>
-			<tr><td>3. Internal Transfer: </td><td>Money transfer between CASH, BANK, INVESTMENT or PREPAID accounts;</td></tr>
+			<tr><td>1. Incoming Recording: </td><td>salary, bonus, award, adhoc incoming; transafer REVENUE to Balance accounts group(GLAccountGroup.CASH,
+			GLAccountGroup.BANK_ACCOUNT, GLAccountGroup.INVESTMENT,
+			GLAccountGroup.ASSETS, GLAccountGroup.PREPAID)</td></tr>
+			<tr><td>2. Outgoting Recroding: </td><td>transfer money from Liquidity account group (GLAccountGroup.CASH, GLAccountGroup.BANK_ACCOUNT,
+			GLAccountGroup.SHORT_LIABILITIES, GLAccountGroup.PREPAID) accounts to COST.</td></tr>
+			<tr><td>3. Internal Transfer: </td><td>Money transfer between Liquidity accounts;</td></tr>
 			<tr><td>4. Investment Entry: </td><td>Money transfer between CASH or BANK accounts to investment; Besides that, system will save specific information of investemnt.</td></tr>
 			<tr><td>5. Asset Transfer: </td><td>Money transfer between CASH or BANK accounts to fixed assets; Besides that, system will save specific information of assets.</td></tr>
 		</table>
