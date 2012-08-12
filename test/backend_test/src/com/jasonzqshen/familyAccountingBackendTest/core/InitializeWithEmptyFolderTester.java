@@ -1,0 +1,42 @@
+package com.jasonzqshen.familyAccountingBackendTest.core;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import com.jasonzqshen.familyAccountingBackendTest.utils.TestUtilities;
+import com.jasonzqshen.familyAccountingBackendTest.utils.TesterBase;
+import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataFactoryBase;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
+import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
+
+public class InitializeWithEmptyFolderTester extends TesterBase {
+
+	@Override
+	protected void doTest(CoreDriver coreDriver) throws Exception {
+		TestUtilities.clearTestingRootFolder();
+		coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER_EMPTY);
+
+		coreDriver.restart();
+		MasterDataManagement masterData = coreDriver.getMasterDataManagement();
+		assertTrue(null != masterData);
+		for (MasterDataType type : MasterDataType.values()) {
+			MasterDataFactoryBase factory = masterData
+					.getMasterDataFactory(type);
+			assertEquals(0, factory.getAllEntities().length);
+		}
+
+		TransactionDataManagement tranData = coreDriver
+				.getTransDataManagement();
+		assertTrue(null != tranData);
+
+		MonthIdentity[] monthIds = tranData.getAllMonthIds();
+		assertEquals(1, monthIds.length);
+
+		assertEquals(0, tranData.getDocs(monthIds[0]).length);
+
+	}
+
+}
