@@ -11,10 +11,11 @@ public class VendorMasterData extends MasterDataBase {
 	 * @param id
 	 * @param descp
 	 * @param parser
-	 * @throws NullValueNotAcceptable 
+	 * @throws NullValueNotAcceptable
 	 */
-	public VendorMasterData(CoreDriver coreDriver, MasterDataIdentity id,
-			String descp) throws NullValueNotAcceptable {
-		super(coreDriver, id, descp);
+	public VendorMasterData(CoreDriver coreDriver,
+			MasterDataManagement management, MasterDataIdentity id, String descp)
+			throws NullValueNotAcceptable {
+		super(coreDriver, management, id, descp);
 	}
 }

@@ -2,7 +2,7 @@ package com.jasonzqshen.familyaccounting.core.exception.format;
 
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 
-public class MasterDataFileFormatException extends Exception {
+public class MasterDataFileFormatException extends FormatException {
 	/**
 	 * 
 	 */

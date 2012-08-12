@@ -16,8 +16,9 @@ import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
 public class VendorMasterDataFactory extends MasterDataFactoryBase {
 
-	public VendorMasterDataFactory(CoreDriver coreDriver) {
-		super(coreDriver);
+	public VendorMasterDataFactory(CoreDriver coreDriver,
+			MasterDataManagement management) {
+		super(coreDriver, management);
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class VendorMasterDataFactory extends MasterDataFactoryBase {
 
 		VendorMasterData vendor;
 		try {
-			vendor = new VendorMasterData(_coreDriver, id, descp);
+			vendor = new VendorMasterData(_coreDriver, _management, id, descp);
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}

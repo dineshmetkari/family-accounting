@@ -1,8 +1,6 @@
 package com.jasonzqshen.familyaccounting.core;
 
-import java.util.ArrayList;
-
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
+import com.jasonzqshen.familyaccounting.core.exception.format.FormatException;
 
 public abstract class ManagementBase {
 	protected final CoreDriver _coreDriver;
@@ -14,10 +12,12 @@ public abstract class ManagementBase {
 	/**
 	 * initialize
 	 */
-	public abstract void initialize(ArrayList<CoreMessage> messages);
+	public abstract void initialize() throws FormatException;
 
 	/**
 	 * clear
 	 */
 	public abstract void clear();
+
+	public abstract void establishFiles();
 }

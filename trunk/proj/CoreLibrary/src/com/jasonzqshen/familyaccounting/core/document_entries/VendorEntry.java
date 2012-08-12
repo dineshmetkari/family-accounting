@@ -1,6 +1,5 @@
 package com.jasonzqshen.familyaccounting.core.document_entries;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
@@ -17,7 +16,6 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 
@@ -248,12 +246,13 @@ public class VendorEntry implements IDocumentEntry {
 		}
 	}
 
-	public void save(ArrayList<CoreMessage> msg) throws MandatoryFieldIsMissing {
+	public void save(boolean store) throws MandatoryFieldIsMissing {
 		// check before save
 		checkBeforeSave();
 
 		try {
-			HeadEntity doc = new HeadEntity(_coreDriver);
+			HeadEntity doc = new HeadEntity(_coreDriver,
+					_coreDriver.getMasterDataManagement());
 			doc.setDocText(_text);
 			doc.setDocumentType(DocumentType.VENDOR_INVOICE);
 			doc.setPostingDate(_date);
@@ -269,7 +268,7 @@ public class VendorEntry implements IDocumentEntry {
 			debitItem.setGLAccount(_glAccount);
 			debitItem.setBusinessArea(_businessArea);
 
-			boolean ret = doc.save(msg, true);
+			boolean ret = doc.save(store);
 			if (ret) {
 				_isSaved = true;
 				_doc = doc;

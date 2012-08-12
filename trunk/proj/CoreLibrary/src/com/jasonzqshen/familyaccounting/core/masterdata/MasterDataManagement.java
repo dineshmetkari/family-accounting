@@ -26,7 +26,6 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.format.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
@@ -84,7 +83,7 @@ public class MasterDataManagement extends ManagementBase {
 	 * @throws MasterDataFileFormatException
 	 */
 	private MasterDataFactoryBase factoryParser(Constructor<?> constructor,
-			MasterDataType type, Document doc, ArrayList<CoreMessage> messages)
+			MasterDataType type, Document doc)
 			throws MasterDataFileFormatException {
 		_coreDriver.logDebugInfo(this.getClass(), 88,
 				String.format("Parsing XML %s...", type), MessageType.INFO);
@@ -114,8 +113,8 @@ public class MasterDataManagement extends ManagementBase {
 
 		MasterDataFactoryBase newFactory = null;
 		try {
-			newFactory = (MasterDataFactoryBase) constructor
-					.newInstance(_coreDriver);
+			newFactory = (MasterDataFactoryBase) constructor.newInstance(
+					_coreDriver, this);
 			nodeList = rootElem.getChildNodes();
 			for (int i = 0; i < nodeList.getLength(); ++i) {
 				Node child = nodeList.item(i);
@@ -171,7 +170,7 @@ public class MasterDataManagement extends ManagementBase {
 	 *             if the exception raised from the function, it is the bug.
 	 * 
 	 */
-	public void initialize(ArrayList<CoreMessage> messages) {
+	public void initialize() throws MasterDataFileFormatException {
 		_coreDriver.logDebugInfo(this.getClass(), 141,
 				"Master data loading...", MessageType.INFO);
 
@@ -183,8 +182,6 @@ public class MasterDataManagement extends ManagementBase {
 			_coreDriver.logDebugInfo(this.getClass(), 148, String.format(
 					"Master data file %s for master data %s.", filePath, type),
 					MessageType.INFO);
-
-			MasterDataFactoryBase newFactory = null;
 
 			// get factory class
 			Class<?> factoryClass = _registerFactorys.get(type);
@@ -201,7 +198,8 @@ public class MasterDataManagement extends ManagementBase {
 			// get constructor
 			Constructor<?> constructor = null;
 			try {
-				constructor = factoryClass.getConstructor(CoreDriver.class);
+				constructor = factoryClass.getConstructor(CoreDriver.class,
+						MasterDataManagement.class);
 			} catch (NoSuchMethodException e1) {
 				_coreDriver.logDebugInfo(this.getClass(), 191, e1.toString(),
 						MessageType.ERROR);
@@ -222,10 +220,7 @@ public class MasterDataManagement extends ManagementBase {
 								String.format(
 										"Master data file %s for master data %s does not exist.",
 										filePath, type), MessageType.ERROR);
-				newFactory = createFactory(constructor);
-				_factoryList.put(type, newFactory);
-				// next master data
-				continue;
+				throw new MasterDataFileFormatException(type);
 			}
 
 			try {
@@ -235,58 +230,41 @@ public class MasterDataManagement extends ManagementBase {
 				Document doc = builder.parse(file);
 
 				// parse
-				newFactory = factoryParser(constructor, type, doc, messages);
+				MasterDataFactoryBase newFactory = factoryParser(constructor,
+						type, doc);
 
 				_coreDriver.logDebugInfo(this.getClass(), 208,
 						String.format("Loading %s completed.", type),
 						MessageType.INFO);
+
+				this._factoryList.put(type, newFactory);
 			} catch (ParserConfigurationException e) {
 				_coreDriver.logDebugInfo(this.getClass(), 207, e.toString(),
 						MessageType.ERROR);
 				throw new SystemException(e);
 			} catch (SAXException e) {
-				messages.add(new CoreMessage(String.format(
-						CoreMessage.ERR_FILE_FORMAT_ERROR, filePath),
-						MessageType.ERROR, e));
 				_coreDriver.logDebugInfo(this.getClass(), 216, String.format(
 						"Master data file %s contains format error", filePath),
 						MessageType.ERROR);
+				throw new MasterDataFileFormatException(type);
 			} catch (IOException e) {
 				_coreDriver.logDebugInfo(this.getClass(), 220,
 						String.format(e.toString(), filePath),
 						MessageType.ERROR);
 				throw new SystemException(e);
-			} catch (MasterDataFileFormatException e) {
-				messages.add(new CoreMessage(String.format(
-						CoreMessage.ERR_FILE_FORMAT_ERROR, filePath),
-						MessageType.ERROR, e));
-				_coreDriver.logDebugInfo(this.getClass(), 262, String.format(
-						"Master data file %s contains format error", filePath),
-						MessageType.ERROR);
-			} finally {
-				if (newFactory == null) {
-					_coreDriver
-							.logDebugInfo(
-									this.getClass(),
-									230,
-									String.format(
-											"The loading of Master data file %s contains format error. Create an empty master data factory",
-											filePath), MessageType.WARNING);
-					// try to create empty factory
-					newFactory = createFactory(constructor);
-
-				}
-				_factoryList.put(type, newFactory);
 			}
 
 		}
 
-		_coreDriver.logDebugInfo(this.getClass(), 282,
-				"Master data loading completed.", MessageType.INFO);
+		_coreDriver.logDebugInfo(
+				this.getClass(),
+				282,
+				"Master data loading completed. Items: "
+						+ _registerFactorys.size(), MessageType.INFO);
 	}
 
 	/**
-	 * create instance via the contructor
+	 * create instance via the constructor
 	 * 
 	 * @param constructor
 	 * @return
@@ -296,7 +274,7 @@ public class MasterDataManagement extends ManagementBase {
 	private MasterDataFactoryBase createFactory(Constructor<?> constructor) {
 		try {
 			MasterDataFactoryBase newFactory = (MasterDataFactoryBase) constructor
-					.newInstance(_coreDriver);
+					.newInstance(_coreDriver, this);
 
 			return newFactory;
 		} catch (IllegalArgumentException e) {
@@ -556,5 +534,67 @@ public class MasterDataManagement extends ManagementBase {
 	 */
 	public void clear() {
 		_factoryList.clear();
+	}
+
+	@Override
+	public void establishFiles() {
+		String masterFolderPath = String.format("%s/%s",
+				_coreDriver.getRootPath(), MASTER_DATA_FOLDER);
+
+		// set up master data folder
+		File masterFolder = new File(masterFolderPath);
+		if (!masterFolder.exists()) {
+			_coreDriver.logDebugInfo(this.getClass(), 113,
+					"Master data root folder does not exist. Make directory.",
+					MessageType.INFO);
+			masterFolder.mkdir();
+		}
+
+		// establish master data files
+		for (MasterDataType type : MasterDataType.values()) {
+			// get factory class
+			Class<?> factoryClass = _registerFactorys.get(type);
+			if (factoryClass == null) {
+				_coreDriver
+						.logDebugInfo(
+								this.getClass(),
+								178,
+								String.format(
+										"Master data class is not registered for master data %s",
+										type), MessageType.WARNING);
+				throw new NoMasterDataFactoryClass(type);
+			}
+
+			try {
+				Constructor<?> constructor = factoryClass.getConstructor(
+						CoreDriver.class, MasterDataManagement.class);
+				MasterDataFactoryBase factory = createFactory(constructor);
+				String xdoc = factory.toXmlDocument();
+
+				String filePath = generateMasterFilePath(type);
+
+				File file = new File(filePath);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+
+				FileWriter writer = new FileWriter(file);
+				writer.write(xdoc, 0, xdoc.length());
+				writer.close();
+			} catch (NoSuchMethodException e1) {
+				_coreDriver.logDebugInfo(this.getClass(), 191, e1.toString(),
+						MessageType.ERROR);
+				throw new SystemException(e1);
+			} catch (SecurityException e1) {
+				_coreDriver.logDebugInfo(this.getClass(), 193, e1.toString(),
+						MessageType.ERROR);
+				throw new SystemException(e1);
+			} catch (IOException e) {
+				_coreDriver.logDebugInfo(this.getClass(), 193, e.toString(),
+						MessageType.ERROR);
+				throw new SystemException(e);
+			}
+		}
+
 	}
 }

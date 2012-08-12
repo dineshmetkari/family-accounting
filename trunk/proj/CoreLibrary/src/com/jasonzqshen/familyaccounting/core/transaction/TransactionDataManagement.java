@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Hashtable;
 
@@ -20,36 +19,28 @@ import org.xml.sax.SAXException;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.ManagementBase;
-import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
-import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
-import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
-import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
-import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
-import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
-import com.jasonzqshen.familyaccounting.core.exception.NoRootElem;
-import com.jasonzqshen.familyaccounting.core.exception.NoTransactionDataFileException;
-import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
-import com.jasonzqshen.familyaccounting.core.exception.format.TransactionDataFileFormatException;
-import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
+import com.jasonzqshen.familyaccounting.core.exception.*;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.*;
+import com.jasonzqshen.familyaccounting.core.exception.format.*;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
-import com.jasonzqshen.familyaccounting.core.utils.AccountType;
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
-import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
-import com.jasonzqshen.familyaccounting.core.utils.MessageType;
+import com.jasonzqshen.familyaccounting.core.utils.*;
 
 public class TransactionDataManagement extends ManagementBase {
 
 	public static final String TRANSACTION_DATA_FOLDER = "transaction_data";
 	private final Hashtable<MonthIdentity, HeadEntityCollection> _list;
 
+	private final MasterDataManagement _masterDataMgmt;
+
 	/**
 	 * constructor
 	 * 
 	 * @param coreDriver
 	 */
-	public TransactionDataManagement(CoreDriver coreDriver) {
+	public TransactionDataManagement(CoreDriver coreDriver,
+			MasterDataManagement masterDataMgmt) {
 		super(coreDriver);
+		_masterDataMgmt = masterDataMgmt;
 		_list = new Hashtable<MonthIdentity, HeadEntityCollection>();
 	}
 
@@ -59,45 +50,34 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @throws SystemException
 	 *             bug
 	 */
-	public void initialize(ArrayList<CoreMessage> messages) {
-		// get the collection for each month
-		final Calendar calendar = Calendar.getInstance();
-		int curYear = calendar.get(Calendar.YEAR);
-		int curMonth = calendar.get(Calendar.MONTH) + 1;
+	public void initialize() throws TransactionDataFileFormatException {
 
-		MonthIdentity monthId = null;
-		try {
-			monthId = new MonthIdentity(curYear, curMonth);
-		} catch (FiscalYearRangeException e) {
-			throw new SystemException(e);
-		} catch (FiscalMonthRangeException e) {
-			throw new SystemException(e);
-		}
+		MonthIdentity cureMonthId = _coreDriver.getCurMonthId();
 		_coreDriver.logDebugInfo(
 				this.getClass(),
 				75,
 				String.format("Current month identity is %s",
-						monthId.toString()), MessageType.INFO);
+						cureMonthId.toString()), MessageType.INFO);
 
 		_coreDriver.logDebugInfo(this.getClass(), 75, String.format(
 				"Starting month identity is %s", _coreDriver.getStartMonthId()
 						.toString()), MessageType.INFO);
+		try {
+			for (MonthIdentity startId = _coreDriver.getStartMonthId(); startId
+					.compareTo(cureMonthId) < 0; startId = startId.addMonth()) {
+				HeadEntityCollection collection = load(startId);
+				if (collection.isClosed() == false) {
+					throw new TransactionDataFileFormatException(
+							startId.toString());
+				}
 
-		for (MonthIdentity startId = _coreDriver.getStartMonthId(); startId
-				.compareTo(monthId) <= 0; startId = startId.addMonth()) {
-			try {
-				load(startId, messages);
-			} catch (TransactionDataFileFormatException e) {
-				// nothing need to handle. whatever happen, the head collection
-				// for the month identity has been add to the list.
-				_coreDriver.logDebugInfo(this.getClass(), 93, e.toString(),
-						MessageType.ERROR);
-			} catch (NoTransactionDataFileException e) {
-				// nothing need to handle. whatever happen, the head collection
-				// for the month identity has been add to the list.
-				_coreDriver.logDebugInfo(this.getClass(), 99, e.toString(),
-						MessageType.ERROR);
 			}
+			// load current month identity
+			load(cureMonthId);
+		} catch (NoTransactionDataFileException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 99, e.toString(),
+					MessageType.ERROR);
+			throw new TransactionDataFileFormatException("");
 		}
 	}
 
@@ -110,7 +90,7 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @throws SystemException
 	 * @throws MandatoryFieldIsMissing
 	 */
-	public void load(MonthIdentity monthId, ArrayList<CoreMessage> messages)
+	public HeadEntityCollection load(MonthIdentity monthId)
 			throws TransactionDataFileFormatException,
 			NoTransactionDataFileException {
 		_coreDriver.logDebugInfo(
@@ -154,9 +134,6 @@ public class TransactionDataManagement extends ManagementBase {
 			}
 			// no root element
 			if (rootElem == null) {
-				messages.add(new CoreMessage(
-						CoreMessage.ERR_FILE_NOT_ROOT_ELEM, MessageType.ERROR,
-						new NoRootElem()));
 				throw new TransactionDataFileFormatException(filePath);
 			}
 
@@ -167,7 +144,8 @@ public class TransactionDataManagement extends ManagementBase {
 					Element elem = (Element) child;
 					if (elem.getNodeName().equals(TransDataUtils.XML_DOCUMENT)) {
 
-						HeadEntity head = HeadEntity.parse(_coreDriver, elem);
+						HeadEntity head = HeadEntity.parse(_coreDriver,
+								_masterDataMgmt, elem);
 						_coreDriver
 								.logDebugInfo(
 										this.getClass(),
@@ -179,6 +157,11 @@ public class TransactionDataManagement extends ManagementBase {
 										MessageType.INFO);
 						colletion.add(head);
 
+						if (head.getDocText().equals(
+								HeadEntityCollection.CLOSING_DOC_TAG)) {
+							colletion.setClosingDoc(head);
+						}
+
 						// raise load document
 						_coreDriver.getListenersManagement()
 								.loadDoc(this, head);
@@ -186,6 +169,7 @@ public class TransactionDataManagement extends ManagementBase {
 				}
 			}
 
+			return colletion;
 		} catch (ParserConfigurationException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 170, e.toString(),
 					MessageType.ERROR);
@@ -193,23 +177,14 @@ public class TransactionDataManagement extends ManagementBase {
 		} catch (SAXException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 170, e.toString(),
 					MessageType.ERROR);
-			messages.add(new CoreMessage(CoreMessage.ERR_FILE_FORMAT_ERROR,
-					MessageType.ERROR, new TransactionDataFileFormatException(
-							filePath)));
 			throw new TransactionDataFileFormatException(filePath);
 		} catch (IOException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 170, e.toString(),
 					MessageType.ERROR);
-			messages.add(new CoreMessage(String.format(
-					CoreMessage.ERR_FILE_NOT_EXISTS, filePath),
-					MessageType.ERROR, e));
 			throw new NoTransactionDataFileException(filePath);
 		} catch (TransactionDataFileFormatException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 170, e.toString(),
 					MessageType.ERROR);
-			messages.add(new CoreMessage(String.format(
-					CoreMessage.ERR_FILE_FORMAT_ERROR, filePath),
-					MessageType.ERROR, e));
 			throw new TransactionDataFileFormatException(filePath);
 		}
 
@@ -353,8 +328,7 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @param msgs
 	 * @return
 	 */
-	public HeadEntity reverseDocument(DocumentIdentity docId,
-			ArrayList<CoreMessage> msgs) {
+	public HeadEntity reverseDocument(DocumentIdentity docId) {
 		_coreDriver.logDebugInfo(this.getClass(), 348,
 				"Start reversing document " + docId.toString(),
 				MessageType.INFO);
@@ -362,14 +336,12 @@ public class TransactionDataManagement extends ManagementBase {
 		try {
 			HeadEntity orgHead = this.getEntity(docId);
 			if (orgHead == null) {
-				msgs.add(new CoreMessage("No such document" + docId.toString(),
-						MessageType.WARNING, null));
 				_coreDriver.logDebugInfo(this.getClass(), 348,
 						"No such document", MessageType.WARNING);
 				return null;
 			}
 
-			HeadEntity head = new HeadEntity(_coreDriver);
+			HeadEntity head = new HeadEntity(_coreDriver, _masterDataMgmt);
 			head.setPostingDate(orgHead.getPostingDate());
 			head.setDocumentType(orgHead.getDocumentType());
 
@@ -401,7 +373,7 @@ public class TransactionDataManagement extends ManagementBase {
 
 			_coreDriver.logDebugInfo(this.getClass(), 392,
 					"Save the reverse document", MessageType.INFO);
-			boolean ret = head.save(msgs, false);
+			boolean ret = head.save(false);
 			if (ret == false) {
 				return null;
 			}
@@ -422,7 +394,7 @@ public class TransactionDataManagement extends ManagementBase {
 			String info = String.format(
 					"Document %s is reversed by document %s.",
 					orgHead.getDocumentNumber(), head.getDocumentNumber());
-			msgs.add(new CoreMessage(info, MessageType.INFO, null));
+
 			_coreDriver.logDebugInfo(this.getClass(), 416, info,
 					MessageType.INFO);
 			return head;
@@ -479,7 +451,7 @@ public class TransactionDataManagement extends ManagementBase {
 		for (MonthIdentity m : monthIds) {
 			ret.addAll(getDocsArrayList(m));
 		}
-		
+
 		return ret;
 	}
 
@@ -520,5 +492,44 @@ public class TransactionDataManagement extends ManagementBase {
 	 */
 	public void clear() {
 		_list.clear();
+	}
+
+	@Override
+	public void establishFiles() {
+		// set up transaction data folder
+		String transFolderPath = String.format("%s/%s",
+				_coreDriver.getRootPath(), TRANSACTION_DATA_FOLDER);
+		File transFolder = new File(transFolderPath);
+		if (!transFolder.exists()) {
+			_coreDriver
+					.logDebugInfo(
+							this.getClass(),
+							125,
+							"Transaction data root folder does not exist. Make directory.",
+							MessageType.INFO);
+			transFolder.mkdir();
+		}
+
+		MonthIdentity monthId = _coreDriver.getStartMonthId();
+		// create transaction file
+		HeadEntityCollection collection = new HeadEntityCollection(monthId);
+		String xdoc = collection.toXML();
+
+		String filePath = generateFilePath(monthId);
+		try {
+			File file = new File(filePath);
+			if (!file.exists()) {
+
+				file.createNewFile();
+
+			}
+			FileWriter writer = new FileWriter(file);
+			writer.write(xdoc, 0, xdoc.length());
+			writer.close();
+		} catch (IOException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 530, e.toString(),
+					MessageType.ERROR);
+			throw new SystemException(e);
+		}
 	}
 }

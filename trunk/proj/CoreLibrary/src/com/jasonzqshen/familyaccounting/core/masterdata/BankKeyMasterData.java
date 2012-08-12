@@ -13,8 +13,8 @@ public class BankKeyMasterData extends MasterDataBase {
 	 * @param parser
 	 * @throws NullValueNotAcceptable
 	 */
-	public BankKeyMasterData(CoreDriver coreDriver, MasterDataIdentity id,
+	public BankKeyMasterData(CoreDriver coreDriver, MasterDataManagement management, MasterDataIdentity id,
 			String descp) throws NullValueNotAcceptable {
-		super(coreDriver, id, descp);
+		super(coreDriver, management, id, descp);
 	}
 }

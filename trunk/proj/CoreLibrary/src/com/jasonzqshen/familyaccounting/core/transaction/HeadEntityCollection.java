@@ -6,14 +6,46 @@ import java.util.Hashtable;
 
 import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
+/**
+ * Month ledger
+ * 
+ * @author I072485
+ * 
+ */
 public class HeadEntityCollection {
+	public static final String CLOSING_DOC_TAG = "month_end_closing";
 
 	private final Hashtable<DocumentIdentity, HeadEntity> _list;
 	public final MonthIdentity _monthId;
+	private boolean _isClosed;
+	private HeadEntity _closingDoc;
 
 	public HeadEntityCollection(MonthIdentity monthId) {
 		_monthId = monthId;
 		_list = new Hashtable<DocumentIdentity, HeadEntity>();
+		_isClosed = true;
+	}
+
+
+	/**
+	 * set closing document
+	 */
+	void setClosingDoc(HeadEntity doc) {
+		_closingDoc = doc;
+		_isClosed = true;
+	}
+
+	/**
+	 * check whether it is closed.
+	 * 
+	 * @return
+	 */
+	public boolean isClosed() {
+		return _isClosed;
+	}
+
+	public HeadEntity getClosingDoc() {
+		return _closingDoc;
 	}
 
 	/**

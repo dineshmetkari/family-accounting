@@ -1,12 +1,10 @@
 package com.jasonzqshen.familyaccounting.core.document_entries;
 
-import java.util.ArrayList;
 
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.NoFieldNameException;
 import com.jasonzqshen.familyaccounting.core.exception.NotInValueRangeException;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 
 public interface IDocumentEntry {
 
@@ -31,7 +29,7 @@ public interface IDocumentEntry {
 	 * 
 	 * @throws MandatoryFieldIsMissing
 	 */
-	void save(ArrayList<CoreMessage> msg) throws MandatoryFieldIsMissing;
+	void save(boolean saved) throws MandatoryFieldIsMissing;
 
 	/**
 	 * is saved

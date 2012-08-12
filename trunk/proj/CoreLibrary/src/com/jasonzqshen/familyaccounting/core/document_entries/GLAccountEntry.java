@@ -1,6 +1,5 @@
 package com.jasonzqshen.familyaccounting.core.document_entries;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
@@ -15,7 +14,6 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAcc
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
@@ -109,10 +107,11 @@ public class GLAccountEntry implements IDocumentEntry {
 		}
 	}
 
-	public void save(ArrayList<CoreMessage> msg) throws MandatoryFieldIsMissing {
+	public void save(boolean store) throws MandatoryFieldIsMissing {
 		checkBeforeSave();
 		try {
-			HeadEntity head = new HeadEntity(_coreDriver);
+			HeadEntity head = new HeadEntity(_coreDriver,
+					_coreDriver.getMasterDataManagement());
 			head.setPostingDate(_pstDate);
 			head.setDocText(_text);
 			head.setDocumentType(DocumentType.GL);
@@ -125,7 +124,7 @@ public class GLAccountEntry implements IDocumentEntry {
 			dstItem.setAmount(CreditDebitIndicator.DEBIT, _amount);
 			dstItem.setGLAccount(_dstAccount);
 
-			boolean ret = head.save(msg, true);
+			boolean ret = head.save(store);
 			if (ret) {
 				_isSaved = true;
 				_doc = head;

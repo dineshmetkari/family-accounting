@@ -13,8 +13,8 @@ public class CustomerMasterData extends MasterDataBase {
 	 * @param parser
 	 * @throws NullValueNotAcceptable 
 	 */
-	public CustomerMasterData(CoreDriver coreDriver, MasterDataIdentity id,
+	public CustomerMasterData(CoreDriver coreDriver, MasterDataManagement management, MasterDataIdentity id,
 			String descp) throws NullValueNotAcceptable {
-		super(coreDriver, id, descp);
+		super(coreDriver, management, id, descp);
 	}
 }

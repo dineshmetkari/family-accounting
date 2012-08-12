@@ -22,10 +22,10 @@ public class GLAccountMasterData extends MasterDataBase {
 	 * @throws NoGLAccountGroupException
 	 */
 	public GLAccountMasterData(CoreDriver coreDriver,
-			MasterDataIdentity_GLAccount id, String descp)
-			throws NullValueNotAcceptable, MasterDataIdentityNotDefined,
-			NoGLAccountGroupException {
-		this(coreDriver, id, descp, null);
+			MasterDataManagement management, MasterDataIdentity_GLAccount id,
+			String descp) throws NullValueNotAcceptable,
+			MasterDataIdentityNotDefined, NoGLAccountGroupException {
+		this(coreDriver, management, id, descp, null);
 	}
 
 	/**
@@ -40,10 +40,11 @@ public class GLAccountMasterData extends MasterDataBase {
 	 * @throws NoGLAccountGroupException
 	 */
 	public GLAccountMasterData(CoreDriver coreDriver,
-			MasterDataIdentity_GLAccount id, String descp,
-			MasterDataIdentity bankAccount) throws NullValueNotAcceptable,
-			MasterDataIdentityNotDefined, NoGLAccountGroupException {
-		super(coreDriver, id, descp);
+			MasterDataManagement management, MasterDataIdentity_GLAccount id,
+			String descp, MasterDataIdentity bankAccount)
+			throws NullValueNotAcceptable, MasterDataIdentityNotDefined,
+			NoGLAccountGroupException {
+		super(coreDriver, management, id, descp);
 		// check id and get group
 		String groupId = id.toString().substring(0, 4);
 		try {
@@ -52,11 +53,10 @@ public class GLAccountMasterData extends MasterDataBase {
 			throw new NoGLAccountGroupException(groupId);
 		}
 
-		MasterDataManagement management = _coreDriver.getMasterDataManagement();
 		if (bankAccount == null) {
 			_bankAccount = null;
 		} else {
-			MasterDataBase bankAccountId = management.getMasterData(
+			MasterDataBase bankAccountId = _management.getMasterData(
 					bankAccount, MasterDataType.BANK_ACCOUNT);
 			if (bankAccountId == null) {
 				throw new MasterDataIdentityNotDefined(bankAccount,

@@ -22,7 +22,7 @@ import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.format.DocumentIdentityFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.TransactionDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
@@ -42,11 +42,13 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	boolean _isReversed;
 	DocumentIdentity _ref;
 	public final CoreDriver _coreDriver;
+	public final MasterDataManagement _management;
 	private final ArrayList<ItemEntity> _items;
 	private boolean _isSaved;
 
-	public HeadEntity(CoreDriver coreDriver) {
+	public HeadEntity(CoreDriver coreDriver, MasterDataManagement management) {
 		_coreDriver = coreDriver;
+		_management = management;
 		_items = new ArrayList<ItemEntity>();
 
 		_postingDate = null;
@@ -242,7 +244,8 @@ public class HeadEntity implements Comparable<HeadEntity> {
 		}
 
 		int lineNum = _items.size();
-		ItemEntity item = new ItemEntity(_coreDriver, this, lineNum);
+		ItemEntity item = new ItemEntity(_coreDriver, _management, this,
+				lineNum);
 		_items.add(item);
 
 		return item;
@@ -261,9 +264,10 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	 * @throws TransactionDataFileFormatException
 	 * @throws SystemException
 	 */
-	public static HeadEntity parse(CoreDriver coreDriver, Element elem)
+	public static HeadEntity parse(CoreDriver coreDriver,
+			MasterDataManagement management, Element elem)
 			throws TransactionDataFileFormatException {
-		HeadEntity head = new HeadEntity(coreDriver);
+		HeadEntity head = new HeadEntity(coreDriver, management);
 		head._isSaved = true;
 
 		// document number
@@ -350,8 +354,8 @@ public class HeadEntity implements Comparable<HeadEntity> {
 				if (child instanceof Element) {
 					Element itemElem = (Element) child;
 					if (itemElem.getNodeName().equals(TransDataUtils.XML_ITEM)) {
-						ItemEntity item = ItemEntity.parse(coreDriver, head,
-								itemElem);
+						ItemEntity item = ItemEntity.parse(coreDriver,
+								management, head, itemElem);
 						item._isSaved = true;
 
 						coreDriver
@@ -429,14 +433,13 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	 *            the flag whether to store the memory to disk
 	 * @return
 	 */
-	public boolean save(ArrayList<CoreMessage> messages, boolean needStore) {
+	public boolean save(boolean needStore) {
 		_coreDriver.logDebugInfo(this.getClass(), 427,
 				"Starting to save document...", MessageType.INFO);
 
 		try {
 			checkBeforeSave();
 		} catch (MandatoryFieldIsMissing e) {
-			messages.add(new CoreMessage(e.toString(), MessageType.ERROR, e));
 			_coreDriver.logDebugInfo(this.getClass(), 433,
 					"Check failed during saving document " + e.toString(),
 					MessageType.ERROR);
@@ -445,7 +448,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 			_coreDriver.logDebugInfo(this.getClass(), 437,
 					"Check failed during saving document " + e.toString(),
 					MessageType.INFO);
-			messages.add(new CoreMessage(e.toString(), MessageType.ERROR, e));
 			return false;
 		}
 
@@ -467,7 +469,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 		String info = String.format("Document %s in %s saved successfully.",
 				_docNumber, _monthId);
 		_coreDriver.logDebugInfo(this.getClass(), 459, info, MessageType.INFO);
-		messages.add(new CoreMessage(info, MessageType.INFO, null));
 		_isSaved = true;
 
 		// raise saved document
