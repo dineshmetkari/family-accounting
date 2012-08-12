@@ -1,10 +1,10 @@
 <root>
-	<document doc_num="1000000001" fiscal_year="2012" fiscal_month="07" date="2012.07.02" text="test" doc_type="S" is_reversed="false" ref="1000000002_2012_07">
-		<item line_num="0" account_type="S" gl_account="1000100001" amount="100" cd_indicator="D" business_area="WORK"/>
+	<document doc_num="1000000001" fiscal_year="2012" fiscal_month="07" date="2012.07.02" text="test" doc_type="K" is_reversed="false" ref="1000000002_2012_07">
+		<item line_num="0" account_type="S" gl_account="5000100001" amount="100" cd_indicator="D" business_area="WORK"/>
 		<item line_num="1" account_type="K" vendor="BUS" gl_account="1000100002" amount="100" cd_indicator="C" />
 	</document>
-	<document doc_num="1000000002" fiscal_year="2012" fiscal_month="07" date="2012.07.02" text="test" doc_type="S" is_reversed="false">
-		<item line_num="0" account_type="S" gl_account="1000100001" amount="100" cd_indicator="D" business_area="WORK"/>
-		<item line_num="1" account_type="D" customer="MS" gl_account="1000100002" amount="100" cd_indicator="C" />
+	<document doc_num="1000000002" fiscal_year="2012" fiscal_month="07" date="2012.07.02" text="test" doc_type="D" is_reversed="false">
+		<item line_num="0" account_type="S" gl_account="4010100001" amount="100" cd_indicator="C" />
+		<item line_num="1" account_type="D" customer="MS" gl_account="1000100002" amount="100" cd_indicator="D" />
 	</document>
 </root>
