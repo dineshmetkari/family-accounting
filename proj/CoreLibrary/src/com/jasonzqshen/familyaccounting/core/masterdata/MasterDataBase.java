@@ -15,14 +15,16 @@ public abstract class MasterDataBase {
 
 	protected final MasterDataIdentity _identity;
 	protected String _descp; // description
-	protected final CoreDriver _coreDriver; // core driver
+	protected final MasterDataManagement _management; // core driver
+	protected final CoreDriver _coreDriver;
 
-	protected MasterDataBase(CoreDriver coreDriver, MasterDataIdentity id,
-			String descp) throws NullValueNotAcceptable {
+	protected MasterDataBase(CoreDriver coreDriver, MasterDataManagement management,
+			MasterDataIdentity id, String descp) throws NullValueNotAcceptable {
 		if (id == null) {
 			throw new NullValueNotAcceptable("Identity");
 		}
 		_coreDriver = coreDriver;
+		_management = management;
 		_identity = id;
 
 		_descp = descp;
@@ -59,23 +61,20 @@ public abstract class MasterDataBase {
 	protected void setDirtyData() {
 		MasterDataFactoryBase factory = null;
 		if (this instanceof BankAccountMasterData) {
-			factory = _coreDriver.getMasterDataManagement()
+			factory = _management
 					.getMasterDataFactory(MasterDataType.BANK_ACCOUNT);
 		} else if (this instanceof BankKeyMasterData) {
-			factory = _coreDriver.getMasterDataManagement()
-					.getMasterDataFactory(MasterDataType.BANK_KEY);
+			factory = _management.getMasterDataFactory(MasterDataType.BANK_KEY);
 		} else if (this instanceof BusinessAreaMasterData) {
-			factory = _coreDriver.getMasterDataManagement()
+			factory = _management
 					.getMasterDataFactory(MasterDataType.BUSINESS_AREA);
 		} else if (this instanceof CustomerMasterData) {
-			factory = _coreDriver.getMasterDataManagement()
-					.getMasterDataFactory(MasterDataType.CUSTOMER);
+			factory = _management.getMasterDataFactory(MasterDataType.CUSTOMER);
 		} else if (this instanceof GLAccountMasterData) {
-			factory = _coreDriver.getMasterDataManagement()
+			factory = _management
 					.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
 		} else if (this instanceof VendorMasterData) {
-			factory = _coreDriver.getMasterDataManagement()
-					.getMasterDataFactory(MasterDataType.VENDOR);
+			factory = _management.getMasterDataFactory(MasterDataType.VENDOR);
 		}
 
 		factory._containDirtyData = true;

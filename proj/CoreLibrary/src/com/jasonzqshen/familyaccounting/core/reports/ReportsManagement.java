@@ -14,7 +14,6 @@ import com.jasonzqshen.familyaccounting.core.listeners.SaveDocumentListener;
 import com.jasonzqshen.familyaccounting.core.masterdata.*;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 
 public class ReportsManagement extends ManagementBase {
@@ -68,7 +67,7 @@ public class ReportsManagement extends ManagementBase {
 				_createMasterListener);
 	}
 
-	public void initialize(ArrayList<CoreMessage> messages) {
+	public void initialize() {
 
 	}
 
@@ -135,6 +134,12 @@ public class ReportsManagement extends ManagementBase {
 
 	public void clear() {
 		_glAccountBalance.clear();
+	}
+
+	@Override
+	public void establishFiles() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

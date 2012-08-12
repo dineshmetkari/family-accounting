@@ -23,6 +23,8 @@ import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 
 public class ItemEntity implements Comparable<ItemEntity> {
 	public final CoreDriver _coreDriver;
+	public final MasterDataManagement _management;
+
 	private final HeadEntity _head;
 	private final int _lineNum;
 	private MasterDataIdentity_GLAccount _glAccount;
@@ -44,8 +46,10 @@ public class ItemEntity implements Comparable<ItemEntity> {
 	 * @param head
 	 * @param lineNum
 	 */
-	ItemEntity(CoreDriver coreDriver, HeadEntity head, int lineNum) {
+	ItemEntity(CoreDriver coreDriver, MasterDataManagement management,
+			HeadEntity head, int lineNum) {
 		_coreDriver = coreDriver;
+		_management = management;
 
 		_head = head;
 		_lineNum = lineNum;
@@ -96,8 +100,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 		if (glAccount == null) {
 			throw new NullValueNotAcceptable("G/L account");
 		}
-		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataBase accountId = management.getMasterData(glAccount,
+		MasterDataBase accountId = _management.getMasterData(glAccount,
 				MasterDataType.GL_ACCOUNT);
 		if (accountId == null) {
 			throw new MasterDataIdentityNotDefined(glAccount,
@@ -138,8 +141,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 		if (customer == null) {
 			throw new NullValueNotAcceptable("Customer");
 		}
-		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataBase customerId = management.getMasterData(customer,
+		MasterDataBase customerId = _management.getMasterData(customer,
 				MasterDataType.CUSTOMER);
 		if (customerId == null) {
 			throw new MasterDataIdentityNotDefined(customer,
@@ -150,7 +152,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 		if (glAccount == null) {
 			throw new NullValueNotAcceptable("G/L account");
 		}
-		MasterDataIdentity accountId = management.getMasterData(glAccount,
+		MasterDataIdentity accountId = _management.getMasterData(glAccount,
 				MasterDataType.GL_ACCOUNT).getIdentity();
 		if (accountId == null) {
 			throw new MasterDataIdentityNotDefined(glAccount,
@@ -191,8 +193,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 		if (vendor == null) {
 			throw new NullValueNotAcceptable("Vendor");
 		}
-		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataBase vendorId = management.getMasterData(vendor,
+		MasterDataBase vendorId = _management.getMasterData(vendor,
 				MasterDataType.VENDOR);
 		if (vendorId == null) {
 			throw new MasterDataIdentityNotDefined(vendor,
@@ -203,7 +204,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 		if (glAccount == null) {
 			throw new NullValueNotAcceptable("G/L account");
 		}
-		MasterDataIdentity accountId = management.getMasterData(glAccount,
+		MasterDataIdentity accountId = _management.getMasterData(glAccount,
 				MasterDataType.GL_ACCOUNT).getIdentity();
 		if (accountId == null) {
 			throw new MasterDataIdentityNotDefined(glAccount,
@@ -286,8 +287,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 			return true;
 		}
 
-		MasterDataManagement management = _coreDriver.getMasterDataManagement();
-		MasterDataBase accountId = management.getMasterData(businessArea,
+		MasterDataBase accountId = _management.getMasterData(businessArea,
 				MasterDataType.BUSINESS_AREA);
 		if (accountId == null) {
 			throw new MasterDataIdentityNotDefined(businessArea,
@@ -383,8 +383,9 @@ public class ItemEntity implements Comparable<ItemEntity> {
 	 * @return
 	 * @throws TransactionDataFileFormatException
 	 */
-	public static ItemEntity parse(CoreDriver coreDriver, HeadEntity head,
-			Element elem) throws TransactionDataFileFormatException {
+	public static ItemEntity parse(CoreDriver coreDriver,
+			MasterDataManagement management, HeadEntity head, Element elem)
+			throws TransactionDataFileFormatException {
 		// line number
 		String lineNumStr = elem.getAttribute(TransDataUtils.XML_LINE_NUM);
 		if (StringUtility.isNullOrEmpty(lineNumStr)) {
@@ -442,7 +443,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 
 		try {
 			int lineNum = Integer.parseInt(lineNumStr);
-			ItemEntity newItem = new ItemEntity(coreDriver, head, lineNum);
+			ItemEntity newItem = new ItemEntity(coreDriver, management, head, lineNum);
 
 			AccountType type = AccountType.parse(typeStr.charAt(0));
 			MasterDataIdentity_GLAccount glAccount = new MasterDataIdentity_GLAccount(

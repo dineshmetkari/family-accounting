@@ -1,19 +1,28 @@
 package com.jasonzqshen.familyaccounting.core;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Hashtable;
 
-import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFileException;
+import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
+import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
-import com.jasonzqshen.familyaccounting.core.exception.format.MasterDataFileFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.format.FormatException;
+import com.jasonzqshen.familyaccounting.core.exception.format.MetaDataFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.listeners.ListenersManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
-import com.jasonzqshen.familyaccounting.core.reports.ReportsManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.DebugInformation;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
@@ -28,41 +37,43 @@ import com.jasonzqshen.familyaccounting.core.utils.MessageType;
  * 
  */
 public class CoreDriver {
-	private static CoreDriver _instance;
+	public static final String META_DATA = "metadata.txt";
+	public static final String START_YEAR_TAG = "start_year";
+	public static final String START_MONTH_TAG = "start_month";
+	public static final String CUR_YEAR_TAG = "cur_year";
+	public static final String CUR_MONTH_TAG = "cur_month";
 
-	/**
-	 * singleton
-	 * 
-	 * @return
-	 */
-	public static CoreDriver getInstance() {
-		if (_instance == null) {
-			_instance = new CoreDriver();
-		}
-		return _instance;
-	}
+	public static final String MASTERDATA = "MD";
+	public static final String TRANDATA = "TD";
 
 	private final ListenersManagement _listenerManagement;
 	private String _applicationRootPath;
-	private MonthIdentity _monthId;
+	private MonthIdentity _startMonthId;
+	private MonthIdentity _curMonthId;
+	private boolean _isInitialized;
 
-	private final ArrayList<ManagementBase> _managements;
-
+	private final Hashtable<String, ManagementBase> _managements;
 	private ArrayList<DebugInformation> _infos;
 
 	/**
 	 * singleton
 	 */
-	private CoreDriver() {
+	public CoreDriver() {
 		_infos = new ArrayList<DebugInformation>();
 
 		_listenerManagement = new ListenersManagement();
 
 		// managements
-		_managements = new ArrayList<ManagementBase>();
-		_managements.add(new MasterDataManagement(this)); // 0
-		_managements.add(new TransactionDataManagement(this)); // 1
-		_managements.add(new ReportsManagement(this));// 2
+		_managements = new Hashtable<String, ManagementBase>();
+		_managements.put(MASTERDATA, new MasterDataManagement(this));
+		_managements.put(TRANDATA, new TransactionDataManagement(this,
+				(MasterDataManagement) _managements.get(MASTERDATA)));
+
+		_curMonthId = null;
+		_startMonthId = null;
+
+		_applicationRootPath = null;
+		_isInitialized = false;
 	}
 
 	/**
@@ -102,9 +113,7 @@ public class CoreDriver {
 	 *             system bug
 	 * @throws RootFolderNotExsits
 	 */
-	public void init(ArrayList<CoreMessage> messages)
-			throws RootFolderNotExsits, NoMasterDataFileException,
-			MasterDataFileFormatException {
+	private void init() throws RootFolderNotExsits, FormatException {
 		this.logDebugInfo(this.getClass(), 96, "Core driver initializing...",
 				MessageType.INFO);
 
@@ -116,33 +125,20 @@ public class CoreDriver {
 					_applicationRootPath), MessageType.ERROR);
 			throw new RootFolderNotExsits(_applicationRootPath);
 		}
-		String masterFolderPath = String.format("%s/%s", _applicationRootPath,
-				MasterDataManagement.MASTER_DATA_FOLDER);
 
-		// set up master data folder
-		File masterFolder = new File(masterFolderPath);
-		if (!masterFolder.exists()) {
-			this.logDebugInfo(this.getClass(), 113,
-					"Master data root folder does not exist. Make directory.",
-					MessageType.INFO);
-			masterFolder.mkdir();
-		}
-		// set up transaction data folder
-		String transFolderPath = String.format("%s/%s", _applicationRootPath,
-				TransactionDataManagement.TRANSACTION_DATA_FOLDER);
-		File transFolder = new File(transFolderPath);
-		if (!transFolder.exists()) {
-			this.logDebugInfo(
-					this.getClass(),
-					125,
-					"Transaction data root folder does not exist. Make directory.",
-					MessageType.INFO);
-			transFolder.mkdir();
-		}
-
+		ManagementBase m1;
+		m1 = _managements.get(MASTERDATA);
+		m1.initialize();
+		m1 = _managements.get(TRANDATA);
+		m1.initialize();
 		// initialize management
-		for (ManagementBase m : _managements) {
-			m.initialize(messages);
+		for (ManagementBase m : _managements.values()) {
+			if (m instanceof TransactionDataManagement
+					|| m instanceof MasterDataManagement) {
+				continue;
+			}
+
+			m.initialize();
 		}
 
 		this.logDebugInfo(this.getClass(), 134,
@@ -150,21 +146,189 @@ public class CoreDriver {
 	}
 
 	/**
-	 * set application root path
-	 * 
-	 * @param rootPath
+	 * restart the core
 	 */
-	public void setRootPath(String rootPath) {
-		_applicationRootPath = rootPath;
+	public void restart() {
+		clear();
+
+		// check root folder
+		File file = new File(_applicationRootPath);
+		if (file.exists()) {
+			if (!file.isDirectory()) {
+				return;
+			}
+
+			File[] files = file.listFiles();
+			if (files.length != 0) {
+				// load meta data
+				try {
+					loadMetaData();
+					init();
+
+					_isInitialized = true;
+				} catch (RootFolderNotExsits e) {
+					this.logDebugInfo(this.getClass(), 210, e.toString(),
+							MessageType.ERROR);
+					this.clear();
+					throw new SystemException(e); // bug
+				} catch (FormatException e) {
+					this.logDebugInfo(this.getClass(), 210, e.toString(),
+							MessageType.ERROR);
+					// no handler
+					this.clear();
+				}
+				return;
+			}
+		}
+
+		// folder not exist or folder is empty
+		if (!file.exists()) {
+			file.mkdir();
+		}
+
+		establishFolder();
 	}
 
 	/**
-	 * set month identity
+	 * set application root path, which will trigger initialize the core. the
+	 * root folder is empty or it should follow the root folder format. If you
+	 * would like to know whether it restart successfully, you could check with
+	 * the method "isInitialized"
 	 * 
-	 * @param monthId
+	 * @param rootPath
+	 *            if the parameter passed in is NULL, nothing will happen.
 	 */
-	public void setStartMonthID(MonthIdentity monthId) {
-		_monthId = monthId;
+	public void setRootPath(String rootPath) {
+		if (rootPath == null) {
+			return;
+		}
+		if (_applicationRootPath == rootPath) {
+			return;
+		}
+
+		_applicationRootPath = rootPath; // set the root path and restart
+		this.restart();
+	}
+
+	/**
+	 * 
+	 * @throws MetaDataFormatException
+	 */
+	private void loadMetaData() throws MetaDataFormatException {
+		String filePath = String.format("%s/%s", _applicationRootPath,
+				META_DATA);
+
+		FileInputStream fstream;
+		try {
+			fstream = new FileInputStream(filePath);
+			// Get the object of DataInputStream
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+			String line;
+			int startYear = 0;
+			int startMonth = 0;
+			int curYear = 0;
+			int curMonth = 0;
+			while ((line = br.readLine()) != null) {
+				String[] values = line.split("=");
+				if (values.length != 2) {
+					throw new MetaDataFormatException("Meta data format error.");
+				}
+
+				if (values[0].equals(CUR_MONTH_TAG)) {
+					curMonth = Integer.parseInt(values[1]);
+				} else if (values[0].equals(CUR_YEAR_TAG)) {
+					curYear = Integer.parseInt(values[1]);
+				} else if (values[0].equals(START_MONTH_TAG)) {
+					startMonth = Integer.parseInt(values[1]);
+				} else if (values[0].equals(START_YEAR_TAG)) {
+					startYear = Integer.parseInt(values[1]);
+				}
+			}
+
+			_startMonthId = new MonthIdentity(startYear, startMonth);
+			_curMonthId = new MonthIdentity(curYear, curMonth);
+		} catch (FileNotFoundException e) {
+			throw new MetaDataFormatException(e.toString());
+		} catch (IOException e) {
+			throw new MetaDataFormatException(e.toString());
+		} catch (NumberFormatException e) {
+			throw new MetaDataFormatException(e.toString());
+		} catch (FiscalYearRangeException e) {
+			throw new MetaDataFormatException(e.toString());
+		} catch (FiscalMonthRangeException e) {
+			throw new MetaDataFormatException(e.toString());
+		}
+
+	}
+
+	/**
+	 * save meta data
+	 */
+	private void saveMetaData() {
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append(String.format("%s=%d\n", CUR_MONTH_TAG,
+				_curMonthId._fiscalMonth));
+		strBuilder.append(String.format("%s=%d\n", CUR_YEAR_TAG,
+				_curMonthId._fiscalYear));
+		strBuilder.append(String.format("%s=%d\n", START_MONTH_TAG,
+				_startMonthId._fiscalMonth));
+		strBuilder.append(String.format("%s=%d\n", START_YEAR_TAG,
+				_startMonthId._fiscalYear));
+		// save meta data file
+		String filePath = String.format("%s/%s", _applicationRootPath,
+				META_DATA);
+		File file = new File(filePath);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				logDebugInfo(this.getClass(), 309, e.toString(),
+						MessageType.ERROR);
+				throw new SystemException(e);
+			}
+		}
+
+		try {
+			FileWriter writer = new FileWriter(file);
+			writer.write(strBuilder.toString(), 0, strBuilder.length());
+			writer.close();
+		} catch (IOException e) {
+			logDebugInfo(this.getClass(), 320, e.toString(), MessageType.ERROR);
+			throw new SystemException(e);
+		}
+
+	}
+
+	/**
+	 * establish master data folder
+	 */
+	private void establishFolder() {
+		// set meta data
+		Calendar calendar = Calendar.getInstance();
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH) + 1;
+
+		try {
+			_startMonthId = new MonthIdentity(year, month);
+			_curMonthId = new MonthIdentity(year, month);
+		} catch (FiscalYearRangeException e) {
+			this.logDebugInfo(this.getClass(), 300, e.toString(),
+					MessageType.ERROR);
+			throw new SystemException(e);// bug
+		} catch (FiscalMonthRangeException e) {
+			this.logDebugInfo(this.getClass(), 302, e.toString(),
+					MessageType.ERROR);
+			throw new SystemException(e);// bug
+		}
+
+		saveMetaData();
+
+		for (ManagementBase management : _managements.values()) {
+			management.establishFiles();
+		}
+
 	}
 
 	/**
@@ -173,7 +337,23 @@ public class CoreDriver {
 	 * @return month identity
 	 */
 	public MonthIdentity getStartMonthId() {
-		return _monthId;
+		return _startMonthId;
+	}
+
+	/**
+	 * get current month identity
+	 * 
+	 * @return
+	 */
+	public MonthIdentity getCurMonthId() {
+		return _curMonthId;
+	}
+
+	/**
+	 * check whether is initialized
+	 */
+	public boolean isInitialized() {
+		return _isInitialized;
 	}
 
 	/**
@@ -186,12 +366,25 @@ public class CoreDriver {
 	}
 
 	/**
+	 * get management
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public ManagementBase getManagement(String str) {
+		if (!this.isInitialized()) {
+			return null;
+		}
+		return _managements.get(str);
+	}
+
+	/**
 	 * get master data management
 	 * 
 	 * @return
 	 */
 	public MasterDataManagement getMasterDataManagement() {
-		return (MasterDataManagement) _managements.get(0);
+		return (MasterDataManagement) getManagement(MASTERDATA);
 	}
 
 	/**
@@ -200,16 +393,7 @@ public class CoreDriver {
 	 * @return
 	 */
 	public TransactionDataManagement getTransDataManagement() {
-		return (TransactionDataManagement) _managements.get(1);
-	}
-
-	/**
-	 * get reports management
-	 * 
-	 * @return
-	 */
-	public ReportsManagement getReportsManagement() {
-		return (ReportsManagement) _managements.get(2);
+		return (TransactionDataManagement) getManagement(TRANDATA);
 	}
 
 	/**
@@ -224,12 +408,13 @@ public class CoreDriver {
 	/**
 	 * clear
 	 */
-	public void clear() {
-		for (ManagementBase m : _managements) {
+	private void clear() {
+		for (ManagementBase m : _managements.values()) {
 			m.clear();
 		}
 
 		_infos.clear();
+		_isInitialized = false;
 	}
 
 }

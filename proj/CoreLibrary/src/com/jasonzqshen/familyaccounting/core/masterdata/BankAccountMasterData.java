@@ -29,16 +29,15 @@ public class BankAccountMasterData extends MasterDataBase {
 	 * @throws MasterDataIdentityNotDefined
 	 * @throws NullValueNotAcceptable
 	 */
-	public BankAccountMasterData(CoreDriver coreDriver, MasterDataIdentity id,
-			String descp, BankAccountNumber accNumber,
+	public BankAccountMasterData(CoreDriver coreDriver, MasterDataManagement management,
+			MasterDataIdentity id, String descp, BankAccountNumber accNumber,
 			MasterDataIdentity bankKey, BankAccountType type)
 			throws MasterDataIdentityNotDefined, NullValueNotAcceptable {
-		super(coreDriver, id, descp);
+		super(coreDriver, management, id, descp);
 
 		_accNumber = accNumber;
 		_bankAccType = type;
 
-		MasterDataManagement management = _coreDriver.getMasterDataManagement();
 		MasterDataBase bankKeyId = management.getMasterData(bankKey,
 				MasterDataType.BANK_KEY);
 		if (bankKeyId == null) {
@@ -90,7 +89,7 @@ public class BankAccountMasterData extends MasterDataBase {
 			throw new NullValueNotAcceptable("Bank Key");
 		}
 
-		MasterDataManagement management = _coreDriver.getMasterDataManagement();
+		MasterDataManagement management = this._management;
 		MasterDataBase bankKeyId = management.getMasterData(bankKey,
 				MasterDataType.BANK_KEY);
 		if (bankKeyId == null) {

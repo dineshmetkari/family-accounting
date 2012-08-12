@@ -1,6 +1,6 @@
 package com.jasonzqshen.familyaccounting.core.exception.format;
 
-public class TransactionDataFileFormatException extends Exception {
+public class TransactionDataFileFormatException extends FormatException {
 
 	/**
 	 * 

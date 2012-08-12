@@ -16,9 +16,9 @@ public class BusinessAreaMasterData extends MasterDataBase {
 	 * @param parser
 	 * @throws NullValueNotAcceptable
 	 */
-	public BusinessAreaMasterData(CoreDriver coreDriver, MasterDataIdentity id,
+	public BusinessAreaMasterData(CoreDriver coreDriver, MasterDataManagement management, MasterDataIdentity id,
 			String descp, CriticalLevel level) throws NullValueNotAcceptable {
-		super(coreDriver, id, descp);
+		super(coreDriver, management, id, descp);
 
 		_criticalLevel = level;
 	}

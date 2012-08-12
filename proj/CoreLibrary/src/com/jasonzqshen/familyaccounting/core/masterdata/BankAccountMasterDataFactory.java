@@ -23,8 +23,9 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 	 * 
 	 * @param coreDriver
 	 */
-	public BankAccountMasterDataFactory(CoreDriver coreDriver) {
-		super(coreDriver);
+	public BankAccountMasterDataFactory(CoreDriver coreDriver,
+			MasterDataManagement management) {
+		super(coreDriver, management);
 	}
 
 	@Override
@@ -67,8 +68,8 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 
 		BankAccountMasterData bankAccount;
 		try {
-			bankAccount = new BankAccountMasterData(_coreDriver, identity,
-					descp, accNumber, bankKey, type);
+			bankAccount = new BankAccountMasterData(_coreDriver, _management,
+					identity, descp, accNumber, bankKey, type);
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}
@@ -79,7 +80,8 @@ public class BankAccountMasterDataFactory extends MasterDataFactoryBase {
 		this._containDirtyData = true;
 
 		// raise create master data
-		_coreDriver.getListenersManagement().createMasterData(this, bankAccount);
+		_coreDriver.getListenersManagement()
+				.createMasterData(this, bankAccount);
 
 		_coreDriver
 				.logDebugInfo(

@@ -1,6 +1,5 @@
 package com.jasonzqshen.familyaccounting.core.document_entries;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
@@ -17,7 +16,6 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
-import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 
@@ -93,7 +91,7 @@ public class CustomerEntry implements IDocumentEntry {
 	 * 
 	 * @param recAcc
 	 * @throws NotInValueRangeException
-	 * @throws NoFieldNameException 
+	 * @throws NoFieldNameException
 	 */
 	public void setRecAccount(MasterDataIdentity_GLAccount recAcc)
 			throws NotInValueRangeException, NoFieldNameException {
@@ -206,11 +204,12 @@ public class CustomerEntry implements IDocumentEntry {
 
 	}
 
-	public void save(ArrayList<CoreMessage> msg) throws MandatoryFieldIsMissing {
+	public void save(boolean store) throws MandatoryFieldIsMissing {
 		checkBeforeSave();
 
 		try {
-			HeadEntity doc = new HeadEntity(_coreDriver);
+			HeadEntity doc = new HeadEntity(_coreDriver,
+					_coreDriver.getMasterDataManagement());
 			doc.setDocText(_text);
 			doc.setDocumentType(DocumentType.CUSTOMER_INVOICE);
 			doc.setPostingDate(_date);
@@ -225,7 +224,7 @@ public class CustomerEntry implements IDocumentEntry {
 			debitItem.setAmount(CreditDebitIndicator.DEBIT, _amount);
 			debitItem.setCustomer(_customer, _recAcc);
 
-			boolean ret = doc.save(msg, true);
+			boolean ret = doc.save(store);
 			if (ret) {
 				_isSaved = true;
 				_doc = doc;

@@ -18,8 +18,9 @@ import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 
 public class BusinessAreaMasterDataFactory extends MasterDataFactoryBase {
 
-	public BusinessAreaMasterDataFactory(CoreDriver coreDriver) {
-		super(coreDriver);
+	public BusinessAreaMasterDataFactory(CoreDriver coreDriver,
+			MasterDataManagement management) {
+		super(coreDriver, management);
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class BusinessAreaMasterDataFactory extends MasterDataFactoryBase {
 		l = (CriticalLevel) objects[0];
 		BusinessAreaMasterData businessArea;
 		try {
-			businessArea = new BusinessAreaMasterData(_coreDriver, identity,
+			businessArea = new BusinessAreaMasterData(_coreDriver, _management, identity,
 					descp, l);
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);

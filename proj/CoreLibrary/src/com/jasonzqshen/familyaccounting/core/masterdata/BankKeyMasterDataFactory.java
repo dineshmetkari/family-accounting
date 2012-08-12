@@ -16,8 +16,9 @@ import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
 public class BankKeyMasterDataFactory extends MasterDataFactoryBase {
 
-	public BankKeyMasterDataFactory(CoreDriver coreDriver) {
-		super(coreDriver);
+	public BankKeyMasterDataFactory(CoreDriver coreDriver,
+			MasterDataManagement management) {
+		super(coreDriver, management);
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class BankKeyMasterDataFactory extends MasterDataFactoryBase {
 
 		BankKeyMasterData bankKey;
 		try {
-			bankKey = new BankKeyMasterData(_coreDriver, id, descp);
+			bankKey = new BankKeyMasterData(_coreDriver, _management, id, descp);
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}

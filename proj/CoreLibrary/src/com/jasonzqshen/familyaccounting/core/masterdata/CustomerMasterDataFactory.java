@@ -16,8 +16,9 @@ import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
 public class CustomerMasterDataFactory extends MasterDataFactoryBase {
 
-	public CustomerMasterDataFactory(CoreDriver coreDriver) {
-		super(coreDriver);
+	public CustomerMasterDataFactory(CoreDriver coreDriver,
+			MasterDataManagement management) {
+		super(coreDriver, management);
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class CustomerMasterDataFactory extends MasterDataFactoryBase {
 
 		CustomerMasterData customer;
 		try {
-			customer = new CustomerMasterData(_coreDriver, id, descp);
+			customer = new CustomerMasterData(_coreDriver, _management, id, descp);
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		}

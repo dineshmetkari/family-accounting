@@ -26,8 +26,8 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 	 * @param parser
 	 * @param coreDriver
 	 */
-	public GLAccountMasterDataFactory(CoreDriver coreDriver) {
-		super(coreDriver);
+	public GLAccountMasterDataFactory(CoreDriver coreDriver, MasterDataManagement management) {
+		super(coreDriver, management);
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 
 		GLAccountMasterData glAccount;
 		try {
-			glAccount = new GLAccountMasterData(_coreDriver, identity_gl,
+			glAccount = new GLAccountMasterData(_coreDriver, _management, identity_gl,
 					descp, bankAccount);
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
