@@ -28,9 +28,9 @@ public class ReportTestCase {
 
 			// check
 			MasterDataIdentity_GLAccount account1 = new MasterDataIdentity_GLAccount(
-					"0000406002".toCharArray());
+					TestUtilities.GL_ACCOUNT1.toCharArray());
 			MasterDataIdentity_GLAccount account2 = new MasterDataIdentity_GLAccount(
-					"0000140001".toCharArray());
+					TestUtilities.GL_ACCOUNT2.toCharArray());
 			ReportsManagement reports = coreDriver.getReportsManagement();
 			assertEquals(TestUtilities.GL_IDS.length, reports.getGLAccounts()
 					.size());

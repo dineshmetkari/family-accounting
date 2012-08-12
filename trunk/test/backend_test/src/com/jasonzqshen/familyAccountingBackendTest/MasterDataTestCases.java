@@ -16,35 +16,18 @@ import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFileException;
 import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
 import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
+import com.jasonzqshen.familyaccounting.core.exception.format.MasterDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountNumber;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankKeyMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankKeyMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.BusinessAreaMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.BusinessAreaMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.CustomerMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.CustomerMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountGroupMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountGroupMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
-import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
-import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
-import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
-import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
-import com.jasonzqshen.familyaccounting.core.masterdata.VendorMasterData;
-import com.jasonzqshen.familyaccounting.core.masterdata.VendorMasterDataFactory;
+import com.jasonzqshen.familyaccounting.core.masterdata.*;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.utils.CoreMessage;
+import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 
 public class MasterDataTestCases {
 
@@ -314,10 +297,9 @@ public class MasterDataTestCases {
 			ArrayList<CoreMessage> messages = new ArrayList<CoreMessage>();
 			testMasterDataLoad(TestUtilities.TEST_ROOT_FOLDER, messages);
 			assertEquals(0, messages.size());
-
-			MasterDataIdentity id = new MasterDataIdentity("1010".toCharArray());
+			
 			MasterDataIdentity_GLAccount[] accounts = coreDriver
-					.getMasterDataManagement().getGLAccountsBasedGroup(id);
+					.getMasterDataManagement().getGLAccountsBasedGroup(GLAccountGroup.CASH);
 			assertEquals(2, accounts.length);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -336,15 +318,19 @@ public class MasterDataTestCases {
 	 * @throws RootFolderNotExsits
 	 * @throws MasterDataFileFormatException
 	 * @throws NoMasterDataFileException
+	 * @throws FiscalMonthRangeException
+	 * @throws FiscalYearRangeException
 	 */
 	public void testMasterDataLoad(String rootFile,
 			ArrayList<CoreMessage> messages) throws NoMasterDataFactoryClass,
 			SystemException, RootFolderNotExsits, NoMasterDataFileException,
-			MasterDataFileFormatException {
+			MasterDataFileFormatException, FiscalYearRangeException,
+			FiscalMonthRangeException {
 		CoreDriver coreDriver = CoreDriver.getInstance();
 
 		// set root path
 		coreDriver.setRootPath(rootFile);
+		coreDriver.setStartMonthID(new MonthIdentity(2012, 7));
 
 		// initialize
 		coreDriver.init(messages);
@@ -428,19 +414,6 @@ public class MasterDataTestCases {
 			assertTrue(bankAccount.getBankAccountNumber() != null);
 		}
 
-		// check G/L group
-		GLAccountGroupMasterDataFactory accGroupFactory = (GLAccountGroupMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.GL_ACCOUNT_GROUP);
-		assertEquals(accGroupFactory.getMasterDataCount(),
-				TestUtilities.GL_GROUP_IDS.length);
-		datas = accGroupFactory.getAllEntities();
-		for (MasterDataBase data : datas) {
-			GLAccountGroupMasterData group = (GLAccountGroupMasterData) data;
-			assertTrue(TestUtilities.containsID(
-					MasterDataType.GL_ACCOUNT_GROUP, group.getIdentity()));
-			assertTrue(group.getDescp() != null);
-		}
-
 		// check G/L account
 		GLAccountMasterDataFactory accountFactory = (GLAccountMasterDataFactory) masterDataManagement
 				.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
@@ -452,8 +425,6 @@ public class MasterDataTestCases {
 			assertTrue(TestUtilities.containsID(MasterDataType.GL_ACCOUNT,
 					account.getIdentity()));
 			assertTrue(account.getDescp() != null);
-			assertTrue(account.getAccountGroup() != null);
-			assertTrue(account.getGLAccountType() != null);
 		}
 
 	}
