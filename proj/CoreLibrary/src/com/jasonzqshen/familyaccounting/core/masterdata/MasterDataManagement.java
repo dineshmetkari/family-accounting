@@ -561,14 +561,17 @@ public class MasterDataManagement extends ManagementBase {
 								178,
 								String.format(
 										"Master data class is not registered for master data %s",
-										type), MessageType.WARNING);
+										type), MessageType.ERROR);
 				throw new NoMasterDataFactoryClass(type);
 			}
 
 			try {
 				Constructor<?> constructor = factoryClass.getConstructor(
 						CoreDriver.class, MasterDataManagement.class);
+				// create new factory
 				MasterDataFactoryBase factory = createFactory(constructor);
+				_factoryList.put(type, factory);
+
 				String xdoc = factory.toXmlDocument();
 
 				String filePath = generateMasterFilePath(type);

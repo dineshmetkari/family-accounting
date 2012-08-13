@@ -328,6 +328,7 @@ public class CoreDriver {
 		for (ManagementBase management : _managements.values()) {
 			management.establishFiles();
 		}
+		_isInitialized = true;
 
 	}
 
