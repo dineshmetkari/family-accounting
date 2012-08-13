@@ -12,6 +12,7 @@ import com.jasonzqshen.familyaccounting.core.document_entries.GLAccountEntry;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthLedger;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
@@ -41,8 +42,10 @@ public class GLEntryTester extends TesterBase {
 
 		TransactionDataManagement transManagement = coreDriver
 				.getTransDataManagement();
-		HeadEntity[] collection = transManagement.getDocs(2012, 8);
-		assertEquals(3, collection.length); // org 2
+		MonthLedger ledger = transManagement.getLedger(2012, 8);
+		assertEquals(3, ledger.getCount());
+
+		HeadEntity[] collection = ledger.getEntities();
 		HeadEntity head = collection[2];
 		assertEquals(DocumentType.GL, head.getDocumentType());
 		assertEquals(TestUtilities.TEST_DESCP, head.getDocText());

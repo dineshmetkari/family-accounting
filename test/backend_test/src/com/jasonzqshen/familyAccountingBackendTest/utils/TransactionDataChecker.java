@@ -1,14 +1,14 @@
 package com.jasonzqshen.familyAccountingBackendTest.utils;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.Calendar;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
-import com.jasonzqshen.familyaccounting.core.transaction.HeadEntityCollection;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthLedger;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
@@ -26,8 +26,14 @@ public class TransactionDataChecker {
 		MonthIdentity[] monthIds = transManagement.getAllMonthIds();
 		assertEquals(2, monthIds.length);
 
-		checkLedger2012_07(transManagement.getDocs(monthIds[0]));
-		checkLedger2012_08(transManagement.getDocs(monthIds[1]));
+		MonthLedger ledger07 = transManagement.getLedger(monthIds[0]);
+		MonthLedger ledger08 = transManagement.getLedger(monthIds[1]);
+		assertEquals(true, ledger07.isClosed());
+		assertEquals(false, ledger08.isClosed());
+		assertTrue(transManagement.getCurrentLedger() == ledger08);
+
+		checkLedger2012_07(ledger07.getEntities());
+		checkLedger2012_08(ledger08.getEntities());
 	}
 
 	/**
@@ -35,7 +41,7 @@ public class TransactionDataChecker {
 	 * 
 	 * @param collection
 	 */
-	private static void checkLedger2012_07(HeadEntity[] docs) {
+	public static void checkLedger2012_07(HeadEntity[] docs) {
 		assertEquals(3, docs.length);
 
 		// check values
@@ -89,7 +95,7 @@ public class TransactionDataChecker {
 	 * 
 	 * @param collection
 	 */
-	private static void checkLedger2012_08(HeadEntity[] docs) {
+	public static void checkLedger2012_08(HeadEntity[] docs) {
 		assertEquals(2, docs.length);
 
 		// check values
@@ -137,14 +143,20 @@ public class TransactionDataChecker {
 	 */
 	private static void checkClosingDoc(HeadEntity closingDoc) {
 		// text
-		assertEquals(HeadEntityCollection.CLOSING_DOC_TAG,
-				closingDoc.getDocText());
+		assertEquals(MonthLedger.CLOSING_DOC_TAG, closingDoc.getDocText());
 		// items
 		ItemEntity[] items = closingDoc.getItems();
 		assertEquals(2, items.length);
 
 		checkProfitItemRev(items[0]);
-		checkCostItemRev(items[1]);
+		ItemEntity item = items[1];
+		assertEquals(TestUtilities.GL_ACCOUNT_COST, item.getGLAccount()
+				.toString());
+		assertEquals(null, item.getVendor());
+		assertEquals(null, item.getCustomer());
+		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
+		assertEquals(10000, (int) (item.getAmount() * 100));
+		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
 	}
 
 	/**

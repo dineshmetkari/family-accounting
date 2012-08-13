@@ -1,37 +1,27 @@
 package com.jasonzqshen.familyAccountingBackendTest.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
-import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
-import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
-import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
-import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
-import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
-import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityExists;
-import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
-import com.jasonzqshen.familyaccounting.core.exception.NoMasterDataFileException;
-import com.jasonzqshen.familyaccounting.core.exception.ParametersException;
-import com.jasonzqshen.familyaccounting.core.exception.RootFolderNotExsits;
-import com.jasonzqshen.familyaccounting.core.exception.format.MasterDataFileFormatException;
-import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.*;
+import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.BankAccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CriticalLevel;
-import com.jasonzqshen.familyaccounting.core.utils.DebugInformation;
 
 public class TestUtilities {
 	private TestUtilities() {
 	}
 
 	public static final String TEST_ROOT_FOLDER = "C:/FamilyAccountingTestData/test_data";
-	public static final String TEST_ROOT_FOLDER_EMPTY = "./test_data";
+
+	public static final String TEST_ROOT_MASTER_CREATION = "./master_creation";
+	public static final String TEST_ROOT_TRAN_CREATION = "./tran_creation";
+	public static final String TEST_ROOT_EMPTY_INIT = "./empty_init";
+	public static final String TEST_ROOT_LEDGER_CLOSING = "./ledger_closing";
+
 	public static final String TEST_BANK_KEY = "CMB";
 	public static final String TEST_ACCOUNT_NUMBER = "1234123412341234";
 	public static final BankAccountType TEST_BANK_ACCOUNT_TYPE = BankAccountType.SAVING_ACCOUNT;
@@ -109,9 +99,9 @@ public class TestUtilities {
 	/**
 	 * clear test root folder
 	 */
-	public static File clearTestingRootFolder() {
+	public static File clearTestingRootFolder(String rootPath) {
 		// set the root folder
-		File rootFolder = new File(TestUtilities.TEST_ROOT_FOLDER_EMPTY);
+		File rootFolder = new File(rootPath);
 		if (!rootFolder.exists()) {
 			rootFolder.mkdir();
 		}
@@ -133,225 +123,176 @@ public class TestUtilities {
 		}
 	}
 
+	public static final String META_DATA_CONTENT_2012_07 = "cur_month=7\ncur_year=2012\nstart_month=7\nstart_year=2012";
+	public static final String META_DATA_CONTENT_2012_08 = "cur_month=8\ncur_year=2012\nstart_month8\nstart_year=2012";
+	public static final String TRAN_CONTENT = "<root />";
+
 	/**
+	 * establish folder with 2012 07
 	 * 
-	 * @return
-	 * @throws RootFolderNotExsits
-	 * @throws SystemException
-	 * @throws NoMasterDataFactoryClass
-	 * @throws IdentityInvalidChar
-	 * @throws IdentityNoData
-	 * @throws IdentityTooLong
-	 * @throws MasterDataIdentityExists
-	 * @throws ParametersException
-	 * @throws MasterDataIdentityNotDefined
-	 * @throws FiscalMonthRangeException
-	 * @throws FiscalYearRangeException
-	 * @throws MasterDataFileFormatException
-	 * @throws NoMasterDataFileException
+	 * @param rootPath
 	 */
-	public static CoreDriver establishMasterData(CoreDriver coreDriver)
-			throws NoMasterDataFactoryClass, SystemException,
-			RootFolderNotExsits, IdentityTooLong, IdentityNoData,
-			IdentityInvalidChar, ParametersException, MasterDataIdentityExists,
-			MasterDataIdentityNotDefined, FiscalYearRangeException,
-			FiscalMonthRangeException, NoMasterDataFileException,
-			MasterDataFileFormatException {
+	public static void establishFolder2012_07(String rootPath) {
+		clearTestingRootFolder(rootPath);
 
-		/**
-		 * check the factory is initialized, and the factory with no master data
-		 * entities
-		 */
-		MasterDataManagement masterDataManagement = coreDriver
-				.getMasterDataManagement();
-
-		// vendor
-		VendorMasterDataFactory vendorFactory = (VendorMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.VENDOR);
-		assertEquals(0, vendorFactory.getMasterDataCount());
-		// customer
-		CustomerMasterDataFactory customerFactory = (CustomerMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.CUSTOMER);
-		assertEquals(0, customerFactory.getMasterDataCount());
-		// business area
-		BusinessAreaMasterDataFactory businessFactory = (BusinessAreaMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.BUSINESS_AREA);
-		assertEquals(0, businessFactory.getMasterDataCount());
-		// bank key
-		BankKeyMasterDataFactory bankKeyFactory = (BankKeyMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.BANK_KEY);
-		assertEquals(0, bankKeyFactory.getMasterDataCount());
-		// bank account
-		BankAccountMasterDataFactory bankAccountFactory = (BankAccountMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.BANK_ACCOUNT);
-		assertEquals(0, bankAccountFactory.getMasterDataCount());
-		// GL account
-		GLAccountMasterDataFactory accountFactory = (GLAccountMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
-		assertEquals(0, accountFactory.getMasterDataCount());
-
-		/** add master data entities */
-		// vendor
-		for (String str : TestUtilities.VENDOR_IDS) {
-			VendorMasterData vendor = (VendorMasterData) vendorFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP);
-			assertTrue(vendor != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.VENDOR_IDS) {
-			try {
-				VendorMasterData vendor = (VendorMasterData) vendorFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP);
-				assertTrue(false);
-				assertEquals(null, vendor);
-			} catch (MasterDataIdentityExists e) {
-
-			}
-		}
-
-		// customer
-		for (String str : TestUtilities.CUSTOMER_IDS) {
-			CustomerMasterData customer = (CustomerMasterData) customerFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP);
-			assertTrue(customer != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.CUSTOMER_IDS) {
-			try {
-				CustomerMasterData customer = (CustomerMasterData) customerFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP);
-
-				assertTrue(false);
-				assertEquals(null, customer);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
-		// bank key
-		for (String str : TestUtilities.BANK_KEY_IDS) {
-			BankKeyMasterData bankKey = (BankKeyMasterData) bankKeyFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP);
-			assertTrue(bankKey != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.BANK_KEY_IDS) {
-			try {
-				BankKeyMasterData bankKey = (BankKeyMasterData) bankKeyFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP);
-				assertTrue(false);
-				assertEquals(null, bankKey);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
-		// bank account
-		for (String str : TestUtilities.BANK_ACCOUNT_IDS) {
-			MasterDataIdentity bankKey = new MasterDataIdentity(
-					TestUtilities.TEST_BANK_KEY.toCharArray());
-			BankAccountNumber accountNum = new BankAccountNumber(
-					TestUtilities.TEST_ACCOUNT_NUMBER.toCharArray());
-			BankAccountMasterData vendor = (BankAccountMasterData) bankAccountFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP, accountNum, bankKey,
-							BankAccountType.SAVING_ACCOUNT);
-			assertTrue(vendor != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.BANK_ACCOUNT_IDS) {
-			try {
-				MasterDataIdentity bankKey = new MasterDataIdentity(
-						TestUtilities.TEST_BANK_KEY.toCharArray());
-				BankAccountNumber accountNum = new BankAccountNumber(
-						TestUtilities.TEST_ACCOUNT_NUMBER.toCharArray());
-				BankAccountMasterData vendor = (BankAccountMasterData) bankAccountFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP, accountNum, bankKey,
-								TestUtilities.TEST_BANK_ACCOUNT_TYPE);
-				assertTrue(false);
-				assertEquals(null, vendor);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
-		// business area
-		for (String str : TestUtilities.BUSINESS_IDS) {
-			BusinessAreaMasterData businessArea = (BusinessAreaMasterData) businessFactory
-					.createNewMasterDataBase(
-							new MasterDataIdentity(str.toCharArray()),
-							TestUtilities.TEST_DESCP,
-							TestUtilities.TEST_CRITICAL_LEVEL);
-			assertTrue(businessArea != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.BUSINESS_IDS) {
-			try {
-				BusinessAreaMasterData businessArea = (BusinessAreaMasterData) businessFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity(str.toCharArray()),
-								TestUtilities.TEST_DESCP,
-								TestUtilities.TEST_CRITICAL_LEVEL);
-				assertTrue(false);
-				assertEquals(null, businessArea);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-
-		// G/L account
-		for (String str : TestUtilities.GL_IDS) {
-			GLAccountMasterData glAccount = (GLAccountMasterData) accountFactory
-					.createNewMasterDataBase(new MasterDataIdentity_GLAccount(
-							str.toCharArray()), TestUtilities.TEST_DESCP);
-			assertTrue(glAccount != null);
-		}
-		// duplicate id
-		for (String str : TestUtilities.GL_IDS) {
-			try {
-				GLAccountMasterData glAccount = (GLAccountMasterData) accountFactory
-						.createNewMasterDataBase(
-								new MasterDataIdentity_GLAccount(str
-										.toCharArray()),
-								TestUtilities.TEST_DESCP);
-				assertTrue(false);
-				assertEquals(null, glAccount);
-			} catch (MasterDataIdentityExists e) {
-			}
-		}
-		return coreDriver;
-	}
-
-	public static void saveLogFile(String fileName, CoreDriver coreDriver) {
-		StringBuilder strBuilder = new StringBuilder();
-		for (DebugInformation info : coreDriver.getDebugInfos()) {
-			strBuilder.append(info.toString());
-			strBuilder.append("\n");
-		}
-
-		File file = new File(fileName);
-		FileWriter writer;
 		try {
-			writer = new FileWriter(file);
-			writer.write(strBuilder.toString());
+			// meta data
+			File metaDataFile = new File(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + CoreDriver.META_DATA);
+			FileWriter writer = new FileWriter(metaDataFile);
+			writer.write(META_DATA_CONTENT_2012_07, 0,
+					META_DATA_CONTENT_2012_07.length());
+			writer.close();
+
+			// master data folder
+			File masterDataFolder = new File(
+					TestUtilities.TEST_ROOT_LEDGER_CLOSING + "/"
+							+ MasterDataManagement.MASTER_DATA_FOLDER);
+			masterDataFolder.mkdir();
+
+			// bank account
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "bank_account.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// bank key
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "bank_key.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// business
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "business.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// customer
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "customer.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// gl_account
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "gl_account.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// vendor
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "vendor.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// transaction data folder
+			File tranFolder = new File(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + TransactionDataManagement.TRANSACTION_DATA_FOLDER);
+			tranFolder.mkdir();
+
+			// 2012_07
+			File tranFile = new File(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + "transaction_data/" + "2012_07.xml");
+			writer = new FileWriter(tranFile);
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
 			writer.close();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			throw new SystemException(e);
 		}
+
 	}
 
-	
-	
+	/**
+	 * establish folder with 2012 07
+	 * 
+	 * @param rootPath
+	 */
+	public static void establishFolder2012_08(String rootPath) {
+		clearTestingRootFolder(rootPath);
+
+		try {
+			// meta data
+			File metaDataFile = new File(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + CoreDriver.META_DATA);
+			FileWriter writer = new FileWriter(metaDataFile);
+			writer.write(META_DATA_CONTENT_2012_08, 0,
+					META_DATA_CONTENT_2012_08.length());
+			writer.close();
+
+			// master data folder
+			File masterDataFolder = new File(
+					TestUtilities.TEST_ROOT_LEDGER_CLOSING + "/"
+							+ MasterDataManagement.MASTER_DATA_FOLDER);
+			masterDataFolder.mkdir();
+
+			// bank account
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "bank_account.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// bank key
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "bank_key.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// business
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "business.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// customer
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "customer.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// gl_account
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "gl_account.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// vendor
+			writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+					+ "vendor.xml");
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+
+			// transaction data folder
+			File tranFolder = new File(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + TransactionDataManagement.TRANSACTION_DATA_FOLDER);
+			tranFolder.mkdir();
+
+			// 2012_08
+			File tranFile = new File(TestUtilities.TEST_ROOT_LEDGER_CLOSING
+					+ "/" + "transaction_data/" + "2012_08.xml");
+			writer = new FileWriter(tranFile);
+			writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new SystemException(e);
+		}
+
+	}
 
 }

@@ -16,12 +16,20 @@ public class InitializeWithEmptyFolderTester extends TesterBase {
 
 	@Override
 	protected void doTest(CoreDriver coreDriver) throws Exception {
-		TestUtilities.clearTestingRootFolder();
-		coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER_EMPTY);
+		TestUtilities
+				.clearTestingRootFolder(TestUtilities.TEST_ROOT_EMPTY_INIT);
+		coreDriver.setRootPath(TestUtilities.TEST_ROOT_EMPTY_INIT);
+
+		checkCore(coreDriver);
 
 		coreDriver.restart();
+		checkCore(coreDriver);
+	}
+
+	private void checkCore(CoreDriver coreDriver) {
+		assertEquals(true, coreDriver.isInitialized());
+
 		MasterDataManagement masterData = coreDriver.getMasterDataManagement();
-		assertTrue(null != masterData);
 		for (MasterDataType type : MasterDataType.values()) {
 			MasterDataFactoryBase factory = masterData
 					.getMasterDataFactory(type);
@@ -31,12 +39,10 @@ public class InitializeWithEmptyFolderTester extends TesterBase {
 		TransactionDataManagement tranData = coreDriver
 				.getTransDataManagement();
 		assertTrue(null != tranData);
-
 		MonthIdentity[] monthIds = tranData.getAllMonthIds();
 		assertEquals(1, monthIds.length);
 
-		assertEquals(0, tranData.getDocs(monthIds[0]).length);
-
+		assertEquals(0, tranData.getCurrentLedger().getCount());
 	}
 
 }
