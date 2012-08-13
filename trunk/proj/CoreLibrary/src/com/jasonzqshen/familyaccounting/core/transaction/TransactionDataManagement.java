@@ -28,9 +28,12 @@ import com.jasonzqshen.familyaccounting.core.utils.*;
 public class TransactionDataManagement extends ManagementBase {
 
 	public static final String TRANSACTION_DATA_FOLDER = "transaction_data";
-	private final Hashtable<MonthIdentity, HeadEntityCollection> _list;
+	private final Hashtable<MonthIdentity, MonthLedger> _list;
+	private MonthLedger _openLedger; // current open ledger
 
 	private final MasterDataManagement _masterDataMgmt;
+	private final GLAccountBalanceCollection _glAccBalCol;
+	private final ClosingManagement _clsMgmt;
 
 	/**
 	 * constructor
@@ -41,7 +44,28 @@ public class TransactionDataManagement extends ManagementBase {
 			MasterDataManagement masterDataMgmt) {
 		super(coreDriver);
 		_masterDataMgmt = masterDataMgmt;
-		_list = new Hashtable<MonthIdentity, HeadEntityCollection>();
+		_list = new Hashtable<MonthIdentity, MonthLedger>();
+
+		_glAccBalCol = new GLAccountBalanceCollection(_coreDriver);
+		_clsMgmt = new ClosingManagement(_coreDriver, this);
+	}
+
+	/**
+	 * get closing management
+	 * 
+	 * @return
+	 */
+	public ClosingManagement getClsMgmt() {
+		return _clsMgmt;
+	}
+
+	/**
+	 * get G/L account balance collection
+	 * 
+	 * @return
+	 */
+	public GLAccountBalanceCollection getAccBalCol() {
+		return _glAccBalCol;
 	}
 
 	/**
@@ -65,7 +89,7 @@ public class TransactionDataManagement extends ManagementBase {
 		try {
 			for (MonthIdentity startId = _coreDriver.getStartMonthId(); startId
 					.compareTo(cureMonthId) < 0; startId = startId.addMonth()) {
-				HeadEntityCollection collection = load(startId);
+				MonthLedger collection = load(startId);
 				if (collection.isClosed() == false) {
 					throw new TransactionDataFileFormatException(
 							startId.toString());
@@ -73,7 +97,7 @@ public class TransactionDataManagement extends ManagementBase {
 
 			}
 			// load current month identity
-			load(cureMonthId);
+			_openLedger = load(cureMonthId);
 		} catch (NoTransactionDataFileException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 99, e.toString(),
 					MessageType.ERROR);
@@ -90,7 +114,7 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @throws SystemException
 	 * @throws MandatoryFieldIsMissing
 	 */
-	public HeadEntityCollection load(MonthIdentity monthId)
+	public MonthLedger load(MonthIdentity monthId)
 			throws TransactionDataFileFormatException,
 			NoTransactionDataFileException {
 		_coreDriver.logDebugInfo(
@@ -104,7 +128,7 @@ public class TransactionDataManagement extends ManagementBase {
 				String.format("Transaction data file: %s .", filePath),
 				MessageType.INFO);
 
-		HeadEntityCollection colletion = new HeadEntityCollection(monthId);
+		MonthLedger colletion = new MonthLedger(monthId);
 		_list.put(monthId, colletion);
 
 		try {
@@ -158,7 +182,7 @@ public class TransactionDataManagement extends ManagementBase {
 						colletion.add(head);
 
 						if (head.getDocText().equals(
-								HeadEntityCollection.CLOSING_DOC_TAG)) {
+								MonthLedger.CLOSING_DOC_TAG)) {
 							colletion.setClosingDoc(head);
 						}
 
@@ -219,11 +243,22 @@ public class TransactionDataManagement extends ManagementBase {
 					"Document is never saved", MessageType.INFO);
 
 			MonthIdentity monthId = head.getMonthId();
-			HeadEntityCollection collection = _list.get(monthId);
+			MonthLedger ledger = _list.get(monthId);
+			if (ledger == null) {
+				_coreDriver.logDebugInfo(this.getClass(), 239,
+						"Error in document month identity", MessageType.ERROR);
+				return false;
+			}
+
+			if (ledger.isClosed()) {
+				_coreDriver.logDebugInfo(this.getClass(), 239,
+						"Ledger is closed.", MessageType.ERROR);
+				return false;
+			}
 
 			// set document number
 			DocumentNumber num = null;
-			HeadEntity[] entities = collection.getEntities();
+			HeadEntity[] entities = ledger.getEntities();
 			if (entities.length == 0) {
 				try {
 					num = new DocumentNumber("1000000001".toCharArray());
@@ -249,7 +284,7 @@ public class TransactionDataManagement extends ManagementBase {
 					MessageType.INFO);
 			head._docNumber = num;
 
-			collection.add(head);
+			ledger.add(head);
 		}
 
 		if (needStroe) {
@@ -285,7 +320,7 @@ public class TransactionDataManagement extends ManagementBase {
 		MasterDataManagement manage = _coreDriver.getMasterDataManagement();
 		manage.store();
 
-		HeadEntityCollection collection = _list.get(monthId);
+		MonthLedger collection = _list.get(monthId);
 
 		String filePath = this.generateFilePath(monthId);
 		_coreDriver.logDebugInfo(this.getClass(), 297, "Generate file path: "
@@ -410,19 +445,22 @@ public class TransactionDataManagement extends ManagementBase {
 	}
 
 	/**
-	 * get documents
+	 * get month ledger
 	 * 
 	 * @param monthId
 	 * @return
 	 */
-	public HeadEntity[] getDocs(MonthIdentity monthId) {
-		HeadEntityCollection collection = _list.get(monthId);
-		return collection.getEntities();
+	public MonthLedger getLedger(MonthIdentity monthId) {
+		return _list.get(monthId);
 	}
 
-	public ArrayList<HeadEntity> getDocsArrayList(MonthIdentity monthId) {
-		HeadEntityCollection collection = _list.get(monthId);
-		return collection.getEntitiesArrayList();
+	/**
+	 * get current ledger
+	 * 
+	 * @return
+	 */
+	public MonthLedger getCurrentLedger() {
+		return _openLedger;
 	}
 
 	/**
@@ -432,7 +470,7 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @param fiscalMonth
 	 * @return
 	 */
-	public HeadEntity[] getDocs(int fiscalYear, int fiscalMonth) {
+	public MonthLedger getLedger(int fiscalYear, int fiscalMonth) {
 		MonthIdentity monthId;
 		try {
 			monthId = new MonthIdentity(fiscalYear, fiscalMonth);
@@ -442,17 +480,7 @@ public class TransactionDataManagement extends ManagementBase {
 			return null;
 		}
 
-		return getDocs(monthId);
-	}
-
-	public ArrayList<HeadEntity> getAllDocuments() {
-		ArrayList<HeadEntity> ret = new ArrayList<HeadEntity>();
-		MonthIdentity[] monthIds = this.getAllMonthIds();
-		for (MonthIdentity m : monthIds) {
-			ret.addAll(getDocsArrayList(m));
-		}
-
-		return ret;
+		return getLedger(monthId);
 	}
 
 	/**
@@ -480,7 +508,7 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @return
 	 */
 	public HeadEntity getEntity(DocumentIdentity docId) {
-		HeadEntityCollection collection = _list.get(docId._monthIdentity);
+		MonthLedger collection = _list.get(docId._monthIdentity);
 		if (collection == null) {
 			return null;
 		}
@@ -512,8 +540,10 @@ public class TransactionDataManagement extends ManagementBase {
 
 		MonthIdentity monthId = _coreDriver.getStartMonthId();
 		// create transaction file
-		HeadEntityCollection collection = new HeadEntityCollection(monthId);
-		String xdoc = collection.toXML();
+		MonthLedger ledger = new MonthLedger(monthId);
+		_list.put(monthId, ledger);
+		_openLedger = ledger;
+		String xdoc = ledger.toXML();
 
 		String filePath = generateFilePath(monthId);
 		try {
@@ -531,5 +561,12 @@ public class TransactionDataManagement extends ManagementBase {
 					MessageType.ERROR);
 			throw new SystemException(e);
 		}
+	}
+
+	/**
+	 * month end close
+	 */
+	public void monthEndClose() {
+
 	}
 }

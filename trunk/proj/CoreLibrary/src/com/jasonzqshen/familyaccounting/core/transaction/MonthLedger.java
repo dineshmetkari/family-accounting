@@ -12,20 +12,19 @@ import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
  * @author I072485
  * 
  */
-public class HeadEntityCollection {
+public class MonthLedger {
 	public static final String CLOSING_DOC_TAG = "month_end_closing";
 
 	private final Hashtable<DocumentIdentity, HeadEntity> _list;
-	public final MonthIdentity _monthId;
+	private final MonthIdentity _monthId;
 	private boolean _isClosed;
 	private HeadEntity _closingDoc;
 
-	public HeadEntityCollection(MonthIdentity monthId) {
+	public MonthLedger(MonthIdentity monthId) {
 		_monthId = monthId;
 		_list = new Hashtable<DocumentIdentity, HeadEntity>();
-		_isClosed = true;
+		_isClosed = false;
 	}
-
 
 	/**
 	 * set closing document
@@ -44,8 +43,22 @@ public class HeadEntityCollection {
 		return _isClosed;
 	}
 
+	/**
+	 * get closing document
+	 * 
+	 * @return
+	 */
 	public HeadEntity getClosingDoc() {
 		return _closingDoc;
+	}
+
+	/**
+	 * get month identity
+	 * 
+	 * @return
+	 */
+	public MonthIdentity getMonthID() {
+		return _monthId;
 	}
 
 	/**
@@ -56,6 +69,15 @@ public class HeadEntityCollection {
 	void add(HeadEntity head) {
 		DocumentIdentity id = head.getDocIdentity();
 		_list.put(id, head);
+	}
+
+	/**
+	 * get count
+	 * 
+	 * @return
+	 */
+	public int getCount() {
+		return _list.size();
 	}
 
 	/**
