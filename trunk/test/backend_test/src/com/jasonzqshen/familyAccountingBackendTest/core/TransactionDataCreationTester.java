@@ -5,7 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.jasonzqshen.familyAccountingBackendTest.utils.DocumentCreater;
 import com.jasonzqshen.familyAccountingBackendTest.utils.MasterDataChecker;
+import com.jasonzqshen.familyAccountingBackendTest.utils.MasterDataCreater;
 import com.jasonzqshen.familyAccountingBackendTest.utils.TestUtilities;
 import com.jasonzqshen.familyAccountingBackendTest.utils.TesterBase;
 import com.jasonzqshen.familyAccountingBackendTest.utils.TransactionDataChecker;
@@ -22,6 +24,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAcc
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
@@ -30,29 +33,40 @@ public class TransactionDataCreationTester extends TesterBase {
 
 	@Override
 	protected void doTest(CoreDriver coreDriver) throws Exception {
-		TestUtilities.clearTestingRootFolder();
-		TestUtilities.establishMasterData(coreDriver);
+		TestUtilities
+				.establishFolder2012_08(TestUtilities.TEST_ROOT_TRAN_CREATION);
+		coreDriver.setRootPath(TestUtilities.TEST_ROOT_TRAN_CREATION);
+		assertEquals(true, coreDriver.isInitialized());
 
-		// month 07
+		MasterDataCreater.createMasterData(coreDriver);
+
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-		Date date = format.parse("2012.07.02");
-		createHeadEntity(coreDriver, date, 0);
-		createHeadEntity(coreDriver, date, 1);
 
 		// month 08, reverse document
-		date = format.parse("2012.08.02");
-		HeadEntity headEntity = createHeadEntity(coreDriver, date, 0);
+		Date date = format.parse("2012.08.02");
+		HeadEntity headEntity = DocumentCreater.createVendorDoc(coreDriver,
+				date);
 		DocumentIdentity docId = headEntity.getDocIdentity();
 		TransactionDataManagement management = coreDriver
 				.getTransDataManagement();
 		HeadEntity reverseEntity = management.reverseDocument(docId);
 		reverseEntity.setDocText(TestUtilities.TEST_DESCP);
+
+		// store
 		reverseEntity.save(true);
 
+		// reload from folder
 		coreDriver.restart();
 
 		MasterDataChecker.checkMasterData(coreDriver);
-		TransactionDataChecker.checkTransactionData(coreDriver);
+
+		TransactionDataManagement transManagement = coreDriver
+				.getTransDataManagement();
+		MonthIdentity[] monthIds = transManagement.getAllMonthIds();
+		assertEquals(1, monthIds.length);
+
+		TransactionDataChecker.checkLedger2012_08(transManagement
+				.getCurrentLedger().getEntities());
 	}
 
 	/**

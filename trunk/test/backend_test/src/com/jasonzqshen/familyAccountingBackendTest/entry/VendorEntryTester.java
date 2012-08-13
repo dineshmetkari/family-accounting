@@ -13,6 +13,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthLedger;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
@@ -22,6 +23,8 @@ public class VendorEntryTester extends TesterBase {
 
 	@Override
 	protected void doTest(CoreDriver coreDriver) throws Exception {
+		coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER);
+
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
 		Date date = format.parse("2012.08.02");
 
@@ -42,9 +45,11 @@ public class VendorEntryTester extends TesterBase {
 
 		TransactionDataManagement transManagement = coreDriver
 				.getTransDataManagement();
-		HeadEntity[] collection = transManagement.getDocs(2012, 8);
-		assertEquals(1, collection.length);
-		HeadEntity head = collection[0];
+		MonthLedger ledger = transManagement.getLedger(2012, 8);
+		assertEquals(3, ledger.getCount());
+
+		HeadEntity[] collection = ledger.getEntities();
+		HeadEntity head = collection[2];
 		assertEquals(DocumentType.VENDOR_INVOICE, head.getDocumentType());
 		assertEquals(TestUtilities.TEST_DESCP, head.getDocText());
 		assertEquals(2, head.getItemCount());
