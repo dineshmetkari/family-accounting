@@ -8,8 +8,8 @@
 		<item line_num="1" account_type="D" customer="MS" gl_account="1000100002" amount="543.21" cd_indicator="D" />
 	</document>
 	<document doc_num="1000000003" fiscal_year="2012" fiscal_month="07" date="2012.07.02" text="month_end_closing" doc_type="S" is_reversed="false">
-		<item line_num="0" account_type="S" gl_account="4010100001" amount="543.21" cd_indicator="C" />
-		<item line_num="1" account_type="S" gl_account="5000100001" amount="123.45" cd_indicator="D" />
+		<item line_num="0" account_type="S" gl_account="4010100001" amount="543.21" cd_indicator="D" />
+		<item line_num="1" account_type="S" gl_account="5000100001" amount="123.45" cd_indicator="C" />
 		<item line_num="2" account_type="S" gl_account="3010100001" amount="419.67" cd_indicator="C" />
 	</document>
 </root>
