@@ -496,6 +496,11 @@ public class MasterDataManagement extends ManagementBase {
 		return factory.getLiquidityAccounts();
 	}
 
+	public GLAccountMasterData getEquityAccount() {
+		GLAccountMasterDataFactory factory = (GLAccountMasterDataFactory) getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+		return factory.getEquityAccount();
+	}
+
 	/**
 	 * get liability
 	 * 
@@ -517,6 +522,7 @@ public class MasterDataManagement extends ManagementBase {
 		GLAccountMasterDataFactory factory = (GLAccountMasterDataFactory) getMasterDataFactory(MasterDataType.GL_ACCOUNT);
 		return factory.getCostAccounts();
 	}
+
 
 	/**
 	 * get revenue accounts

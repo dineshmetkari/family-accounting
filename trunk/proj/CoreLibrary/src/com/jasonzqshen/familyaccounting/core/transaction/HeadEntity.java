@@ -24,6 +24,7 @@ import com.jasonzqshen.familyaccounting.core.exception.format.TransactionDataFil
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
+import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
@@ -501,20 +502,19 @@ public class HeadEntity implements Comparable<HeadEntity> {
 			throw new MandatoryFieldIsMissing("Document Type");
 		}
 
-		int creditSum = 0;
-		int debitSum = 0;
+		CurrencyAmount sum = new CurrencyAmount();
 		for (ItemEntity item : _items) {
 			item.checkMandatory();
 
 			if (item.getCDIndicator() == CreditDebitIndicator.CREDIT) {
-				creditSum += (int) (item.getAmount() * 100);
+				sum.minusTo(item.getAmount());
 			} else if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
-				debitSum += (int) (item.getAmount() * 100);
+				sum.addTo(item.getAmount());
 			}
 		}
 
 		// check balance
-		if (creditSum != debitSum) {
+		if (!sum.isZero()) {
 			_coreDriver.logDebugInfo(this.getClass(), 478,
 					"Check document before save, balance is not zero",
 					MessageType.ERROR);

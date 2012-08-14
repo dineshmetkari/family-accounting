@@ -3,17 +3,17 @@ package com.jasonzqshen.familyaccounting.core.transaction;
 import java.util.Hashtable;
 
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
+import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 
 public class GLAccountBalanceItem {
-	private final Hashtable<MonthIdentity, Integer> _list;
+	private final Hashtable<MonthIdentity, CurrencyAmount> _list;
 	private final MasterDataIdentity_GLAccount _glAccount;
-	private int _sum = 0;
+	private CurrencyAmount _sum = new CurrencyAmount();
 
 	GLAccountBalanceItem(MasterDataIdentity_GLAccount glAccount) {
 		_glAccount = glAccount;
-		_list = new Hashtable<MonthIdentity, Integer>();
-		
-				
+		_list = new Hashtable<MonthIdentity, CurrencyAmount>();
+
 	}
 
 	/**
@@ -32,16 +32,14 @@ public class GLAccountBalanceItem {
 	 *            month identity
 	 * @param value
 	 */
-	void addAmount(MonthIdentity monthId, double amount) {
-		int _v = (int) (amount * 100);
-		_sum += _v;
+	void addAmount(MonthIdentity monthId, CurrencyAmount amount) {
+		_sum.addTo(amount);
 
 		if (_list.contains(monthId)) {
-			int sum = _list.get(monthId);
-			sum += _v;
-			_list.put(monthId, sum);
+			CurrencyAmount sum = _list.get(monthId);
+			sum.addTo(amount);
 		} else {
-			_list.put(monthId, _v);
+			_list.put(monthId, new CurrencyAmount(amount));
 		}
 	}
 
@@ -51,15 +49,16 @@ public class GLAccountBalanceItem {
 	 * @param startId
 	 * @return
 	 */
-	public double getSumAmount(MonthIdentity startId, MonthIdentity endId) {
-		int sum = 0;
+	public CurrencyAmount getSumAmount(MonthIdentity startId,
+			MonthIdentity endId) {
+		CurrencyAmount sum = new CurrencyAmount();
 		for (MonthIdentity id : _list.keySet()) {
 			if (id.compareTo(startId) >= 0 && id.compareTo(endId) <= 0) {
-				sum += _list.get(id);
+				sum.addTo(_list.get(id));
 			}
 		}
 
-		return sum / 100.0;
+		return sum;
 	}
 
 	/**
@@ -67,8 +66,8 @@ public class GLAccountBalanceItem {
 	 * 
 	 * @return
 	 */
-	public double getSumAmount() {
-		return _sum / 100.0;
+	public CurrencyAmount getSumAmount() {
+		return new CurrencyAmount(_sum);
 	}
 
 	/**
@@ -77,10 +76,11 @@ public class GLAccountBalanceItem {
 	 * @param id
 	 * @return
 	 */
-	public double getAmount(MonthIdentity id) {
+	public CurrencyAmount getAmount(MonthIdentity id) {
 		if (_list.contains(id)) {
-			return _list.get(id) / 10.0;
+			CurrencyAmount amount = _list.get(id);
+			return new CurrencyAmount(amount);
 		}
-		return 0;
+		return new CurrencyAmount();
 	}
 }

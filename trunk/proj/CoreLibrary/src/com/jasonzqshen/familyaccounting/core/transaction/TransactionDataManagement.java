@@ -567,6 +567,24 @@ public class TransactionDataManagement extends ManagementBase {
 	 * month end close
 	 */
 	public void monthEndClose() {
+		HeadEntity head = _clsMgmt.closeLedger();
+		if (head == null) {
+			return;
+		}
+		_coreDriver.logDebugInfo(this.getClass(), 547,
+				"Equity generated successfully.", MessageType.INFO);
+		_openLedger.setClosingDoc(head);
 
+		// create new ledger
+		MonthIdentity id = _openLedger.getMonthID().addMonth();
+		MonthLedger ledger = new MonthLedger(id);
+		_openLedger = ledger;
+		_list.put(id, ledger);
+
+		_coreDriver.logDebugInfo(this.getClass(), 584,
+				"Closed current ledger and then create ledger for next month."
+						+ ledger.getMonthID().toString(), MessageType.INFO);
+
+		_coreDriver.getListenersManagement().closeLedger(_openLedger);
 	}
 }

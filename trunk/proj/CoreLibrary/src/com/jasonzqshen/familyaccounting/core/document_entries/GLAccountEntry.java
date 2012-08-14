@@ -8,6 +8,7 @@ import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefi
 import com.jasonzqshen.familyaccounting.core.exception.NoFieldNameException;
 import com.jasonzqshen.familyaccounting.core.exception.NotInValueRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
+import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
@@ -15,6 +16,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
+import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
@@ -30,7 +32,7 @@ public class GLAccountEntry implements IDocumentEntry {
 	private MasterDataIdentity_GLAccount _srcAccount; // source account
 	private MasterDataIdentity_GLAccount _dstAccount; // destination account
 	private Date _pstDate; // posting date
-	private double _amount;// amount
+	private CurrencyAmount _amount;// amount
 	private String _text; // document text
 	private boolean _isSaved;
 
@@ -98,7 +100,7 @@ public class GLAccountEntry implements IDocumentEntry {
 			throw new MandatoryFieldIsMissing(DST_ACCOUNT);
 		}
 
-		if (_amount <= 0) {
+		if (_amount.isNegative() || _amount.isZero()) {
 			throw new MandatoryFieldIsMissing(AMOUNT);
 		}
 
@@ -170,12 +172,12 @@ public class GLAccountEntry implements IDocumentEntry {
 			_text = value.toString();
 		} else if (fieldName.equals(AMOUNT)) {
 			try {
-				double amount = Double.parseDouble(value.toString());
-				if (amount <= 0) {
+				CurrencyAmount amount = CurrencyAmount.parse(value.toString());
+				if (amount.isZero() || amount.isNegative()) {
 					throw new NotInValueRangeException(fieldName, value);
 				}
 				_amount = amount;
-			} catch (NumberFormatException e) {
+			} catch (CurrencyAmountFormatException e) {
 				throw new NotInValueRangeException(fieldName, value);
 			}
 		} else if (fieldName.equals(POSTING_DATE)) {
