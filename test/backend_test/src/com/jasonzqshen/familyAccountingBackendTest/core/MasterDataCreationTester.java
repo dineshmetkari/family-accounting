@@ -2,6 +2,7 @@ package com.jasonzqshen.familyAccountingBackendTest.core;
 
 import static org.junit.Assert.assertEquals;
 
+import com.jasonzqshen.familyAccountingBackendTest.utils.MasterDataChecker;
 import com.jasonzqshen.familyAccountingBackendTest.utils.MasterDataCreater;
 import com.jasonzqshen.familyAccountingBackendTest.utils.TestUtilities;
 import com.jasonzqshen.familyAccountingBackendTest.utils.TesterBase;
@@ -22,6 +23,11 @@ public class MasterDataCreationTester extends TesterBase {
 
 		// store
 		coreDriver.getMasterDataManagement().store();
+	}
+
+	@Override
+	protected void check(CoreDriver coreDriver) throws Exception {
+		MasterDataChecker.checkMasterData(coreDriver);
 	}
 
 }

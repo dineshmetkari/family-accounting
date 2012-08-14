@@ -23,9 +23,12 @@ public abstract class TesterBase {
 			saveLogFile(this.getClass().getSimpleName() + ".txt",
 					coreDriver);
 		}
+		
+		check(coreDriver);
 	}
 
 	protected abstract void doTest(CoreDriver coreDriver) throws Exception;
+	protected abstract void check(CoreDriver coreDriver) throws Exception;
 	
 	protected void saveLogFile(String fileName, CoreDriver coreDriver) {
 		StringBuilder strBuilder = new StringBuilder();

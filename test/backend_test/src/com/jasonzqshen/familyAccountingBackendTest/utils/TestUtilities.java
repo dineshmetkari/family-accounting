@@ -31,6 +31,9 @@ public class TestUtilities {
 	public static final String TEST_DOC_NUM = "1000000000";
 	public static final String TEST_DOC_ID = "1000000000_2012_07";
 
+	public static final String TEST_AMOUNT1 = "123.45";
+	public static final String TEST_AMOUNT2 = "543.21";public static final String TEST_AMOUNT3 = "419.76";
+
 	public static final String TEST_DESCP = "test";
 
 	public static final String[] GL_IDS = { "1000100001", "1000100002",
@@ -54,6 +57,7 @@ public class TestUtilities {
 	public static final String GL_ACCOUNT1 = "1000100001";
 	public static final String GL_ACCOUNT2 = "1000100002";
 	public static final String GL_ACCOUNT_COST = "5000100001";
+	public static final String GL_ACCOUNT_ENQUITY = "3010100001";
 	public static final String GL_ACCOUNT_PROFIT = "4010100001";
 	public static final double AMOUNT = 100;
 	public static final String VENDOR = "0000000BUS";

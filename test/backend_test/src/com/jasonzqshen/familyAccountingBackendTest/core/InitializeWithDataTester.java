@@ -10,8 +10,13 @@ public class InitializeWithDataTester extends TesterBase {
 		// set root path
 		coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER);
 
+	}
+
+	@Override
+	protected void check(CoreDriver coreDriver) throws Exception {
 		MasterDataChecker.checkMasterData(coreDriver);
 		TransactionDataChecker.checkTransactionData(coreDriver);
+
 	}
 
 }

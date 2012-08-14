@@ -19,6 +19,7 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
+import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentIdentity;
@@ -27,6 +28,7 @@ import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
+import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 
 public class TransactionDataCreationTester extends TesterBase {
@@ -55,18 +57,6 @@ public class TransactionDataCreationTester extends TesterBase {
 		// store
 		reverseEntity.save(true);
 
-		// reload from folder
-		coreDriver.restart();
-
-		MasterDataChecker.checkMasterData(coreDriver);
-
-		TransactionDataManagement transManagement = coreDriver
-				.getTransDataManagement();
-		MonthIdentity[] monthIds = transManagement.getAllMonthIds();
-		assertEquals(1, monthIds.length);
-
-		TransactionDataChecker.checkLedger2012_08(transManagement
-				.getCurrentLedger().getEntities());
 	}
 
 	/**
@@ -83,11 +73,13 @@ public class TransactionDataCreationTester extends TesterBase {
 	 * @throws IdentityInvalidChar
 	 * @throws MandatoryFieldIsMissing
 	 * @throws BalanceNotZero
+	 * @throws CurrencyAmountFormatException
 	 */
 	public HeadEntity createHeadEntity(CoreDriver coreDriver, Date date,
 			int index) throws NullValueNotAcceptable,
 			MasterDataIdentityNotDefined, IdentityTooLong, IdentityNoData,
-			IdentityInvalidChar, MandatoryFieldIsMissing, BalanceNotZero {
+			IdentityInvalidChar, MandatoryFieldIsMissing, BalanceNotZero,
+			CurrencyAmountFormatException {
 		HeadEntity headEntity = new HeadEntity(coreDriver,
 				coreDriver.getMasterDataManagement());
 		headEntity.setPostingDate(date);
@@ -97,7 +89,8 @@ public class TransactionDataCreationTester extends TesterBase {
 		ItemEntity item1 = headEntity.createEntity();
 		item1.setGLAccount(new MasterDataIdentity_GLAccount(
 				TestUtilities.GL_ACCOUNT1));
-		item1.setAmount(CreditDebitIndicator.DEBIT, 100);
+		item1.setAmount(CreditDebitIndicator.DEBIT,
+				CurrencyAmount.parse(TestUtilities.TEST_AMOUNT1));
 		item1.setBusinessArea(new MasterDataIdentity(
 				TestUtilities.BUSINESS_AREA));
 
@@ -111,10 +104,27 @@ public class TransactionDataCreationTester extends TesterBase {
 			item2.setCustomer(new MasterDataIdentity(TestUtilities.CUSTOMER),
 					account2);
 		}
-		item2.setAmount(CreditDebitIndicator.CREDIT, 100);
+		item2.setAmount(CreditDebitIndicator.CREDIT,
+				CurrencyAmount.parse(TestUtilities.TEST_AMOUNT1));
 		boolean ret = headEntity.save(true);
 		assertEquals(true, ret);
 		return headEntity;
+	}
+
+	@Override
+	protected void check(CoreDriver coreDriver) throws Exception {
+		// reload from folder
+		coreDriver.restart();
+
+		MasterDataChecker.checkMasterData(coreDriver);
+
+		TransactionDataManagement transManagement = coreDriver
+				.getTransDataManagement();
+		MonthIdentity[] monthIds = transManagement.getAllMonthIds();
+		assertEquals(1, monthIds.length);
+
+		TransactionDataChecker.checkLedger2012_08(transManagement
+				.getCurrentLedger().getEntities());
 	}
 
 }

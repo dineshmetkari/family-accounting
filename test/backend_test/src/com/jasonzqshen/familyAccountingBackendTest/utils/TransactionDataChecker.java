@@ -146,7 +146,7 @@ public class TransactionDataChecker {
 		assertEquals(MonthLedger.CLOSING_DOC_TAG, closingDoc.getDocText());
 		// items
 		ItemEntity[] items = closingDoc.getItems();
-		assertEquals(2, items.length);
+		assertEquals(3, items.length);
 
 		checkProfitItemRev(items[0]);
 		ItemEntity item = items[1];
@@ -155,7 +155,17 @@ public class TransactionDataChecker {
 		assertEquals(null, item.getVendor());
 		assertEquals(null, item.getCustomer());
 		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(10000, (int) (item.getAmount() * 100));
+		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
+		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
+		
+		
+		item = items[2];
+		assertEquals(TestUtilities.GL_ACCOUNT_ENQUITY, item.getGLAccount()
+				.toString());
+		assertEquals(null, item.getVendor());
+		assertEquals(null, item.getCustomer());
+		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
+		assertEquals(TestUtilities.TEST_AMOUNT3, item.getAmount().toString());
 		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
 	}
 
@@ -170,7 +180,7 @@ public class TransactionDataChecker {
 		assertEquals(null, item.getVendor());
 		assertEquals(null, item.getCustomer());
 		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(10000, (int) (item.getAmount() * 100));
+		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
 		assertEquals(CreditDebitIndicator.DEBIT, item.getCDIndicator());
 
 		assertEquals(TestUtilities.BUSINESS_AREA, item.getBusinessArea()
@@ -187,7 +197,7 @@ public class TransactionDataChecker {
 		assertEquals(TestUtilities.VENDOR, item.getVendor().toString());
 		assertEquals(null, item.getCustomer());
 		assertEquals(AccountType.VENDOR, item.getAccountType());
-		assertEquals(10000, (int) (item.getAmount() * 100));
+		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
 		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
 
 		assertEquals(null, item.getBusinessArea());
@@ -204,7 +214,7 @@ public class TransactionDataChecker {
 		assertEquals(null, item.getVendor());
 		assertEquals(null, item.getCustomer());
 		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(10000, (int) (item.getAmount() * 100));
+		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
 		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
 
 		assertEquals(TestUtilities.BUSINESS_AREA, item.getBusinessArea()
@@ -221,7 +231,7 @@ public class TransactionDataChecker {
 		assertEquals(TestUtilities.VENDOR, item.getVendor().toString());
 		assertEquals(null, item.getCustomer());
 		assertEquals(AccountType.VENDOR, item.getAccountType());
-		assertEquals(10000, (int) (item.getAmount() * 100));
+		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
 		assertEquals(CreditDebitIndicator.DEBIT, item.getCDIndicator());
 
 		assertEquals(null, item.getBusinessArea());
@@ -238,7 +248,7 @@ public class TransactionDataChecker {
 		assertEquals(null, item.getVendor());
 		assertEquals(null, item.getCustomer());
 		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(10000, (int) (item.getAmount() * 100));
+		assertEquals(TestUtilities.TEST_AMOUNT2, item.getAmount().toString());
 		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
 
 		assertEquals(null, item.getBusinessArea());
@@ -255,7 +265,7 @@ public class TransactionDataChecker {
 		assertEquals(null, item.getVendor());
 		assertEquals(null, item.getCustomer());
 		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(10000, (int) (item.getAmount() * 100));
+		assertEquals(TestUtilities.TEST_AMOUNT2, item.getAmount().toString());
 		assertEquals(CreditDebitIndicator.DEBIT, item.getCDIndicator());
 
 		assertEquals(null, item.getBusinessArea());
@@ -271,7 +281,7 @@ public class TransactionDataChecker {
 		assertEquals(TestUtilities.CUSTOMER, item.getCustomer().toString());
 		assertEquals(null, item.getVendor());
 		assertEquals(AccountType.CUSTOMER, item.getAccountType());
-		assertEquals(10000, (int) (item.getAmount() * 100));
+		assertEquals(TestUtilities.TEST_AMOUNT2, item.getAmount().toString());
 		assertEquals(CreditDebitIndicator.DEBIT, item.getCDIndicator());
 
 		assertEquals(null, item.getBusinessArea());

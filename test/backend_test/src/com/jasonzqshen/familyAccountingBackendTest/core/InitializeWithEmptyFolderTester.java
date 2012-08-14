@@ -20,10 +20,6 @@ public class InitializeWithEmptyFolderTester extends TesterBase {
 				.clearTestingRootFolder(TestUtilities.TEST_ROOT_EMPTY_INIT);
 		coreDriver.setRootPath(TestUtilities.TEST_ROOT_EMPTY_INIT);
 
-		checkCore(coreDriver);
-
-		coreDriver.restart();
-		checkCore(coreDriver);
 	}
 
 	private void checkCore(CoreDriver coreDriver) {
@@ -43,6 +39,13 @@ public class InitializeWithEmptyFolderTester extends TesterBase {
 		assertEquals(1, monthIds.length);
 
 		assertEquals(0, tranData.getCurrentLedger().getCount());
+	}
+
+	@Override
+	protected void check(CoreDriver coreDriver) throws Exception {
+		checkCore(coreDriver);
+		coreDriver.restart();
+		checkCore(coreDriver);
 	}
 
 }

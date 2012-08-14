@@ -41,6 +41,10 @@ public class CustomerEntryTester extends TesterBase {
 		entry.setValue(CustomerEntry.TEXT, TestUtilities.TEST_DESCP);
 		entry.save(false);
 
+	}
+
+	@Override
+	protected void check(CoreDriver coreDriver) throws Exception {
 		TransactionDataManagement transManagement = coreDriver
 				.getTransDataManagement();
 		MonthLedger ledger = transManagement.getLedger(2012, 8);
@@ -58,14 +62,14 @@ public class CustomerEntryTester extends TesterBase {
 				assertEquals(TestUtilities.GL_ACCOUNT_PROFIT, item
 						.getGLAccount().toString());
 				assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-				assertEquals(100, (int) item.getAmount());
+				assertEquals("100.00", item.getAmount().toString());
 			} else {
 				assertEquals(TestUtilities.GL_ACCOUNT1, item.getGLAccount()
 						.toString());
 				assertEquals(TestUtilities.CUSTOMER, item.getCustomer()
 						.toString());
 				assertEquals(AccountType.CUSTOMER, item.getAccountType());
-				assertEquals(100, (int) item.getAmount());
+				assertEquals("100.00", item.getAmount().toString());
 			}
 		}
 

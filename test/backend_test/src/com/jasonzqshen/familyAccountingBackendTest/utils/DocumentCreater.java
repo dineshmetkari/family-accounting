@@ -10,12 +10,14 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
+import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
+import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 
 public class DocumentCreater {
@@ -30,7 +32,7 @@ public class DocumentCreater {
 			ItemEntity item1 = headEntity.createEntity();
 			item1.setGLAccount(new MasterDataIdentity_GLAccount(
 					TestUtilities.GL_ACCOUNT_COST));
-			item1.setAmount(CreditDebitIndicator.DEBIT, 100);
+			item1.setAmount(CreditDebitIndicator.DEBIT, CurrencyAmount.parse(TestUtilities.TEST_AMOUNT1));
 			item1.setBusinessArea(new MasterDataIdentity(
 					TestUtilities.BUSINESS_AREA));
 
@@ -40,7 +42,8 @@ public class DocumentCreater {
 			item2.setVendor(new MasterDataIdentity(TestUtilities.VENDOR),
 					account2);
 
-			item2.setAmount(CreditDebitIndicator.CREDIT, 100);
+			item2.setAmount(CreditDebitIndicator.CREDIT, new CurrencyAmount(
+					123.45));
 			boolean ret = headEntity.save(true);
 			assertEquals(true, ret);
 			return headEntity;
@@ -64,6 +67,10 @@ public class DocumentCreater {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new SystemException(e);
+		} catch (CurrencyAmountFormatException e) {
+			// TODO Auto-generated catch block
+						e.printStackTrace();
+						throw new SystemException(e);
 		}
 	}
 
@@ -78,14 +85,14 @@ public class DocumentCreater {
 			ItemEntity item1 = headEntity.createEntity();
 			item1.setGLAccount(new MasterDataIdentity_GLAccount(
 					TestUtilities.GL_ACCOUNT_PROFIT));
-			item1.setAmount(CreditDebitIndicator.CREDIT, 100);
+			item1.setAmount(CreditDebitIndicator.CREDIT, CurrencyAmount.parse(TestUtilities.TEST_AMOUNT2));
 
 			ItemEntity item2 = headEntity.createEntity();
 			MasterDataIdentity_GLAccount account2 = new MasterDataIdentity_GLAccount(
 					TestUtilities.GL_ACCOUNT2);
 			item2.setCustomer(new MasterDataIdentity(TestUtilities.CUSTOMER),
 					account2);
-			item2.setAmount(CreditDebitIndicator.DEBIT, 100);
+			item2.setAmount(CreditDebitIndicator.DEBIT, CurrencyAmount.parse(TestUtilities.TEST_AMOUNT2));
 			boolean ret = headEntity.save(true);
 			assertEquals(true, ret);
 			return headEntity;
@@ -109,6 +116,11 @@ public class DocumentCreater {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new SystemException(e);
+		} catch (CurrencyAmountFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new SystemException(e);
 		}
+		
 	}
 }

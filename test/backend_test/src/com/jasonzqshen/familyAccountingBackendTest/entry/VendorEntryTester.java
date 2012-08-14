@@ -43,6 +43,10 @@ public class VendorEntryTester extends TesterBase {
 
 		entry.save(false);
 
+	}
+
+	@Override
+	protected void check(CoreDriver coreDriver) throws Exception {
 		TransactionDataManagement transManagement = coreDriver
 				.getTransDataManagement();
 		MonthLedger ledger = transManagement.getLedger(2012, 8);
@@ -61,12 +65,12 @@ public class VendorEntryTester extends TesterBase {
 						.toString());
 				assertEquals(TestUtilities.VENDOR, item.getVendor().toString());
 				assertEquals(AccountType.VENDOR, item.getAccountType());
-				assertEquals(100, (int) item.getAmount());
+				assertEquals("100.00", item.getAmount().toString());
 			} else {
 				assertEquals(TestUtilities.GL_ACCOUNT_COST, item.getGLAccount()
 						.toString());
 				assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-				assertEquals(100, (int) item.getAmount());
+				assertEquals("100.00", item.getAmount().toString());
 				assertEquals(TestUtilities.BUSINESS_AREA, item
 						.getBusinessArea().toString());
 			}
