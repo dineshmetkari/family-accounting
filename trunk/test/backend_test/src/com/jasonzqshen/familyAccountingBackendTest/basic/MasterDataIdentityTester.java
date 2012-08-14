@@ -139,4 +139,10 @@ public class MasterDataIdentityTester extends TesterBase {
 
 	}
 
+	@Override
+	protected void check(CoreDriver coreDriver) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

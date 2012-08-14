@@ -46,10 +46,16 @@ public class LedgerClosingTester extends TesterBase {
 		reverseEntity.setDocText(TestUtilities.TEST_DESCP);
 		// store
 		reverseEntity.save(true);
+
+	}
+
+	@Override
+	protected void check(CoreDriver coreDriver) throws Exception {
 		TransactionDataChecker.checkTransactionData(coreDriver);
-		
+
 		// reload
 		coreDriver.restart();
 		TransactionDataChecker.checkTransactionData(coreDriver);
+
 	}
 }
