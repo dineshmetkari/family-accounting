@@ -21,13 +21,18 @@ import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 
 public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
+	private GLAccountMasterData _equityAccount;
+
 	/**
 	 * 
 	 * @param parser
 	 * @param coreDriver
 	 */
-	public GLAccountMasterDataFactory(CoreDriver coreDriver, MasterDataManagement management) {
+	public GLAccountMasterDataFactory(CoreDriver coreDriver,
+			MasterDataManagement management) {
 		super(coreDriver, management);
+
+		_equityAccount = null;
 	}
 
 	@Override
@@ -66,8 +71,8 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 
 		GLAccountMasterData glAccount;
 		try {
-			glAccount = new GLAccountMasterData(_coreDriver, _management, identity_gl,
-					descp, bankAccount);
+			glAccount = new GLAccountMasterData(_coreDriver, _management,
+					identity_gl, descp, bankAccount);
 		} catch (NullValueNotAcceptable e) {
 			throw new SystemException(e);
 		} catch (NoGLAccountGroupException e) {
@@ -76,6 +81,11 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 
 		this._containDirtyData = true;
 		this._list.put(identity_gl, glAccount);
+
+		// set equity G/L account
+		if (glAccount.getGroup() == GLAccountGroup.EQUITY) {
+			this._equityAccount = glAccount;
+		}
 
 		// raise create master data
 		_coreDriver.getListenersManagement().createMasterData(this, glAccount);
@@ -182,6 +192,15 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 	 */
 	public GLAccountMasterData[] getRevenueAccounts() {
 		return getAccounts(GLAccountGroup.REVENUE_GROUP);
+	}
+
+	/**
+	 * get equity account
+	 * 
+	 * @return
+	 */
+	public GLAccountMasterData getEquityAccount() {
+		return this._equityAccount;
 	}
 
 	/**

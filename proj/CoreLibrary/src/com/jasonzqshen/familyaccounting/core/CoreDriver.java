@@ -19,9 +19,11 @@ import com.jasonzqshen.familyaccounting.core.exception.format.FormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.MetaDataFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
+import com.jasonzqshen.familyaccounting.core.listeners.LedgerCloseListener;
 import com.jasonzqshen.familyaccounting.core.listeners.ListenersManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthLedger;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.DebugInformation;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
@@ -46,6 +48,20 @@ public class CoreDriver {
 	public static final String MASTERDATA = "MD";
 	public static final String TRANDATA = "TD";
 
+	private LedgerCloseListener _closeLedgerListener = new LedgerCloseListener() {
+		@Override
+		public void onLedgerCloseListener(MonthLedger ledger) {
+			_curMonthId = ledger.getMonthID();
+
+			saveMetaData();
+			
+			logDebugInfo(this.getClass(), 58,
+					"Save meta data file with new current month identity, "
+							+ ledger.getMonthID().toString(), MessageType.INFO);
+		}
+
+	};
+
 	private final ListenersManagement _listenerManagement;
 	private String _applicationRootPath;
 	private MonthIdentity _startMonthId;
@@ -62,6 +78,7 @@ public class CoreDriver {
 		_infos = new ArrayList<DebugInformation>();
 
 		_listenerManagement = new ListenersManagement();
+		_listenerManagement.addCloseLedgerListener(_closeLedgerListener);
 
 		// managements
 		_managements = new Hashtable<String, ManagementBase>();

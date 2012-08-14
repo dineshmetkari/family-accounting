@@ -8,6 +8,7 @@ import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefi
 import com.jasonzqshen.familyaccounting.core.exception.NoFieldNameException;
 import com.jasonzqshen.familyaccounting.core.exception.NotInValueRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
+import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
@@ -17,6 +18,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
+import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 
 public class VendorEntry implements IDocumentEntry {
@@ -34,7 +36,7 @@ public class VendorEntry implements IDocumentEntry {
 	private MasterDataIdentity_GLAccount _glAccount;
 	private MasterDataIdentity _vendor;
 	private Date _date;
-	private double _amount;
+	private CurrencyAmount _amount;
 	private String _text;
 	private MasterDataIdentity _businessArea;
 	private boolean _isSaved;
@@ -48,7 +50,7 @@ public class VendorEntry implements IDocumentEntry {
 		_glAccount = null;
 		_vendor = null;
 		_date = null;
-		_amount = 0;
+		_amount = new CurrencyAmount();
 		_businessArea = null;
 
 		_doc = null;
@@ -175,12 +177,12 @@ public class VendorEntry implements IDocumentEntry {
 			_date = date;
 		} else if (fieldName.equals(AMOUNT)) {
 			try {
-				double amount = Double.parseDouble(value.toString());
-				if (amount <= 0) {
+				CurrencyAmount amount = CurrencyAmount.parse(value.toString());
+				if (amount.isZero() || amount.isNegative()) {
 					throw new NotInValueRangeException(fieldName, value);
 				}
 				_amount = amount;
-			} catch (NumberFormatException e) {
+			} catch (CurrencyAmountFormatException e) {
 				throw new NotInValueRangeException(fieldName, value);
 			}
 		} else if (fieldName.equals(TEXT)) {
@@ -206,7 +208,7 @@ public class VendorEntry implements IDocumentEntry {
 		} else if (fieldName.equals(POSTING_DATE)) {
 			return _date;
 		} else if (fieldName.equals(AMOUNT)) {
-			return _amount;
+			return new CurrencyAmount(_amount);
 		} else if (fieldName.equals(TEXT)) {
 			return _text;
 		} else if (fieldName.equals(BUSINESS_AREA)) {
@@ -237,7 +239,7 @@ public class VendorEntry implements IDocumentEntry {
 			throw new MandatoryFieldIsMissing(POSTING_DATE);
 		}
 
-		if (_amount <= 0) {
+		if (_amount.isZero() || _amount.isNegative()) {
 			throw new MandatoryFieldIsMissing(AMOUNT);
 		}
 

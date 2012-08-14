@@ -12,6 +12,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataFactoryBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
+import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 
 public class GLAccountBalanceCollection {
 	private final CoreDriver _coreDriver;
@@ -22,7 +23,7 @@ public class GLAccountBalanceCollection {
 		_coreDriver = coreDriver;
 
 		_items = new Hashtable<MasterDataIdentity_GLAccount, GLAccountBalanceItem>();
-		
+
 		_coreDriver.getListenersManagement().addSaveDocListener(
 				_saveDocumentListener);
 		_coreDriver.getListenersManagement().addLoadDocListener(
@@ -70,9 +71,9 @@ public class GLAccountBalanceCollection {
 	private void newDoc(HeadEntity head) {
 
 		for (ItemEntity item : head.getItems()) {
-			int amount = (int) (item.getAmount() * 100);
+			CurrencyAmount amount = item.getAmount();
 			if (item.getCDIndicator() == CreditDebitIndicator.CREDIT) {
-				amount = 0 - amount;
+				amount.negate();
 			}
 			GLAccountBalanceItem balItem = _items.get(item.getGLAccount());
 
@@ -91,5 +92,13 @@ public class GLAccountBalanceCollection {
 					.getIdentity();
 			_items.put(glId, new GLAccountBalanceItem(glId));
 		}
+	}
+
+	/**
+	 * get balance item
+	 */
+	public GLAccountBalanceItem getBalanceItem(
+			MasterDataIdentity_GLAccount glAccount) {
+		return _items.get(glAccount);
 	}
 }

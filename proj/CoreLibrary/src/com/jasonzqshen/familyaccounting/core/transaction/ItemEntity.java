@@ -9,6 +9,7 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
+import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.TransactionDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
@@ -18,6 +19,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
+import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 
@@ -30,7 +32,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 	private MasterDataIdentity_GLAccount _glAccount;
 	private MasterDataIdentity _customer;
 	private MasterDataIdentity _vendor;
-	private double _amount;
+	private CurrencyAmount _amount;
 	private CreditDebitIndicator _cdIndicator;
 	private MasterDataIdentity _businessArea;
 	boolean _isSaved = false;
@@ -58,7 +60,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 		_glAccount = null;
 		_customer = null;
 		_vendor = null;
-		_amount = 0;
+		_amount = new CurrencyAmount();
 		_businessArea = null;
 		_cdIndicator = null;
 	}
@@ -241,16 +243,21 @@ public class ItemEntity implements Comparable<ItemEntity> {
 	 * @param amount
 	 *            amount should positive number or zero
 	 */
-	public boolean setAmount(CreditDebitIndicator indicator, double amount) {
+	public boolean setAmount(CreditDebitIndicator indicator,
+			CurrencyAmount amount) {
 		if (_isSaved) {
 			return false;
 		}
 
-		if (amount < 0) {
+		if (indicator == null || amount == null) {
+			return false;
+		}
+
+		if (amount.isNegative()) {
 			return false;
 		}
 		_cdIndicator = indicator;
-		_amount = amount;
+		_amount.set(amount);
 		return true;
 	}
 
@@ -258,8 +265,8 @@ public class ItemEntity implements Comparable<ItemEntity> {
 	 * 
 	 * @return
 	 */
-	public double getAmount() {
-		return _amount;
+	public CurrencyAmount getAmount() {
+		return new CurrencyAmount(this._amount);
 	}
 
 	/**
@@ -364,8 +371,8 @@ public class ItemEntity implements Comparable<ItemEntity> {
 							MessageType.ERROR);
 			throw new MandatoryFieldIsMissing("Credit/Debit Indicator");
 		}
-		int amount = (int) (_amount * 100);
-		if (amount * 100 <= 0) {
+
+		if (_amount.isZero() || _amount.isNegative()) {
 			_coreDriver.logDebugInfo(this.getClass(), 319,
 					"Check line item before save, amount <= 0.",
 					MessageType.ERROR);
@@ -443,7 +450,8 @@ public class ItemEntity implements Comparable<ItemEntity> {
 
 		try {
 			int lineNum = Integer.parseInt(lineNumStr);
-			ItemEntity newItem = new ItemEntity(coreDriver, management, head, lineNum);
+			ItemEntity newItem = new ItemEntity(coreDriver, management, head,
+					lineNum);
 
 			AccountType type = AccountType.parse(typeStr.charAt(0));
 			MasterDataIdentity_GLAccount glAccount = new MasterDataIdentity_GLAccount(
@@ -476,7 +484,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 
 			CreditDebitIndicator indicator = CreditDebitIndicator
 					.parse(cdIndStr.charAt(0));
-			double amount = Double.parseDouble(amountStr);
+			CurrencyAmount amount = CurrencyAmount.parse(amountStr);
 			newItem.setAmount(indicator, amount);
 
 			if (StringUtility.isNullOrEmpty(businessAreaStr) == false) {
@@ -516,6 +524,8 @@ public class ItemEntity implements Comparable<ItemEntity> {
 			coreDriver.logDebugInfo(ItemEntity.class, 463, e.toString(),
 					MessageType.ERROR);
 			throw new TransactionDataFileFormatException("");
+		} catch (CurrencyAmountFormatException e) {
+			throw new TransactionDataFileFormatException(e.toString());
 		}
 
 	}
@@ -557,7 +567,7 @@ public class ItemEntity implements Comparable<ItemEntity> {
 		}
 
 		// amount
-		strBuilder.append(String.format("%s=\"%f\" ",
+		strBuilder.append(String.format("%s=\"%s\" ",
 				TransDataUtils.XML_AMOUNT, _amount));
 
 		// credit debit indicator
