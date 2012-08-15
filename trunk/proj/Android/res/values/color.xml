@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- #F3F3F3 -->
+    <color name="light_gray">#F3F3F3</color>
+
+    <!-- #DDDDDD -->
+    <!-- <div style="width:50px; height:50px; background:#DDDDDD" /> -->
+    <color name="_3d_gray">#DDDDDD</color>
+    <!-- #999999 -->
+    <!-- <div style="width:50px; height:50px; background:#999999" /> -->
+    <color name="_999_gray">#999999</color>
+    <!-- #808080 -->
+    <!-- <div style="width:50px; height:50px; background:#808080" /> -->
+    <color name="medium_gray">#808080</color>
+    <!-- #666666 -->
+    <!-- <div style="width:50px; height:50px; background:#666666" /> -->
+    <color name="devil_gray">#666666</color>
+    <!-- #333333 -->
+    <!-- <div style="width:50px; height:50px; background:#333333" /> -->
+    <color name="dark_gray">#333333</color>
+
+</resources>
