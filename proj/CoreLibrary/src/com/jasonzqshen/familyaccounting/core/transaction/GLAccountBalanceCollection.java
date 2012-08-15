@@ -11,8 +11,11 @@ import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataFactoryBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
+import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 
 public class GLAccountBalanceCollection {
 	private final CoreDriver _coreDriver;
@@ -100,5 +103,46 @@ public class GLAccountBalanceCollection {
 	public GLAccountBalanceItem getBalanceItem(
 			MasterDataIdentity_GLAccount glAccount) {
 		return _items.get(glAccount);
+	}
+
+	/**
+	 * get group balance
+	 * 
+	 * @param accountGroup
+	 * @return
+	 */
+	public CurrencyAmount getGroupBalance(GLAccountGroup accountGroup) {
+		CurrencyAmount ret = new CurrencyAmount();
+		MasterDataManagement mdMgmt = _coreDriver.getMasterDataManagement();
+		for (MasterDataIdentity_GLAccount id : _items.keySet()) {
+			GLAccountMasterData glAccount = (GLAccountMasterData) mdMgmt
+					.getMasterData(id, MasterDataType.GL_ACCOUNT);
+			if (glAccount.getGroup() == accountGroup) {
+				ret.addTo(_items.get(id).getSumAmount());
+			}
+		}
+
+		return ret;
+	}
+
+	/**
+	 * get group balance
+	 * 
+	 * @param accountGroup
+	 * @return
+	 */
+	public CurrencyAmount getGroupBalance(GLAccountGroup accountGroup,
+			MonthIdentity startMonthId, MonthIdentity endMonthId) {
+		CurrencyAmount ret = new CurrencyAmount();
+		MasterDataManagement mdMgmt = _coreDriver.getMasterDataManagement();
+		for (MasterDataIdentity_GLAccount id : _items.keySet()) {
+			GLAccountMasterData glAccount = (GLAccountMasterData) mdMgmt
+					.getMasterData(id, MasterDataType.GL_ACCOUNT);
+			if (glAccount.getGroup() == accountGroup) {
+				ret.addTo(_items.get(id).getSumAmount(startMonthId, endMonthId));
+			}
+		}
+
+		return ret;
 	}
 }

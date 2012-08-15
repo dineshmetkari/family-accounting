@@ -141,8 +141,17 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
 
 	@Override
 	public String toString() {
-		double value = _value / 100.0;
+		double value = this.toNumber();
 		return String.format("%.2f", value);
+	}
+
+	/**
+	 * to number
+	 * 
+	 * @return
+	 */
+	public double toNumber() {
+		return _value / 100.0;
 	}
 
 	/**

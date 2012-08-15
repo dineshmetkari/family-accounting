@@ -54,7 +54,7 @@ public class CoreDriver {
 			_curMonthId = ledger.getMonthID();
 
 			saveMetaData();
-			
+
 			logDebugInfo(this.getClass(), 58,
 					"Save meta data file with new current month identity, "
 							+ ledger.getMonthID().toString(), MessageType.INFO);
@@ -200,7 +200,10 @@ public class CoreDriver {
 
 		// folder not exist or folder is empty
 		if (!file.exists()) {
-			file.mkdir();
+			boolean ret = file.mkdir();
+			if (ret == false) {
+				return;
+			}
 		}
 
 		establishFolder();

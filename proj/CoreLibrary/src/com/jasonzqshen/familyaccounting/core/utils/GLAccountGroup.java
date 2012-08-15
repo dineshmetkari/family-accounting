@@ -52,4 +52,40 @@ public enum GLAccountGroup {
 
 		throw new GLAccountGroupFormatException(id);
 	}
+
+	/**
+	 * get group
+	 * 
+	 * @param group
+	 * @return
+	 */
+	public static String getDescp(GLAccountGroup group) {
+		if (group == GLAccountGroup.CASH) {
+			return "Cash on hand";
+		} else if (group == GLAccountGroup.BANK_ACCOUNT) {
+			return "Bank account";
+		} else if (group == GLAccountGroup.INVESTMENT) {
+			return "Investment";
+		} else if (group == GLAccountGroup.PREPAID) {
+			return "Prepaid";
+		} else if (group == GLAccountGroup.ASSETS) {
+			return "Fixed assets";
+		} else if (group == GLAccountGroup.EQUITY) {
+			return "Equity";
+		} else if (group == GLAccountGroup.LONG_LIABILITIES) {
+			return "Long liabilities";
+		} else if (group == GLAccountGroup.SHORT_LIABILITIES) {
+			return "Short liabilities";
+		} else if (group == GLAccountGroup.SALARY) {
+			return "Salary";
+		} else if (group == GLAccountGroup.INVEST_REVENUE) {
+			return "Revenue from investment";
+		} else if (group == GLAccountGroup.COST_PURE) {
+			return "Cost for purpose";
+		} else if (group == GLAccountGroup.COST_ACCI) {
+			return "Cost accidentlly";
+		}
+
+		return "";
+	}
 }
