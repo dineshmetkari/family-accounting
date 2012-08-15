@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="main_equity_label">Equity:</string>
+    <string name="main_assert_label">Asset:</string>
+    <string name="main_liability_label">Liability:</string>
+	<string name="main_cur_cost_label">Cost in Current Month:</string>
+	<string name="main_cur_revenue_label">Revenue in Current Month:</string>
+	<string name="main_chart_label">Asserts Details:</string>
+	<string name="main_liquidity_label">Liquidity:</string>
+</resources>
