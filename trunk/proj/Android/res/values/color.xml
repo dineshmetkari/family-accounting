@@ -18,5 +18,9 @@
     <!-- #333333 -->
     <!-- <div style="width:50px; height:50px; background:#333333" /> -->
     <color name="dark_gray">#333333</color>
+    <color name="light_blue">#00A1E4</color>
+    <color name="medium_blue">#0083CA</color>
+    <color name="dark_blue">#004990</color>
+    <color name="background_light_blue">#E3EEF9</color>
 
 </resources>

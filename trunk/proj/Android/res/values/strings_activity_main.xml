@@ -7,4 +7,6 @@
 	<string name="main_cur_revenue_label">Revenue in Current Month:</string>
 	<string name="main_chart_label">Asserts Details:</string>
 	<string name="main_liquidity_label">Liquidity:</string>
+	<string name="main_sample_year">2012</string>
+	<string name="main_sample_month">08 (1)</string>
 </resources>

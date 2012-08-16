@@ -13,12 +13,15 @@ import com.jasonzqshen.familyAccounting.exceptions.ExternalStorageException;
 import com.jasonzqshen.familyAccounting.utils.ChartUtil;
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.transaction.GLAccountBalanceCollection;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -39,7 +42,7 @@ public class MainActivity extends Activity {
 	private TextView _revenueValue = null;
 	private TextView _liquaityValue = null;
 	private TextView _monthId = null;
-	private TextView _task = null;
+	private TextView _yearId = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +77,7 @@ public class MainActivity extends Activity {
 		_revenueValue = (TextView) this.findViewById(R.id.revenueValue);
 		_liquaityValue = (TextView) this.findViewById(R.id.liquadityValue);
 		_monthId = (TextView) this.findViewById(R.id.monthLabel);
-		_task = (TextView) this.findViewById(R.id.taskLabel);
+		_yearId = (TextView) this.findViewById(R.id.yearLabel);
 	}
 
 	protected void onResume() {
@@ -177,8 +180,10 @@ public class MainActivity extends Activity {
 			assetAmount.addTo(cur);
 			index++;
 		}
-		// set data for field
-		this._assetValue.setText(assetAmount.toString());
+		// set data for field, under line
+		SpannableString content = new SpannableString(assetAmount.toString());
+		content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+		this._assetValue.setText(content);
 
 		// equity
 		CurrencyAmount equityAmount = balCol
@@ -219,10 +224,17 @@ public class MainActivity extends Activity {
 		}
 		this._liquaityValue.setText(liquidityAmount.toString());
 
-		// set month identity
-		_monthId.setText(coreDriver.getTransDataManagement().getCurrentLedger()
-				.getMonthID().toString());
+		// set month identity, under line
+		MonthIdentity monthId = coreDriver.getTransDataManagement()
+				.getCurrentLedger().getMonthID();
+		String monthStr = String.valueOf(monthId._fiscalMonth);
+		if (monthId._fiscalMonth < 0) {
+			monthStr = "0" + monthStr;
+		}
+		content = new SpannableString(monthStr + "(0)");
+		content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+		_monthId.setText(content);
 
-		_task.setText("task(0)");
+		_yearId.setText(String.valueOf(monthId._fiscalYear));
 	}
 }

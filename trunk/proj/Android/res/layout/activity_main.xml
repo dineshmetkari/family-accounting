@@ -12,13 +12,12 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_gray"
+        android:background="@color/background_light_blue"
         android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/light_gray" >
+            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/equityLabel"
@@ -37,8 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/text_view_light_gray"
-                android:clickable="true"
+                android:clickable="false"
                 android:gravity="right"
                 android:longClickable="false"
                 android:paddingBottom="@dimen/TextBottomMargin"
@@ -59,7 +57,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_gray"
+            android:background="@color/background_light_blue"
             android:weightSum="1" >
 
             <TextView
@@ -71,7 +69,6 @@
                 android:longClickable="true"
                 android:paddingBottom="@dimen/TextBottomMargin"
                 android:paddingLeft="@dimen/TextLeftMargin"
-                android:paddingRight="@dimen/TextRightMargin"
                 android:paddingTop="@dimen/TextTopMargin"
                 android:text="@string/main_assert_label"
                 android:textAppearance="@style/TextAppearance.Medium" />
@@ -81,12 +78,11 @@
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
-                android:background="@drawable/text_view_light_gray"
+                android:background="@drawable/text_view_background_light_blue"
                 android:clickable="true"
                 android:gravity="right"
                 android:longClickable="false"
                 android:paddingBottom="@dimen/TextBottomMargin"
-                android:paddingLeft="@dimen/TextLeftMargin"
                 android:paddingRight="@dimen/TextRightMargin"
                 android:paddingTop="@dimen/TextTopMargin"
                 android:text=""
@@ -105,12 +101,10 @@
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
-                android:background="@color/light_gray"
                 android:clickable="true"
                 android:longClickable="true"
                 android:paddingBottom="@dimen/TextBottomMargin"
                 android:paddingLeft="@dimen/TextLeftMargin"
-                android:paddingRight="@dimen/TextRightMargin"
                 android:paddingTop="@dimen/TextTopMargin"
                 android:text="@string/main_liability_label"
                 android:textAppearance="@style/TextAppearance.Medium" />
@@ -120,156 +114,172 @@
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
-                android:background="@drawable/text_view_light_gray"
-                android:clickable="true"
+                android:clickable="false"
                 android:gravity="right"
                 android:longClickable="false"
                 android:paddingBottom="@dimen/TextBottomMargin"
-                android:paddingLeft="@dimen/TextLeftMargin"
                 android:paddingRight="@dimen/TextRightMargin"
                 android:paddingTop="@dimen/TextTopMargin"
                 android:textAppearance="@style/TextAppearance.Medium"
                 android:textStyle="bold" />
         </LinearLayout>
+    </LinearLayout>
 
-        <ImageView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/divider_horizontal_textfield"
-            android:contentDescription="@string/app_name" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/DividerLeftMargin"
+        android:layout_marginRight="@dimen/DividerRightMargin"
+        android:background="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_gray"
+        android:baselineAligned="false"
+        android:weightSum="1" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/_3d_gray"
-            android:weightSum="1" >
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.25"
+            android:background="@color/background_light_blue"
+            android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/monthLabel"
-                android:layout_width="0px"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.75"
-                android:background="@drawable/text_view_3d_gray"
+                android:id="@+id/yearLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:clickable="true"
-                android:paddingBottom="@dimen/TextBottomMargin"
                 android:paddingLeft="@dimen/TextLeftMargin"
                 android:paddingRight="@dimen/TextRightMargin"
                 android:paddingTop="@dimen/TextTopMargin"
-                android:text=""
+                android:text="@string/main_sample_year"
                 android:textAppearance="@style/TextAppearance.Large" />
 
             <TextView
-                android:id="@+id/taskLabel"
-                android:layout_width="0px"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.25"
-                android:background="@drawable/text_view_3d_gray"
+                android:id="@+id/monthLabel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/text_view_background_light_blue"
                 android:clickable="true"
-                android:gravity="top|right"
                 android:paddingBottom="@dimen/TextBottomMargin"
                 android:paddingLeft="@dimen/TextLeftMargin"
                 android:paddingRight="@dimen/TextRightMargin"
-                android:paddingTop="@dimen/TextTopMargin"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.Small" />
+                android:text="@string/main_sample_month"
+                android:textAppearance="@style/TextAppearance.XLarge"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/_3d_gray"
-            android:weightSum="1" >
-
-            <TextView
-                android:id="@+id/liquadityLabel"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.75"
-                android:paddingBottom="@dimen/TextBottomMargin"
-                android:paddingLeft="@dimen/TextLeftMargin"
-                android:paddingRight="@dimen/TextRightMargin"
-                android:paddingTop="@dimen/TextTopMargin"
-                android:text="@string/main_liquidity_label"
-                android:textAppearance="@style/TextAppearance.Small" />
-
-            <TextView
-                android:id="@+id/liquadityValue"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:gravity="right"
-                android:paddingBottom="@dimen/TextBottomMargin"
-                android:paddingLeft="@dimen/TextLeftMargin"
-                android:paddingRight="@dimen/TextRightMargin"
-                android:paddingTop="@dimen/TextTopMargin"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.Small" />
-        </LinearLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="@android:color/black" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:background="@color/_3d_gray"
-            android:weightSum="1" >
+            android:layout_weight="0.75"
+            android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/costLabel"
-                android:layout_width="0px"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.75"
-                android:paddingBottom="@dimen/TextBottomMargin"
-                android:paddingLeft="@dimen/TextLeftMargin"
-                android:paddingRight="@dimen/TextRightMargin"
-                android:paddingTop="@dimen/TextTopMargin"
-                android:text="@string/main_cur_cost_label"
-                android:textAppearance="@style/TextAppearance.Small" />
+                android:weightSum="1" >
 
-            <TextView
-                android:id="@+id/costValue"
-                android:layout_width="0px"
+                <TextView
+                    android:id="@+id/liquadityLabel"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingLeft="@dimen/TextLeftMargin"
+                    android:paddingRight="@dimen/TextRightMargin"
+                    android:paddingTop="@dimen/TextTopMargin"
+                    android:text="@string/main_liquidity_label"
+                    android:textAppearance="@style/TextAppearance.Small" />
+
+                <TextView
+                    android:id="@+id/liquadityValue"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="right"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingLeft="@dimen/TextLeftMargin"
+                    android:paddingRight="@dimen/TextRightMargin"
+                    android:paddingTop="@dimen/TextTopMargin"
+                    android:textAppearance="@style/TextAppearance.Small" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:gravity="right"
-                android:paddingBottom="@dimen/TextBottomMargin"
-                android:paddingLeft="@dimen/TextLeftMargin"
-                android:paddingRight="@dimen/TextRightMargin"
-                android:paddingTop="@dimen/TextTopMargin"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.Small" />
-        </LinearLayout>
+                android:weightSum="1" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/_3d_gray"
-            android:weightSum="1" >
+                <TextView
+                    android:id="@+id/costLabel"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingLeft="@dimen/TextLeftMargin"
+                    android:paddingRight="@dimen/TextRightMargin"
+                    android:paddingTop="@dimen/TextTopMargin"
+                    android:text="@string/main_cur_cost_label"
+                    android:textAppearance="@style/TextAppearance.Small" />
 
-            <TextView
-                android:id="@+id/revenueLabel"
-                android:layout_width="0px"
+                <TextView
+                    android:id="@+id/costValue"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="right"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingLeft="@dimen/TextLeftMargin"
+                    android:paddingRight="@dimen/TextRightMargin"
+                    android:paddingTop="@dimen/TextTopMargin"
+                    android:textAppearance="@style/TextAppearance.Small" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.75"
-                android:paddingBottom="@dimen/TextBottomMargin"
-                android:paddingLeft="@dimen/TextLeftMargin"
-                android:paddingRight="@dimen/TextRightMargin"
-                android:paddingTop="@dimen/TextTopMargin"
-                android:text="@string/main_cur_revenue_label"
-                android:textAppearance="@style/TextAppearance.Small" />
+                android:weightSum="1" >
 
-            <TextView
-                android:id="@+id/revenueValue"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
-                android:gravity="right"
-                android:paddingBottom="@dimen/TextBottomMargin"
-                android:paddingLeft="@dimen/TextLeftMargin"
-                android:paddingRight="@dimen/TextRightMargin"
-                android:paddingTop="@dimen/TextTopMargin"
-                android:textAppearance="@style/TextAppearance.Small" />
+                <TextView
+                    android:id="@+id/revenueLabel"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingLeft="@dimen/TextLeftMargin"
+                    android:paddingRight="@dimen/TextRightMargin"
+                    android:paddingTop="@dimen/TextTopMargin"
+                    android:text="@string/main_cur_revenue_label"
+                    android:textAppearance="@style/TextAppearance.Small" />
+
+                <TextView
+                    android:id="@+id/revenueValue"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:gravity="right"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingLeft="@dimen/TextLeftMargin"
+                    android:paddingRight="@dimen/TextRightMargin"
+                    android:paddingTop="@dimen/TextTopMargin"
+                    android:textAppearance="@style/TextAppearance.Small" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/DividerLeftMargin"
+        android:layout_marginRight="@dimen/DividerRightMargin"
+        android:background="@android:color/black" />
 
     <LinearLayout
         android:id="@+id/chart"
