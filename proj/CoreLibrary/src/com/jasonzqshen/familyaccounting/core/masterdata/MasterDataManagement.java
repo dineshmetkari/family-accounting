@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -465,6 +466,8 @@ public class MasterDataManagement extends ManagementBase {
 			}
 		}
 
+		Collections.sort(array);
+
 		MasterDataIdentity_GLAccount[] ret = new MasterDataIdentity_GLAccount[array
 				.size()];
 		for (int i = 0; i < ret.length; ++i) {
@@ -522,7 +525,6 @@ public class MasterDataManagement extends ManagementBase {
 		GLAccountMasterDataFactory factory = (GLAccountMasterDataFactory) getMasterDataFactory(MasterDataType.GL_ACCOUNT);
 		return factory.getCostAccounts();
 	}
-
 
 	/**
 	 * get revenue accounts
