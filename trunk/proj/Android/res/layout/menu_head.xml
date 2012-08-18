@@ -1,0 +1,19 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/dark_gray"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/menu_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="@dimen/ListLeftPadding"
+        android:text="@string/main_test_descp"
+        android:textAppearance="@style/TextAppearance.Small"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+</LinearLayout>

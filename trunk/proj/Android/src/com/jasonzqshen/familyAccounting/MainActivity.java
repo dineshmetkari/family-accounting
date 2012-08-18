@@ -3,7 +3,6 @@ package com.jasonzqshen.familyAccounting;
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.model.CategorySeries;
-import org.achartengine.model.SeriesSelection;
 import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 
@@ -12,42 +11,61 @@ import com.jasonzqshen.familyAccounting.exceptions.CoreDriverInitException;
 import com.jasonzqshen.familyAccounting.exceptions.ExternalStorageException;
 import com.jasonzqshen.familyAccounting.utils.ChartUtil;
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.transaction.GLAccountBalanceCollection;
-import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
+import com.jasonzqshen.familyaccounting.core.transaction.GLAccountBalanceItem;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.Color;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
+	public static final String TAG = "MAIN";
+
+	private MainActivityHandler _handler = new MainActivityHandler(this);
+	private final OnCheckedChangeListener _dimenChanged = new OnCheckedChangeListener() {
+		@Override
+		public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+		}
+	};
+
+	private final OnClickListener MENU_BTN_CLICK = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			_handler.navigate2MainMenu();
+		}
+	};
+
 	private DataCore _dataCore = null;
 	private DefaultRenderer _renderer = new DefaultRenderer();
-	private GraphicalView _chartView;
 	private CategorySeries _series = new CategorySeries("");
+	private GraphicalView _chartView;
 
-	private TextView _equityValue = null;
-	private TextView _assetValue = null;
-	private TextView _liabilitiesValue = null;
 	private TextView _costValue = null;
 	private TextView _revenueValue = null;
-	private TextView _liquaityValue = null;
-	private TextView _monthId = null;
-	private TextView _yearId = null;
+	private RadioGroup _radioGroup = null;
+	private ImageButton _menuButton = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.main);
 
 		// initialize data component
 		_dataCore = DataCore.getInstance();
@@ -60,24 +78,35 @@ public class MainActivity extends Activity {
 		}
 
 		// initialize render
-		_renderer.setApplyBackgroundColor(true);
-		_renderer.setBackgroundColor(Color.argb(100, 50, 50, 50));
-		_renderer.setChartTitleTextSize(20);
-		_renderer.setLabelsTextSize(15);
-		_renderer.setLegendTextSize(15);
-		_renderer.setMargins(new int[] { 20, 30, 15, 0 });
-		_renderer.setZoomButtonsVisible(true);
-		_renderer.setStartAngle(90);
+		buildPieChartRenderer();
 
 		// get text view
-		_equityValue = (TextView) this.findViewById(R.id.equityValue);
-		_assetValue = (TextView) this.findViewById(R.id.assertValue);
-		_liabilitiesValue = (TextView) this.findViewById(R.id.liabilitytValue);
-		_costValue = (TextView) this.findViewById(R.id.costValue);
-		_revenueValue = (TextView) this.findViewById(R.id.revenueValue);
-		_liquaityValue = (TextView) this.findViewById(R.id.liquadityValue);
-		_monthId = (TextView) this.findViewById(R.id.monthLabel);
-		_yearId = (TextView) this.findViewById(R.id.yearLabel);
+		_costValue = (TextView) this.findViewById(R.id.cost_value);
+		_revenueValue = (TextView) this.findViewById(R.id.revenue_value);
+		_radioGroup = (RadioGroup) this.findViewById(R.id.dimenSelection);
+		_radioGroup.setOnCheckedChangeListener(_dimenChanged);
+
+		_menuButton = (ImageButton) this.findViewById(R.id.menu_icon);
+		_menuButton.setOnClickListener(MENU_BTN_CLICK);
+	}
+
+	/**
+	 * Builds a bar render
+	 * 
+	 */
+	private void buildPieChartRenderer() {
+		// initialize render
+		_renderer.setApplyBackgroundColor(false);
+		// _renderer.setBackgroundColor(Color.argb(100, 50, 50, 50));
+		_renderer.setChartTitleTextSize(ChartUtil.PIE_CHART_TITLE_SIZE);
+		_renderer.setLabelsTextSize(ChartUtil.PIE_CHART_LABEL_SIZE);
+		_renderer.setLegendTextSize(ChartUtil.PIE_CHART_LABEL_SIZE);
+		_renderer.setLabelsColor(Color.BLACK);
+		_renderer.setMargins(new int[] { 20, 30, 15, 0 });
+		_renderer.setZoomEnabled(false);
+		_renderer.setPanEnabled(false);
+		_renderer.setStartAngle(90);
+		_renderer.setChartTitle(this.getString(R.string.main_chart_title));
 	}
 
 	protected void onResume() {
@@ -97,109 +126,63 @@ public class MainActivity extends Activity {
 	 * draw chart
 	 */
 	private void drawChart() {
-		if (_chartView == null) {
-			LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
-			_chartView = ChartFactory.getPieChartView(this, _series, _renderer);
-			_renderer.setClickEnabled(true);
-			_renderer.setSelectableBuffer(10);
-			_chartView.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					SeriesSelection seriesSelection = _chartView
-							.getCurrentSeriesAndPoint();
-					if (seriesSelection == null) {
-						Toast.makeText(MainActivity.this,
-								"No chart element was clicked",
-								Toast.LENGTH_SHORT).show();
-					} else {
-						Toast.makeText(
-								MainActivity.this,
-								"Chart element data point index "
-										+ seriesSelection.getPointIndex()
-										+ " was clicked" + " point value="
-										+ seriesSelection.getValue(),
-								Toast.LENGTH_SHORT).show();
-					}
-				}
-			});
-			_chartView.setOnLongClickListener(new View.OnLongClickListener() {
-				@Override
-				public boolean onLongClick(View v) {
-					SeriesSelection seriesSelection = _chartView
-							.getCurrentSeriesAndPoint();
-					if (seriesSelection == null) {
-						Toast.makeText(MainActivity.this,
-								"No chart element was long pressed",
-								Toast.LENGTH_SHORT).show();
-						return false; // no chart element was long pressed, so
-										// let something
-						// else handle the event
-					} else {
-						Toast.makeText(
-								MainActivity.this,
-								"Chart element data point index "
-										+ seriesSelection.getPointIndex()
-										+ " was long pressed",
-								Toast.LENGTH_SHORT).show();
-						return true; // the element was long pressed - the event
-										// has been
-						// handled
-					}
-				}
-			});
-			layout.addView(_chartView, new LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-		} else {
+		if (_chartView != null) {
 			_chartView.repaint();
+			return;
 		}
+
+		_chartView = ChartFactory.getPieChartView(this, _series, _renderer);
+
+		LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
+		layout.addView(_chartView, new LayoutParams(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT));
 	}
 
 	/**
 	 * set data
 	 */
 	private void setData() {
-		// set the data in pie chart
-		_series.clear();
+		// set the data in bar chart
 		CoreDriver coreDriver = _dataCore.getCoreDriver();
+		if (coreDriver.isInitialized() == false) {
+			return;
+		}
+		// clear
+		this._series.clear();
+
+		MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
 		GLAccountBalanceCollection balCol = coreDriver.getTransDataManagement()
 				.getAccBalCol();
-		CurrencyAmount assetAmount = new CurrencyAmount();
-		int index = 0;
-		for (GLAccountGroup group : GLAccountGroup.BALANCE_GROUP) {
-			CurrencyAmount cur = balCol.getGroupBalance(group);
 
-			_series.add(GLAccountGroup.getDescp(group), cur.toNumber());
-			SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
-			renderer.setColor(ChartUtil.COLORS[index % ChartUtil.COLORS.length]);
-			_renderer.addSeriesRenderer(renderer);
+		// set data
+		int count = 0;
+		for (int i = 0; i < GLAccountGroup.COST_GROUP.length; i++) {
+			GLAccountGroup group = GLAccountGroup.COST_GROUP[i];
+			MasterDataIdentity_GLAccount[] ids = mdMgmt
+					.getGLAccountsBasedGroup(group);
+			for (int j = 0; j < ids.length; ++j) {
+				MasterDataBase masterData = mdMgmt.getMasterData(ids[j],
+						MasterDataType.GL_ACCOUNT);
+				GLAccountBalanceItem item = balCol.getBalanceItem(ids[j]);
 
-			if (_chartView != null) {
-				_chartView.repaint();
+				_series.add(masterData.getDescp(), item.getSumAmount()
+						.toNumber());
+				SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
+				renderer.setColor(ChartUtil.COLORS[count
+						% ChartUtil.COLORS.length]);
+				renderer.setChartValuesTextSize(ChartUtil.PIE_CHART_VALUE_TEXT_SIZE);
+				renderer.setChartValuesSpacing(ChartUtil.PIE_CHART_VALUE_SPACING);
+				renderer.setDisplayChartValues(true);
+
+				_renderer.addSeriesRenderer(renderer);
+
+				count++;
 			}
 
-			assetAmount.addTo(cur);
-			index++;
 		}
-		// set data for field, under line
-		SpannableString content = new SpannableString(assetAmount.toString());
-		content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-		this._assetValue.setText(content);
-
-		// equity
-		CurrencyAmount equityAmount = balCol
-				.getGroupBalance(GLAccountGroup.EQUITY);
-		equityAmount.negate();
-		this._equityValue.setText(equityAmount.toString());
-
-		// liabilities
-		CurrencyAmount liabilityAmount = new CurrencyAmount();
-		for (GLAccountGroup group : GLAccountGroup.LIABILITIES_GROUP) {
-			CurrencyAmount cur = balCol.getGroupBalance(group);
-			liabilityAmount.addTo(cur);
+		if (_chartView != null) {
+			_chartView.repaint();
 		}
-		liabilityAmount.negate();
-		this._liabilitiesValue.setText(liabilityAmount.toString());
-
 		// revenue
 		CurrencyAmount revenueAmount = new CurrencyAmount();
 		for (GLAccountGroup group : GLAccountGroup.REVENUE_GROUP) {
@@ -216,25 +199,5 @@ public class MainActivity extends Activity {
 		}
 		this._costValue.setText(costAmount.toString());
 
-		// liquidity
-		CurrencyAmount liquidityAmount = new CurrencyAmount();
-		for (GLAccountGroup group : GLAccountGroup.Liquidity_GROUP) {
-			CurrencyAmount cur = balCol.getGroupBalance(group);
-			liquidityAmount.addTo(cur);
-		}
-		this._liquaityValue.setText(liquidityAmount.toString());
-
-		// set month identity, under line
-		MonthIdentity monthId = coreDriver.getTransDataManagement()
-				.getCurrentLedger().getMonthID();
-		String monthStr = String.valueOf(monthId._fiscalMonth);
-		if (monthId._fiscalMonth < 0) {
-			monthStr = "0" + monthStr;
-		}
-		content = new SpannableString(monthStr + "(0)");
-		content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-		_monthId.setText(content);
-
-		_yearId.setText(String.valueOf(monthId._fiscalYear));
 	}
 }

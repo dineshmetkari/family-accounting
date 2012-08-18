@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="asset_report_cash">Cash</string>
+    <string name="asset_report_bank_account">Bank Account</string>
+    <string name="asset_report_investment">Invest.</string>
+    <string name="asset_report_fixed_asset">Fixed Asset</string>
+    <string name="asset_report_prepaid">Prepaid</string>
+    <string name="asset_report_sum">Summary: </string>
+    <string name="asset_report_title">Asset Reports</string>
+	<string name="asset_report_ytitle">Amount</string>
+	<string name="asset_report_xtitle">Asset Category</string>
+</resources>
