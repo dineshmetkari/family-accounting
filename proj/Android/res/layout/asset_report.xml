@@ -1,0 +1,120 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/ViewBottomMargin"
+    android:paddingLeft="@dimen/ViewLeftMargin"
+    android:paddingRight="@dimen/ViewRightMargin"
+    android:paddingTop="@dimen/ViewTopMargin" >
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_light_blue" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="9" >
+
+            <CheckBox
+                android:id="@+id/cashCheckBox"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
+                android:checked="true"
+                android:text="@string/asset_report_cash" />
+
+            <CheckBox
+                android:id="@+id/prepaidCheckBox"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
+                android:checked="true"
+                android:text="@string/asset_report_prepaid" />
+
+            <CheckBox
+                android:id="@+id/investCheckBox"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="4"
+                android:checked="true"
+                android:text="@string/asset_report_investment" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="6" >
+
+            <CheckBox
+                android:id="@+id/fixedAssetCheckBox"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
+                android:checked="true"
+                android:text="@string/asset_report_fixed_asset" />
+
+            <CheckBox
+                android:id="@+id/bankAccountCheckBox"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="3"
+                android:checked="true"
+                android:text="@string/asset_report_bank_account" />
+
+        </TableRow>
+    </TableLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/DividerLeftMargin"
+        android:layout_marginRight="@dimen/DividerRightMargin"
+        android:background="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_gray"
+        android:weightSum="1" >
+
+        <TextView
+            android:id="@+id/sumLabel"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5"
+            android:paddingBottom="@dimen/TextBottomMargin"
+            android:paddingLeft="@dimen/TextLeftMargin"
+            android:paddingTop="@dimen/TextTopMargin"
+            android:text="@string/asset_report_sum"
+            android:textAppearance="@style/TextAppearance.Medium" />
+
+        <TextView
+            android:id="@+id/sumValue"
+            android:layout_width="0px"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5"
+            android:gravity="right"
+            android:paddingBottom="@dimen/TextBottomMargin"
+            android:paddingRight="@dimen/TextRightMargin"
+            android:paddingTop="@dimen/TextTopMargin"
+            android:text=""
+            android:textAppearance="@style/TextAppearance.Large"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/chart"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+</LinearLayout>

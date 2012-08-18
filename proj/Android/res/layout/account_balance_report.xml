@@ -1,0 +1,122 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/ViewBottomMargin"
+    android:paddingLeft="@dimen/ViewLeftMargin"
+    android:paddingRight="@dimen/ViewRightMargin"
+    android:paddingTop="@dimen/ViewTopMargin" >
+
+    <TableLayout
+        android:id="@+id/filterTable"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_light_blue" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1" >
+
+            <TextView
+                android:id="@+id/groupTextView"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingLeft="@dimen/TextLeftMargin"
+                android:paddingRight="@dimen/TextRightMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/balance_report_group_selection"
+                android:textAppearance="@style/TextAppearance.Medium" />
+
+            <Button
+                android:id="@+id/groupSelectionBtn"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:text="" />
+        </TableRow>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/DividerLeftMargin"
+            android:layout_marginRight="@dimen/DividerRightMargin"
+            android:background="@android:color/darker_gray" />
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1" >
+
+            <TextView
+                android:id="@+id/startTextView"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingLeft="@dimen/TextLeftMargin"
+                android:paddingRight="@dimen/TextRightMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/balance_report_start_month"
+                android:textAppearance="@style/TextAppearance.Medium" />
+
+            <Spinner
+                android:id="@+id/startMonthSpinner"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6" />
+        </TableRow>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/DividerLeftMargin"
+            android:layout_marginRight="@dimen/DividerRightMargin"
+            android:background="@android:color/darker_gray" />
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/endMonthTextView"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingLeft="@dimen/TextLeftMargin"
+                android:paddingRight="@dimen/TextRightMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/balance_report_end_month"
+                android:textAppearance="@style/TextAppearance.Medium" />
+
+            <Spinner
+                android:id="@+id/endMonthSpinner"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6" />
+        </TableRow>
+    </TableLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/DividerLeftMargin"
+        android:layout_marginRight="@dimen/DividerRightMargin"
+        android:background="@android:color/black" />
+
+    <ListView
+        android:id="@id/android:list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/list_background"
+        android:listSelector="@android:color/transparent" />
+
+</LinearLayout>

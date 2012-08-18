@@ -1,0 +1,151 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/actionbar_background"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin"
+        android:weightSum="1" >
+
+        <ImageButton
+            android:id="@+id/menu_icon"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.15"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/menu" />
+
+        <TextView
+            android:id="@+id/HomeTextView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.7"
+            android:gravity="center"
+            android:text="@string/main_home"
+            android:textAppearance="@style/TextAppearance.ActionBarTitle" />
+
+        <ImageButton
+            android:id="@+id/report_icon"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.15"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/reports" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin" >
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_light_blue" >
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingLeft="@dimen/TextLeftMargin"
+                    android:paddingTop="@dimen/TextTopMargin"
+                    android:text="@string/main_cur_cost_label"
+                    android:textAppearance="@style/TextAppearance.Medium" />
+
+                <TextView
+                    android:id="@+id/cost_value"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:gravity="right"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingRight="@dimen/TextRightMargin"
+                    android:paddingTop="@dimen/TextTopMargin"
+                    android:text="@string/main_test_amount"
+                    android:textAppearance="@style/TextAppearance.Large"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingLeft="@dimen/TextLeftMargin"
+                    android:paddingTop="@dimen/TextTopMargin"
+                    android:text="@string/main_cur_revenue_label"
+                    android:textAppearance="@style/TextAppearance.Medium" />
+
+                <TextView
+                    android:id="@+id/revenue_value"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:gravity="right"
+                    android:paddingBottom="@dimen/TextBottomMargin"
+                    android:paddingRight="@dimen/TextRightMargin"
+                    android:paddingTop="@dimen/TextRightMargin"
+                    android:text="@string/main_test_amount"
+                    android:textAppearance="@style/TextAppearance.Large"
+                    android:textStyle="bold" />
+            </TableRow>
+        </TableLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
+
+        <RadioGroup
+            android:id="@+id/dimenSelection"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/accountDimen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/main_accounts" />
+
+            <RadioButton
+                android:id="@+id/BusinessArea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_business_area" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/chart"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

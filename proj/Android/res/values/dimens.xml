@@ -2,7 +2,8 @@
 <resources>
 
     <dimen name="ListPreferredItemHeight">64dip</dimen>
-    <dimen name="ListLeftPadding">10dip</dimen>
+    <dimen name="ListLeftPadding">18dip</dimen>
+    <dimen name="ListRightPadding">18dip</dimen>
     <dimen name="SearchResultListItemHeight">58dip</dimen>
     <dimen name="BaseLayoutPadding">6dip</dimen>
 
@@ -88,6 +89,7 @@
     <dimen name="TextSizeMedium">18sp</dimen>
     <dimen name="TextSizeLarge">22sp</dimen>
     <dimen name="TextSizeXLarge">24sp</dimen>
+    <dimen name="TextSizeActionBarTitle">36sp</dimen>
     <dimen name="ViewLeftMargin">8dip</dimen>
     <dimen name="ViewRightMargin">8dip</dimen>
     <dimen name="ViewTopMargin">8dip</dimen>
