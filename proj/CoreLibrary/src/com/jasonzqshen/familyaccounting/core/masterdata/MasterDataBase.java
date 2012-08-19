@@ -11,15 +11,16 @@ import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
  * @author I072485
  * 
  */
-public abstract class MasterDataBase {
+public abstract class MasterDataBase implements Comparable<MasterDataBase> {
 
 	protected final MasterDataIdentity _identity;
 	protected String _descp; // description
 	protected final MasterDataManagement _management; // core driver
 	protected final CoreDriver _coreDriver;
 
-	protected MasterDataBase(CoreDriver coreDriver, MasterDataManagement management,
-			MasterDataIdentity id, String descp) throws NullValueNotAcceptable {
+	protected MasterDataBase(CoreDriver coreDriver,
+			MasterDataManagement management, MasterDataIdentity id, String descp)
+			throws NullValueNotAcceptable {
 		if (id == null) {
 			throw new NullValueNotAcceptable("Identity");
 		}
@@ -86,8 +87,12 @@ public abstract class MasterDataBase {
 	 * @return
 	 */
 	public String getDescp() {
-
 		return _descp;
+	}
+
+	@Override
+	public String toString() {
+		return getDescp();
 	}
 
 	/**
@@ -102,5 +107,9 @@ public abstract class MasterDataBase {
 	public String toXML() {
 		return String.format("%s=\"%s\" %s=\"%s\" ", MasterDataUtils.XML_ID,
 				_identity.toString(), MasterDataUtils.XML_DESCP, _descp);
+	}
+
+	public int compareTo(MasterDataBase data) {
+		return this._identity.compareTo(data._identity);
 	}
 }
