@@ -1,5 +1,7 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 
 import org.w3c.dom.Element;
@@ -122,9 +124,16 @@ public abstract class MasterDataFactoryBase {
 	 * @return
 	 */
 	public MasterDataBase[] getAllEntities() {
+		ArrayList<MasterDataBase> collection = new ArrayList<MasterDataBase>();
+
+		for (MasterDataBase data : _list.values()) {
+			collection.add(data);
+		}
+		Collections.sort(collection);
+
 		MasterDataBase[] ret = new MasterDataBase[getMasterDataCount()];
 		int index = 0;
-		for (MasterDataBase data : _list.values()) {
+		for (MasterDataBase data : collection) {
 			ret[index++] = data;
 		}
 
