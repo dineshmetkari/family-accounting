@@ -33,10 +33,14 @@ public class GLEntryTester extends TesterBase {
 		GLAccountEntry entry = new GLAccountEntry(coreDriver);
 		entry.setValue(GLAccountEntry.AMOUNT, 100);
 		entry.setValue(GLAccountEntry.POSTING_DATE, date);
-		entry.setDstAccount(new MasterDataIdentity_GLAccount(
-				TestUtilities.GL_ACCOUNT1.toCharArray()));
-		entry.setSourceAccount(new MasterDataIdentity_GLAccount(
-				TestUtilities.GL_ACCOUNT2.toCharArray()));
+		entry.setValue(
+				GLAccountEntry.DST_ACCOUNT,
+				new MasterDataIdentity_GLAccount(TestUtilities.GL_ACCOUNT1
+						.toCharArray()));
+		entry.setValue(
+				GLAccountEntry.SRC_ACCOUNT,
+				new MasterDataIdentity_GLAccount(TestUtilities.GL_ACCOUNT2
+						.toCharArray()));
 		entry.setValue(GLAccountEntry.TEXT, TestUtilities.TEST_DESCP);
 		entry.save(false);
 
