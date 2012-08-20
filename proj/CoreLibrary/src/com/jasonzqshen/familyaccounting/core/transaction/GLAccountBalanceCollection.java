@@ -38,14 +38,14 @@ public class GLAccountBalanceCollection {
 	}
 
 	// load document listener
-	private LoadDocumentListener _loadDocumentListener = new LoadDocumentListener() {
+	private final LoadDocumentListener _loadDocumentListener = new LoadDocumentListener() {
 		public void onLoadDocumentListener(Object source, HeadEntity document) {
 			newDoc(document);
 		}
 	};
 
 	// save document listener
-	private SaveDocumentListener _saveDocumentListener = new SaveDocumentListener() {
+	private final SaveDocumentListener _saveDocumentListener = new SaveDocumentListener() {
 		public void onSaveDocumentListener(HeadEntity document) {
 			newDoc(document);
 		}
@@ -58,7 +58,7 @@ public class GLAccountBalanceCollection {
 		}
 	};
 
-	private CreateMasterDataListener _createMasterListener = new CreateMasterDataListener() {
+	private final CreateMasterDataListener _createMasterListener = new CreateMasterDataListener() {
 		public void onCreateMasterDataListener(MasterDataFactoryBase factory,
 				MasterDataBase master) {
 			newMasterdata(master);

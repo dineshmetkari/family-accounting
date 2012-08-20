@@ -17,6 +17,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
+import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
@@ -62,7 +63,7 @@ public class VendorEntry implements IDocumentEntry {
 	 * @param vendor
 	 * @throws NotInValueRangeException
 	 */
-	public void setVendor(MasterDataIdentity vendor)
+	private void setVendor(MasterDataIdentity vendor)
 			throws NotInValueRangeException {
 		if (vendor == null) {
 			throw new NotInValueRangeException(VENDOR, "");
@@ -82,7 +83,7 @@ public class VendorEntry implements IDocumentEntry {
 	 * @param glAccount
 	 * @throws NoFieldNameException
 	 */
-	public void setGLAccount(MasterDataIdentity_GLAccount glAccount)
+	private void setGLAccount(MasterDataIdentity_GLAccount glAccount)
 			throws NotInValueRangeException, NoFieldNameException {
 		if (glAccount == null) {
 			throw new NotInValueRangeException(GL_ACCOUNT, "");
@@ -105,7 +106,7 @@ public class VendorEntry implements IDocumentEntry {
 	 * 
 	 * @param businessArea
 	 */
-	public void setBusinessArea(MasterDataIdentity businessArea)
+	private void setBusinessArea(MasterDataIdentity businessArea)
 			throws NotInValueRangeException {
 		if (businessArea == null) {
 			throw new NotInValueRangeException(BUSINESS_AREA, "");
@@ -127,7 +128,7 @@ public class VendorEntry implements IDocumentEntry {
 	 * @throws NotInValueRangeException
 	 * @throws NoFieldNameException
 	 */
-	public void setRecAccount(MasterDataIdentity_GLAccount recAcc)
+	private void setRecAccount(MasterDataIdentity_GLAccount recAcc)
 			throws NotInValueRangeException, NoFieldNameException {
 		if (recAcc == null) {
 			throw new NotInValueRangeException(REC_ACC, "");
@@ -147,6 +148,10 @@ public class VendorEntry implements IDocumentEntry {
 
 	public void setValue(String fieldName, Object value)
 			throws NoFieldNameException, NotInValueRangeException {
+		if (_isSaved) {
+			return;
+		}
+
 		if (value == null) {
 			throw new NotInValueRangeException(fieldName, "");
 		}
@@ -249,6 +254,10 @@ public class VendorEntry implements IDocumentEntry {
 	}
 
 	public void save(boolean store) throws MandatoryFieldIsMissing {
+		if (_isSaved) {
+			return;
+		}
+
 		// check before save
 		checkBeforeSave();
 
@@ -305,4 +314,47 @@ public class VendorEntry implements IDocumentEntry {
 		throw new NoFieldNameException(fieldName);
 	}
 
+	/**
+	 * pasrse document to vendor entry
+	 * 
+	 * @param head
+	 * @return return null if cannot parse to customer entry.
+	 */
+	public static VendorEntry parse(HeadEntity head) {
+		// check
+		if (head.getDocumentType() != DocumentType.VENDOR_INVOICE) {
+			return null;
+		}
+		ItemEntity[] items = head.getItems();
+		if (items.length != 2) {
+			return null;
+		}
+		// credit item
+		ItemEntity creditItem = items[0];
+		if (creditItem.getAccountType() != AccountType.VENDOR) {
+			return null;
+		}
+		ItemEntity debitItem = items[1];
+		if (debitItem.getAccountType() != AccountType.GL_ACCOUNT) {
+			return null;
+		}
+
+		VendorEntry entry = new VendorEntry(head._coreDriver);
+		entry._recAcc = creditItem.getGLAccount();
+		entry._vendor = creditItem.getVendor();
+		entry._glAccount = debitItem.getGLAccount();
+		entry._businessArea = debitItem.getBusinessArea();
+
+		entry._date = head.getPostingDate();
+		entry._amount = creditItem.getAmount();
+		if (creditItem.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+			// reverse
+			entry._amount.negate();
+		}
+		entry._text = head.getDocText();
+		entry._isSaved = true;
+		entry._doc = head;
+
+		return entry;
+	}
 }

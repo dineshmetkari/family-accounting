@@ -15,6 +15,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAcc
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
+import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
@@ -50,7 +51,7 @@ public class GLAccountEntry implements IDocumentEntry {
 	 * @param srcAccount
 	 * @throws NoFieldNameException
 	 */
-	public void setSourceAccount(MasterDataIdentity_GLAccount srcAccount)
+	private void setSourceAccount(MasterDataIdentity_GLAccount srcAccount)
 			throws NotInValueRangeException, NoFieldNameException {
 		if (srcAccount == null) {
 			throw new NotInValueRangeException(SRC_ACCOUNT, "");
@@ -74,7 +75,7 @@ public class GLAccountEntry implements IDocumentEntry {
 	 * @param srcAccount
 	 * @throws NoFieldNameException
 	 */
-	public void setDstAccount(MasterDataIdentity_GLAccount dstAccount)
+	private void setDstAccount(MasterDataIdentity_GLAccount dstAccount)
 			throws NotInValueRangeException, NoFieldNameException {
 		if (dstAccount == null) {
 			throw new NotInValueRangeException(DST_ACCOUNT, "");
@@ -110,6 +111,10 @@ public class GLAccountEntry implements IDocumentEntry {
 	}
 
 	public void save(boolean store) throws MandatoryFieldIsMissing {
+		if (_isSaved) {
+			return;
+		}
+
 		checkBeforeSave();
 		try {
 			HeadEntity head = new HeadEntity(_coreDriver,
@@ -152,6 +157,10 @@ public class GLAccountEntry implements IDocumentEntry {
 
 	public void setValue(String fieldName, Object value)
 			throws NoFieldNameException, NotInValueRangeException {
+		if (_isSaved) {
+			return;
+		}
+
 		if (value == null) {
 			throw new NotInValueRangeException(fieldName, "");
 		}
@@ -199,7 +208,9 @@ public class GLAccountEntry implements IDocumentEntry {
 		} else if (fieldName.equals(TEXT)) {
 			return _text;
 		} else if (fieldName.equals(AMOUNT)) {
-			return _amount;
+			return new CurrencyAmount(_amount);
+		} else if (fieldName.equals(POSTING_DATE)) {
+			return _pstDate;
 		}
 		throw new NoFieldNameException(fieldName);
 	}
@@ -231,6 +242,47 @@ public class GLAccountEntry implements IDocumentEntry {
 			return manage.getLiquidityAccounts();
 		}
 		throw new NoFieldNameException(fieldName);
+	}
+
+	/**
+	 * parse document to G/L entry
+	 * 
+	 * @param head
+	 * @return return null if cannot parse to customer entry.
+	 */
+	public static GLAccountEntry parse(HeadEntity head) {
+		// check
+		if (head.getDocumentType() != DocumentType.GL) {
+			return null;
+		}
+		ItemEntity[] items = head.getItems();
+		if (items.length != 2) {
+			return null;
+		}
+		// credit item
+		ItemEntity srcItem = items[0];
+		if (srcItem.getAccountType() != AccountType.GL_ACCOUNT) {
+			return null;
+		}
+		ItemEntity dstItem = items[1];
+		if (dstItem.getAccountType() != AccountType.GL_ACCOUNT) {
+			return null;
+		}
+
+		GLAccountEntry entry = new GLAccountEntry(head._coreDriver);
+		entry._srcAccount = srcItem.getGLAccount();
+		entry._dstAccount = dstItem.getGLAccount();
+		entry._pstDate = head.getPostingDate();
+		entry._amount = srcItem.getAmount();
+		if (srcItem.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+			// reverse
+			entry._amount.negate();
+		}
+		entry._text = head.getDocText();
+		entry._isSaved = true;
+		entry._doc = head;
+
+		return entry;
 	}
 
 }
