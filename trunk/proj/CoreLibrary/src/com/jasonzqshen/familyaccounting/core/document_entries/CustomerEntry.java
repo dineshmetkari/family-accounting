@@ -17,6 +17,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
+import com.jasonzqshen.familyaccounting.core.utils.AccountType;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
@@ -50,7 +51,7 @@ public class CustomerEntry implements IDocumentEntry {
 	 * @param customer
 	 * @throws NotInValueRangeException
 	 */
-	public void setCustomer(MasterDataIdentity customer)
+	private void setCustomer(MasterDataIdentity customer)
 			throws NotInValueRangeException {
 		if (customer == null) {
 			throw new NotInValueRangeException(CUSTOMER, "");
@@ -70,7 +71,7 @@ public class CustomerEntry implements IDocumentEntry {
 	 * @param glAccount
 	 * @throws NoFieldNameException
 	 */
-	public void setGLAccount(MasterDataIdentity_GLAccount glAccount)
+	private void setGLAccount(MasterDataIdentity_GLAccount glAccount)
 			throws NotInValueRangeException, NoFieldNameException {
 		if (glAccount == null) {
 			throw new NotInValueRangeException(GL_ACCOUNT, "");
@@ -95,7 +96,7 @@ public class CustomerEntry implements IDocumentEntry {
 	 * @throws NotInValueRangeException
 	 * @throws NoFieldNameException
 	 */
-	public void setRecAccount(MasterDataIdentity_GLAccount recAcc)
+	private void setRecAccount(MasterDataIdentity_GLAccount recAcc)
 			throws NotInValueRangeException, NoFieldNameException {
 		if (recAcc == null) {
 			throw new NotInValueRangeException(REC_ACC, "");
@@ -115,6 +116,10 @@ public class CustomerEntry implements IDocumentEntry {
 
 	public void setValue(String fieldName, Object value)
 			throws NoFieldNameException, NotInValueRangeException {
+		if (_isSaved) {
+			return;
+		}
+
 		if (value == null) {
 			throw new NotInValueRangeException(fieldName, "");
 		}
@@ -207,6 +212,9 @@ public class CustomerEntry implements IDocumentEntry {
 	}
 
 	public void save(boolean store) throws MandatoryFieldIsMissing {
+		if (_isSaved) {
+			return;
+		}
 		checkBeforeSave();
 
 		try {
@@ -261,4 +269,45 @@ public class CustomerEntry implements IDocumentEntry {
 		throw new NoFieldNameException(fieldName);
 	}
 
+	/**
+	 * pasrse document to customer entry
+	 * 
+	 * @param head
+	 * @return return null if cannot parse to customer entry.
+	 */
+	public static CustomerEntry parse(HeadEntity head) {
+		// check
+		if (head.getDocumentType() != DocumentType.CUSTOMER_INVOICE) {
+			return null;
+		}
+		ItemEntity[] items = head.getItems();
+		if (items.length != 2) {
+			return null;
+		}
+		// credit item
+		ItemEntity creditItem = items[0];
+		if (creditItem.getAccountType() != AccountType.GL_ACCOUNT) {
+			return null;
+		}
+		ItemEntity debitItem = items[1];
+		if (debitItem.getAccountType() != AccountType.CUSTOMER) {
+			return null;
+		}
+
+		CustomerEntry entry = new CustomerEntry(head._coreDriver);
+		entry._glAccount = creditItem.getGLAccount();
+		entry._recAcc = debitItem.getGLAccount();
+		entry._customer = debitItem.getCustomer();
+		entry._date = head.getPostingDate();
+		entry._amount = creditItem.getAmount();
+		if (creditItem.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+			// reverse
+			entry._amount.negate();
+		}
+		entry._text = head.getDocText();
+		entry._isSaved = true;
+		entry._doc = head;
+
+		return entry;
+	}
 }

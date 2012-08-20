@@ -35,7 +35,7 @@ public class GLAccountBalanceItem {
 	void addAmount(MonthIdentity monthId, CurrencyAmount amount) {
 		_sum.addTo(amount);
 
-		if (_list.contains(monthId)) {
+		if (_list.containsKey(monthId)) {
 			CurrencyAmount sum = _list.get(monthId);
 			sum.addTo(amount);
 		} else {
@@ -77,7 +77,7 @@ public class GLAccountBalanceItem {
 	 * @return
 	 */
 	public CurrencyAmount getAmount(MonthIdentity id) {
-		if (_list.contains(id)) {
+		if (_list.containsKey(id)) {
 			CurrencyAmount amount = _list.get(id);
 			return new CurrencyAmount(amount);
 		}
