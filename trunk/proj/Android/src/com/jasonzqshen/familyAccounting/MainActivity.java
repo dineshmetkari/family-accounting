@@ -1,5 +1,8 @@
 package com.jasonzqshen.familyAccounting;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.model.CategorySeries;
@@ -10,6 +13,8 @@ import com.jasonzqshen.familyAccounting.data.DataCore;
 import com.jasonzqshen.familyAccounting.exceptions.CoreDriverInitException;
 import com.jasonzqshen.familyAccounting.exceptions.ExternalStorageException;
 import com.jasonzqshen.familyAccounting.utils.ChartUtil;
+import com.jasonzqshen.familyAccounting.widgets.AccountReportAdapter;
+import com.jasonzqshen.familyAccounting.widgets.AccountReportAdapterItem;
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
@@ -21,7 +26,7 @@ import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 
 import android.os.Bundle;
-import android.app.Activity;
+import android.app.ListActivity;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
@@ -34,7 +39,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
 	public static final String TAG = "MAIN";
 
 	private MainActivityHandler _handler = new MainActivityHandler(this);
@@ -45,12 +50,27 @@ public class MainActivity extends Activity {
 		}
 	};
 
+	/**
+	 * menu button click
+	 */
 	private final OnClickListener MENU_BTN_CLICK = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			_handler.navigate2MainMenu();
 		}
 	};
+	
+	/**
+	 * menu button click
+	 */
+	private final OnClickListener REPORT_BTN_CLICK = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			_handler.navigate2BalanceReport();
+		}
+	};
+
+	private AccountReportAdapter _adapter;
 
 	private DataCore _dataCore = null;
 	private DefaultRenderer _renderer = new DefaultRenderer();
@@ -61,6 +81,7 @@ public class MainActivity extends Activity {
 	private TextView _revenueValue = null;
 	private RadioGroup _radioGroup = null;
 	private ImageButton _menuButton = null;
+	private ImageButton _reportButton = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +109,9 @@ public class MainActivity extends Activity {
 
 		_menuButton = (ImageButton) this.findViewById(R.id.menu_icon);
 		_menuButton.setOnClickListener(MENU_BTN_CLICK);
+		
+		_reportButton = (ImageButton)this.findViewById(R.id.report_icon);
+		_reportButton.setOnClickListener(REPORT_BTN_CLICK);
 	}
 
 	/**
@@ -154,6 +178,8 @@ public class MainActivity extends Activity {
 		GLAccountBalanceCollection balCol = coreDriver.getTransDataManagement()
 				.getAccBalCol();
 
+		// for cost detail
+		ArrayList<AccountReportAdapterItem> list = new ArrayList<AccountReportAdapterItem>();
 		// set data
 		int count = 0;
 		for (int i = 0; i < GLAccountGroup.COST_GROUP.length; i++) {
@@ -176,6 +202,8 @@ public class MainActivity extends Activity {
 
 				_renderer.addSeriesRenderer(renderer);
 
+				list.add(new AccountReportAdapterItem(masterData.getDescp(), item
+						.getSumAmount(), AccountReportAdapterItem.ITEM_VIEW));
 				count++;
 			}
 
@@ -199,5 +227,9 @@ public class MainActivity extends Activity {
 		}
 		this._costValue.setText(costAmount.toString());
 
+		// set adapter
+		Collections.sort(list);
+		_adapter = new AccountReportAdapter(this, list);
+		this.setListAdapter(_adapter);
 	}
 }

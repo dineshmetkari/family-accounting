@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/text_view_transparent"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/ListRightPadding"
+    android:paddingRight="@dimen/ListLeftPadding"
+    android:weightSum="1" >
+
+    <TextView
+        android:id="@+id/descp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.55"
+        android:text="@string/main_test_descp" />
+
+    <TextView
+        android:id="@+id/amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.45"
+        android:gravity="right"
+        android:text="@string/main_test_amount_large"
+        android:textAppearance="@style/TextAppearance.Large"
+        android:textStyle="bold" />
+
+</LinearLayout>

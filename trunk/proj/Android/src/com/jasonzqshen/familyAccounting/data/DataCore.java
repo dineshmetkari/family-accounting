@@ -8,6 +8,7 @@ import android.util.Log;
 import com.jasonzqshen.familyAccounting.exceptions.CoreDriverInitException;
 import com.jasonzqshen.familyAccounting.exceptions.ExternalStorageException;
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.reports.ReportsManagement;
 
 /**
  * singleton
@@ -28,6 +29,8 @@ public class DataCore {
 	}
 
 	private CoreDriver _coreDriver;
+	private ReportsManagement _reportsManagement;
+
 	private String _rootFolder;
 
 	/**
@@ -35,6 +38,7 @@ public class DataCore {
 	 */
 	private DataCore() {
 		_coreDriver = new CoreDriver();
+		_reportsManagement = new ReportsManagement(_coreDriver);
 	}
 
 	/**
@@ -77,6 +81,15 @@ public class DataCore {
 	 */
 	public CoreDriver getCoreDriver() {
 		return _coreDriver;
+	}
+
+	/**
+	 * get reports management
+	 * 
+	 * @return
+	 */
+	public ReportsManagement getReportsManagement() {
+		return _reportsManagement;
 	}
 
 }

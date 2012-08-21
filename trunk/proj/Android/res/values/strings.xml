@@ -4,6 +4,9 @@
     <string name="title_activity_main">Family Accounting</string>
     <string name="main_test_amount">00000.00</string>
     <string name="main_test_amount_large">0000000.00</string>
+    <string name="main_test_account">1000100000</string>
     <string name="main_test_descp">This is just testing description. The string is to test the long value in text field</string>
+    <string name="main_test_date">2012/08/02</string>
+    <string name="ok">OK</string>
 
 </resources>

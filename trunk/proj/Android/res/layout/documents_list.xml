@@ -29,7 +29,7 @@
             android:layout_height="50dp"
             android:layout_weight="0.7"
             android:gravity="center"
-            android:text="@string/main_home"
+            android:text="@string/documents_title"
             android:textAppearance="@style/TextAppearance.ActionBarTitle" />
 
         <ImageButton
@@ -53,38 +53,26 @@
 
         <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background_light_blue" >
+            android:layout_height="wrap_content" >
 
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/text_view_background_light_blue"
-                android:clickable="true"
                 android:weightSum="1" >
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.6"
-                    android:paddingBottom="@dimen/TextBottomMargin"
-                    android:paddingLeft="@dimen/TextLeftMargin"
-                    android:paddingTop="@dimen/TextTopMargin"
-                    android:text="@string/main_cur_cost_label"
+                    android:layout_weight="0.4"
+                    android:text="@string/documents_select_month"
                     android:textAppearance="@style/TextAppearance.Medium" />
 
-                <TextView
-                    android:id="@+id/cost_value"
+                <Spinner
+                    android:id="@+id/startMonthSpinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.4"
-                    android:gravity="right"
-                    android:paddingBottom="@dimen/TextBottomMargin"
-                    android:paddingRight="@dimen/TextRightMargin"
-                    android:paddingTop="@dimen/TextTopMargin"
-                    android:text="@string/main_test_amount"
-                    android:textAppearance="@style/TextAppearance.Large"
-                    android:textStyle="bold" />
+                    android:layout_weight="0.6"
+                    android:entries="@array/groupby_options" />
             </TableRow>
 
             <TableRow
@@ -93,27 +81,32 @@
                 android:weightSum="1" >
 
                 <TextView
+                    android:id="@+id/groupLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.6"
-                    android:paddingBottom="@dimen/TextBottomMargin"
-                    android:paddingLeft="@dimen/TextLeftMargin"
-                    android:paddingTop="@dimen/TextTopMargin"
-                    android:text="@string/main_cur_revenue_label"
+                    android:layout_weight="0.3"
+                    android:text="@string/documents_group_by"
                     android:textAppearance="@style/TextAppearance.Medium" />
 
-                <TextView
-                    android:id="@+id/revenue_value"
+                <Spinner
+                    android:id="@+id/groupSpinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
-                    android:gravity="right"
-                    android:paddingBottom="@dimen/TextBottomMargin"
-                    android:paddingRight="@dimen/TextRightMargin"
-                    android:paddingTop="@dimen/TextRightMargin"
-                    android:text="@string/main_test_amount"
-                    android:textAppearance="@style/TextAppearance.Large"
-                    android:textStyle="bold" />
+                    android:entries="@array/groupby_options" />
+
+                <Button
+                    android:id="@+id/valueFilter"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/documents_select_value" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
             </TableRow>
         </TableLayout>
 
@@ -122,48 +115,11 @@
             android:layout_height="1dp"
             android:background="@android:color/black" />
 
-        <RadioGroup
-            android:id="@+id/dimenSelection"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <RadioButton
-                android:id="@+id/accountDimen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/main_accounts" />
-
-            <RadioButton
-                android:id="@+id/BusinessArea"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/main_business_area" />
-        </RadioGroup>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="3dp"
-            android:background="@color/margin_blue" />
-
         <ListView
             android:id="@id/android:list"
             android:layout_width="fill_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:listSelector="@android:color/transparent" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="3dp"
-            android:background="@color/margin_blue" />
-
-        <LinearLayout
-            android:id="@+id/chart"
-            android:layout_width="fill_parent"
-            android:layout_height="300dp"
-            android:orientation="vertical" >
-        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

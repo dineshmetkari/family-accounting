@@ -22,7 +22,7 @@
     <color name="medium_blue">#0083CA</color>
     <color name="dark_blue">#004990</color>
     <color name="background_light_blue">#E3EEF9</color>
-    
+    <color name="margin_blue">#376092</color>
     <color name="list_background">#E6E6E6</color>
 
 </resources>
