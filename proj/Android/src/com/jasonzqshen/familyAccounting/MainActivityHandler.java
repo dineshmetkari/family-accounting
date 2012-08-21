@@ -43,5 +43,14 @@ public class MainActivityHandler {
 		Intent assetReportIntent = new Intent(_activity, MainMenuActivity.class);
 		_activity.startActivity(assetReportIntent);
 	}
+	
+	/**
+	 * navigate to main menu button
+	 */
+	public void navigate2BalanceReport() {
+		// success, start main activity
+		Intent assetReportIntent = new Intent(_activity, GLAccountBalanceReportActivity.class);
+		_activity.startActivity(assetReportIntent);
+	}
 
 }

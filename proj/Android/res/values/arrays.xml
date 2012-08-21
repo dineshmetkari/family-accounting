@@ -1,0 +1,9 @@
+<resources>
+
+    <string-array name="groupby_options">
+        <item>Account</item>
+        <item>Business Area</item>
+        <item>Date</item>
+    </string-array>
+
+</resources>

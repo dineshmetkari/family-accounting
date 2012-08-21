@@ -98,9 +98,6 @@ public class MenuAdapter extends BaseAdapter {
 	private void fillItemView(View view, MenuAdapterItem item) {
 		TextView textView = (TextView) view.findViewById(R.id.menu_text);
 		textView.setText(_context.getString(item.TextID));
-		if (item.Listener != null) {
-			textView.setOnClickListener(item.Listener);
-		}
 
 		ImageView image = (ImageView) view.findViewById(R.id.menu_image);
 		image.setImageResource(item.ImageID);
