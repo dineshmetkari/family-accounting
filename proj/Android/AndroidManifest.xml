@@ -43,6 +43,11 @@
             android:label="@string/asset_report_title"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".entries.VendorEntryActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

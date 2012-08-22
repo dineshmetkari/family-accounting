@@ -21,7 +21,6 @@ public class AccountReportAdapter extends BaseAdapter {
 		_context = context;
 		_list = list;
 		_layoutInflater = LayoutInflater.from(_context);
-
 	}
 
 	@Override
@@ -68,6 +67,13 @@ public class AccountReportAdapter extends BaseAdapter {
 						R.layout.account_report_item_center, null);
 			}
 			fillItemView(view, item);
+			break;
+		case AccountReportAdapterItem.HEAD_VIEW_RED:
+			if (null == view) {
+				view = _layoutInflater.inflate(
+						R.layout.account_report_item_top_red, null);
+			}
+			fillHeadView(view, item);
 			break;
 		}
 
