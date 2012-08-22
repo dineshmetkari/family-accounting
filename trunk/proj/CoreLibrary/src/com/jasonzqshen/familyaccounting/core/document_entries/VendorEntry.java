@@ -11,6 +11,7 @@ import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataFactoryBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
@@ -304,18 +305,25 @@ public class VendorEntry implements IDocumentEntry {
 	}
 
 	public Object[] getValueSet(String fieldName) throws NoFieldNameException {
+		MasterDataManagement manage = _coreDriver.getMasterDataManagement();
 		if (fieldName.equals(GL_ACCOUNT)) {
-			MasterDataManagement manage = _coreDriver.getMasterDataManagement();
 			return manage.getCostAccounts();
 		} else if (fieldName.equals(REC_ACC)) {
-			MasterDataManagement manage = _coreDriver.getMasterDataManagement();
-			return manage.getBalanceAccounts();
+			return manage.getLiquidityAccounts();
+		} else if (fieldName.equals(VENDOR)) {
+			MasterDataFactoryBase factory = manage
+					.getMasterDataFactory(MasterDataType.VENDOR);
+			return factory.getAllEntities();
+		} else if (fieldName.equals(BUSINESS_AREA)) {
+			MasterDataFactoryBase factory = manage
+					.getMasterDataFactory(MasterDataType.BUSINESS_AREA);
+			return factory.getAllEntities();
 		}
 		throw new NoFieldNameException(fieldName);
 	}
 
 	/**
-	 * pasrse document to vendor entry
+	 * parse document to vendor entry
 	 * 
 	 * @param head
 	 * @return return null if cannot parse to customer entry.
@@ -357,4 +365,6 @@ public class VendorEntry implements IDocumentEntry {
 
 		return entry;
 	}
+	
+	
 }
