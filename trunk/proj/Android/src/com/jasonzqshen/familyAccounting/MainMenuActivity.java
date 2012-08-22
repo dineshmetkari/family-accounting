@@ -2,6 +2,7 @@ package com.jasonzqshen.familyAccounting;
 
 import java.util.ArrayList;
 
+import com.jasonzqshen.familyAccounting.entries.VendorEntryActivity;
 import com.jasonzqshen.familyAccounting.reports.DocumentsListActivity;
 import com.jasonzqshen.familyAccounting.reports.GLAccountBalanceReportActivity;
 import com.jasonzqshen.familyAccounting.utils.ActivityAction;
@@ -26,7 +27,8 @@ public class MainMenuActivity extends ListActivity {
 			new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0, R.string.menu_entry,
 					null),
 			new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.new_entry,
-					R.string.menu_vendor_entry, null),
+					R.string.menu_vendor_entry, new ActivityAction(
+							VendorEntryActivity.class, this)),
 			new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.new_entry,
 					R.string.menu_customer_entry, null),
 			new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.new_entry,

@@ -3,5 +3,6 @@
     <string name="balance_report_group_selection">Group:</string>
     <string name="balance_report_start_month">Start Month:</string>
     <string name="balance_report_end_month">End Month:</string>
+    <string name="balance_report_title">Balance Report</string>
 
 </resources>

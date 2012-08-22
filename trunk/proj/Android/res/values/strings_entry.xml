@@ -1,0 +1,18 @@
+<resources>
+
+    <string name="entry_outgoing_entry">Outgoing</string>
+    <string name="entry_pst_date">Date:</string>
+    <string name="entry_amount">Amount:</string>
+    <string name="entry_vendor">Vendor:</string>
+    <string name="entry_outgoing_account">Outgoing Account:</string>
+    <string name="entry_cost_account">Cost Account:</string>
+    <string name="entry_business_area">Business Area:</string>
+    <string name="entry_vendor_selection">Vendor Selection</string>
+    <string name="entry_outgoing_selection">Outgoing Account Selection</string>
+    <string name="entry_business_selection">Business Area Selection</string>
+    <string name="entry_cost_selection">Cost Account Selection</string>
+    <string name="entry_description">Entry description</string>
+    <string name="entry_saved">Document saved</string>
+    <string name="entry_amount_value">0.00</string>
+
+</resources>

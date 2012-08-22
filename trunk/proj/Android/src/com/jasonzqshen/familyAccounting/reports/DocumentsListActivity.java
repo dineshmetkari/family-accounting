@@ -1,6 +1,9 @@
 package com.jasonzqshen.familyAccounting.reports;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import com.jasonzqshen.familyAccounting.R;
 import com.jasonzqshen.familyAccounting.data.DataCore;
@@ -11,9 +14,11 @@ import com.jasonzqshen.familyaccounting.core.document_entries.CustomerEntry;
 import com.jasonzqshen.familyaccounting.core.document_entries.GLAccountEntry;
 import com.jasonzqshen.familyaccounting.core.document_entries.IDocumentEntry;
 import com.jasonzqshen.familyaccounting.core.document_entries.VendorEntry;
+import com.jasonzqshen.familyaccounting.core.masterdata.BusinessAreaMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataFactoryBase;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
@@ -35,6 +40,7 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -43,6 +49,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 public class DocumentsListActivity extends ListActivity {
+	public final static String TAG = "DocumentsListActivity";
+
 	private DataCore _dataCore;
 	private Spinner _monthFilter;
 	private Spinner _groupSpinner;
@@ -77,29 +85,22 @@ public class DocumentsListActivity extends ListActivity {
 	};
 
 	/**
-	 * Group by selection listener
-	 */
-	private final OnItemSelectedListener _GROUP_BY_LISTENER = new OnItemSelectedListener() {
-		@Override
-		public void onItemSelected(AdapterView<?> arg0, View view,
-				int position, long arg3) {
-			setValueSet();
-		}
-
-		@Override
-		public void onNothingSelected(AdapterView<?> arg0) {
-		}
-
-	};
-
-	/**
 	 * Multiple choice click listener
 	 */
 	private final DialogInterface.OnMultiChoiceClickListener _VALUE_MULTIPLE_CHOICE_LISTENER = new DialogInterface.OnMultiChoiceClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int clicked,
 				boolean selected) {
-			_selectedValue[clicked] = selected;
+			int position = _groupSpinner.getSelectedItemPosition();
+			switch (position) {
+			case DocListParam.ACCOUNT_CATEGORY:
+				_glAccountSelection[clicked] = selected;
+			case DocListParam.BUSINESS_CATEGORY:
+				_businessAreaSelection[clicked] = selected;
+			case DocListParam.DATE_CATEGORY:
+				_dateSelection[clicked] = selected;
+				break;
+			}
 		}
 	};
 
@@ -114,10 +115,21 @@ public class DocumentsListActivity extends ListActivity {
 		}
 	};
 
+	// month selection
 	private MonthIdentity[] _monthValueSet;
 	private ArrayAdapter<MonthIdentity> _monthSpinnerAdapter;
-	private boolean[] _selectedValue;
-	private Object[] _valueSet;
+
+	// GL account identities value set
+	private GLAccountMasterData[] _glAccountValueSet;
+	private boolean[] _glAccountSelection;
+
+	// date value set
+	private Date[] _dateValueSet;
+	private boolean[] _dateSelection;
+
+	// business areas value set
+	private BusinessAreaMasterData[] _businessAreaValueSet;
+	private boolean[] _businessAreaSelection;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -131,8 +143,10 @@ public class DocumentsListActivity extends ListActivity {
 			return;
 		}
 
+		// set the month selection
 		_monthFilter = (Spinner) this.findViewById(R.id.startMonthSpinner);
 		_monthFilter.setOnItemSelectedListener(_MONTH_SELECTION_LISTENER);
+
 		TransactionDataManagement transMgmt = coreDriver
 				.getTransDataManagement();
 		_monthValueSet = transMgmt.getAllMonthIds();
@@ -140,19 +154,20 @@ public class DocumentsListActivity extends ListActivity {
 				android.R.layout.simple_spinner_item, _monthValueSet);
 		_monthFilter.setAdapter(_monthSpinnerAdapter);
 
+		// group by selection
 		_groupSpinner = (Spinner) this.findViewById(R.id.groupSpinner);
-		_groupSpinner.setOnItemSelectedListener(_GROUP_BY_LISTENER);
 
+		// set value filter
 		_valueFilter = (Button) this.findViewById(R.id.valueFilter);
 		_valueFilter.setOnClickListener(_VALUE_SELECTION_LISTENER);
 
-		/**
-		 * set the value set
-		 */
-		setValueSet();
-
 		// set default value of month identity
 		_monthFilter.setSelection(_monthValueSet.length - 1);
+
+		DocListParam param = (DocListParam) this.getIntent()
+				.getSerializableExtra(DocListParam.PARAM_NAME);
+		;
+		generateValueSet(param);
 	}
 
 	@Override
@@ -166,14 +181,39 @@ public class DocumentsListActivity extends ListActivity {
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case R.id.dialog_value_selection:
-			CharSequence[] valueOptions = new CharSequence[_valueSet.length];
-			for (int i = 0; i < valueOptions.length; ++i) {
-				valueOptions[i] = _valueSet[i].toString();
+			CharSequence[] valueOptions = null;
+			boolean[] selection = null;
+			int position = _groupSpinner.getSelectedItemPosition();
+
+			Log.i(TAG, "open value filter " + position);
+			switch (position) {
+			case DocListParam.ACCOUNT_CATEGORY:
+				valueOptions = new CharSequence[_glAccountValueSet.length];
+				for (int i = 0; i < valueOptions.length; ++i) {
+					valueOptions[i] = _glAccountValueSet[i].getDescp();
+				}
+				selection = _glAccountSelection;
+				break;
+			case DocListParam.BUSINESS_CATEGORY:
+				valueOptions = new CharSequence[_businessAreaValueSet.length];
+				for (int i = 0; i < valueOptions.length; ++i) {
+					valueOptions[i] = _businessAreaValueSet[i].getDescp();
+				}
+				selection = _businessAreaSelection;
+				break;
+			case DocListParam.DATE_CATEGORY:
+				SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+				valueOptions = new CharSequence[_dateValueSet.length];
+				for (int i = 0; i < valueOptions.length; ++i) {
+					valueOptions[i] = format.format(_dateValueSet[i]);
+				}
+				selection = _dateSelection;
+				break;
 			}
 
 			return new AlertDialog.Builder(this)
 					.setTitle(R.string.documents_select_value)
-					.setMultiChoiceItems(valueOptions, _selectedValue,
+					.setMultiChoiceItems(valueOptions, selection,
 							_VALUE_MULTIPLE_CHOICE_LISTENER)
 					.setPositiveButton(R.string.ok,
 							_VALUE_SELECTION_OK_LISTENER).create();
@@ -184,41 +224,11 @@ public class DocumentsListActivity extends ListActivity {
 	}
 
 	/**
-	 * set value set
-	 */
-	private void setValueSet() {
-		// check group-by
-		int position = _groupSpinner.getSelectedItemPosition();
-		switch (position) {
-		case 0:
-			// account
-			CoreDriver coreDriver = _dataCore.getCoreDriver();
-			if (coreDriver.isInitialized()) {
-				MasterDataManagement mdMgmt = coreDriver
-						.getMasterDataManagement();
-				MasterDataFactoryBase factory = mdMgmt
-						.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
-				_valueSet = factory.getAllEntities();
-				_selectedValue = new boolean[_valueSet.length];
-				for (int i = 0; i < _selectedValue.length; ++i) {
-					_selectedValue[i] = true;
-				}
-			}
-			break;
-		case 1:
-			break;
-		case 2:
-			break;
-		}
-	}
-
-	/**
 	 * get document list
 	 */
 	private void setDocListData() {
 		// get month identities
 		MonthIdentity monthId = (MonthIdentity) _monthFilter.getSelectedItem();
-		int position = _groupSpinner.getSelectedItemPosition();
 		ArrayList<DocumentsListAdapterItem> items = new ArrayList<DocumentsListAdapterItem>();
 		CoreDriver coreDriver = _dataCore.getCoreDriver();
 
@@ -232,42 +242,36 @@ public class DocumentsListActivity extends ListActivity {
 		MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
 		ReportsManagement rMgmt = _dataCore.getReportsManagement();
 
-		switch (position) {
-		case 0:
-			// account
-
-			for (int i = 0; i < _selectedValue.length; ++i) {
-				if (_selectedValue[i] == false) {
-					continue;
-				}
-				GLAccountMasterData account = (GLAccountMasterData) _valueSet[i];
-				DocumentIndex index = rMgmt
-						.getDocumentIndex(DocumentIndex.ACCOUNT_INDEX);
-				DocumentIndexItem indexItem = index.getIndexItem(account
-						.getGLIdentity());
-				if (indexItem == null) {
-					continue;
-				}
-
-				MasterDataBase data = mdMgmt.getMasterData(
-						account.getGLIdentity(), MasterDataType.GL_ACCOUNT);
-
-				GLAccountBalanceItem balItem = balCol.getBalanceItem(account
-						.getGLIdentity());
-				// add group head
-				items.add(new DocumentsListAdapterItem(
-						DocumentsListAdapterItem.HEAD_VIEW, null, data
-								.getDescp(), balItem.getAmount(monthId), null));
-
-				// get selected value
-
-				ArrayList<HeadEntity> docs = indexItem.getEntities(monthId,
-						monthId);
-				for (HeadEntity headEntity : docs) {
-					addDocItem(items, headEntity, account.getGLIdentity());
-				}
+		for (int i = 0; i < _glAccountSelection.length; ++i) {
+			if (_glAccountSelection[i] == false) {
+				continue;
 			}
-			break;
+			GLAccountMasterData account = (GLAccountMasterData) _glAccountValueSet[i];
+			DocumentIndex index = rMgmt
+					.getDocumentIndex(DocumentIndex.ACCOUNT_INDEX);
+			DocumentIndexItem indexItem = index.getIndexItem(account
+					.getGLIdentity());
+			if (indexItem == null) {
+				continue;
+			}
+
+			MasterDataBase data = mdMgmt.getMasterData(account.getGLIdentity(),
+					MasterDataType.GL_ACCOUNT);
+
+			GLAccountBalanceItem balItem = balCol.getBalanceItem(account
+					.getGLIdentity());
+			// add group head
+			items.add(new DocumentsListAdapterItem(
+					DocumentsListAdapterItem.HEAD_VIEW, null, data.getDescp(),
+					balItem.getAmount(monthId), null));
+
+			// get selected value
+
+			ArrayList<HeadEntity> docs = indexItem
+					.getEntities(monthId, monthId);
+			for (HeadEntity headEntity : docs) {
+				addDocItem(items, headEntity, account.getGLIdentity());
+			}
 		}
 
 		// construct adapter
@@ -312,6 +316,115 @@ public class DocumentsListActivity extends ListActivity {
 			items.add(new DocumentsListAdapterItem(
 					DocumentsListAdapterItem.OTHER_VIEW, null, headEntity
 							.getDocText(), amount, null));
+		}
+	}
+
+	/**
+	 * generate value set
+	 */
+	private void generateValueSet(DocListParam param) {
+		CoreDriver coreDriver = _dataCore.getCoreDriver();
+		if (coreDriver.isInitialized() == false) {
+			return;
+		}
+
+		MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
+
+		int length = 0;
+		for (DocListParamItem item : param.List) {
+			switch (item.Category) {
+			case DocListParam.ACCOUNT_CATEGORY:
+				length = item.SelectedValue.size();
+				_glAccountValueSet = new GLAccountMasterData[length];
+				_glAccountSelection = new boolean[length];
+				for (int i = 0; i < length; ++i) {
+					MasterDataIdentity_GLAccount accountId = (MasterDataIdentity_GLAccount) item.SelectedValue
+							.get(i);
+					_glAccountValueSet[i] = (GLAccountMasterData) mdMgmt
+							.getMasterData(accountId, MasterDataType.GL_ACCOUNT);
+					_glAccountSelection[i] = true;
+				}
+
+				break;
+			case DocListParam.BUSINESS_CATEGORY:
+				length = item.SelectedValue.size();
+				_businessAreaValueSet = new BusinessAreaMasterData[length];
+				_businessAreaSelection = new boolean[length];
+				for (int i = 0; i < length; ++i) {
+					MasterDataIdentity id = (MasterDataIdentity) item.SelectedValue
+							.get(i);
+					_businessAreaValueSet[i] = (BusinessAreaMasterData) mdMgmt
+							.getMasterData(id, MasterDataType.BUSINESS_AREA);
+					_businessAreaSelection[i] = true;
+				}
+
+				break;
+			case DocListParam.DATE_CATEGORY:
+				length = item.SelectedValue.size();
+				_dateValueSet = new Date[length];
+				_dateSelection = new boolean[length];
+				for (int i = 0; i < length; ++i) {
+					_dateValueSet[i] = (Date) item.SelectedValue.get(i);
+					_dateSelection[i] = true;
+				}
+
+				break;
+			}
+		}
+
+		if (_glAccountValueSet == null) {
+			MasterDataFactoryBase factory = mdMgmt
+					.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+			MasterDataBase[] entities = factory.getAllEntities();
+			_glAccountValueSet = new GLAccountMasterData[entities.length];
+			_glAccountSelection = new boolean[_glAccountValueSet.length];
+			for (int i = 0; i < _glAccountSelection.length; ++i) {
+				_glAccountValueSet[i] = (GLAccountMasterData) entities[i];
+				_glAccountSelection[i] = true;
+			}
+		}
+
+		if (_businessAreaValueSet == null) {
+			MasterDataFactoryBase factory = mdMgmt
+					.getMasterDataFactory(MasterDataType.BUSINESS_AREA);
+			MasterDataBase[] entities = factory.getAllEntities();
+			_businessAreaValueSet = new BusinessAreaMasterData[entities.length];
+			_businessAreaSelection = new boolean[_businessAreaValueSet.length];
+			for (int i = 0; i < _businessAreaSelection.length; ++i) {
+
+				_businessAreaValueSet[i] = (BusinessAreaMasterData) entities[i];
+				_businessAreaSelection[i] = true;
+			}
+		}
+
+		if (_dateValueSet == null) {
+			int monthSelected = _monthFilter.getSelectedItemPosition();
+			MonthIdentity selectedMonth = _monthValueSet[monthSelected];
+			MonthIdentity nextMonth = selectedMonth.addMonth();
+
+			Calendar startCalendar = Calendar.getInstance();
+			startCalendar.set(Calendar.YEAR, selectedMonth._fiscalYear);
+			startCalendar.set(Calendar.MONTH, selectedMonth._fiscalMonth - 1);
+			startCalendar.set(Calendar.DATE, 1);
+
+			Calendar endCalendar = Calendar.getInstance();
+			endCalendar.set(Calendar.YEAR, nextMonth._fiscalYear);
+			endCalendar.set(Calendar.MONTH, nextMonth._fiscalMonth - 1);
+			endCalendar.set(Calendar.DATE, 1);
+
+			ArrayList<Date> datelist = new ArrayList<Date>();
+
+			for (; startCalendar.compareTo(endCalendar) < 0; startCalendar.add(
+					Calendar.DATE, 1)) {
+				datelist.add(startCalendar.getTime());
+			}
+
+			_dateValueSet = new Date[datelist.size()];
+			_dateSelection = new boolean[_dateValueSet.length];
+			for (int i = 0; i < _dateValueSet.length; ++i) {
+				_dateValueSet[i] = datelist.get(i);
+				_dateSelection[i] = true;
+			}
 		}
 	}
 }
