@@ -1,6 +1,7 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.w3c.dom.Element;
 
@@ -229,6 +230,8 @@ public class GLAccountMasterDataFactory extends MasterDataFactoryBase {
 				}
 			}
 		}
+
+		Collections.sort(array);
 
 		GLAccountMasterData[] ret = new GLAccountMasterData[array.size()];
 		for (int i = 0; i < array.size(); ++i) {
