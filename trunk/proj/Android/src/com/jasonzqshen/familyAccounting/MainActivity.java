@@ -111,13 +111,6 @@ public class MainActivity extends ListActivity {
 		// initialize data component
 		_dataCore = DataCore.getInstance();
 
-		try {
-			_dataCore.initialize();
-		} catch (ExternalStorageException e) {
-			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
-		} catch (CoreDriverInitException e) {
-			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
-		}
 	}
 
 	/**
@@ -141,6 +134,13 @@ public class MainActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		try {
+			_dataCore.initialize();
+		} catch (ExternalStorageException e) {
+			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+		} catch (CoreDriverInitException e) {
+			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+		}
 		// initialize render
 		buildPieChartRenderer();
 
