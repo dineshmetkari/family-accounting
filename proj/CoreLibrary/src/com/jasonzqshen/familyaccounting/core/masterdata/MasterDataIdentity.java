@@ -1,5 +1,7 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
+import java.io.Serializable;
+
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
@@ -11,7 +13,11 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
  * @author I072485
  * 
  */
-public class MasterDataIdentity implements Comparable<MasterDataIdentity> {
+public class MasterDataIdentity implements Comparable<MasterDataIdentity>, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7804875430584069274L;
 	public final static int LENGTH = 10;
 	private final char[] _identity = new char[LENGTH];
 

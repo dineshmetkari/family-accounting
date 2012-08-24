@@ -8,6 +8,11 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAcc
 public class DocumentNumber extends MasterDataIdentity_GLAccount {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6794864755009825638L;
+
+	/**
 	 * document number
 	 * 
 	 * @param id

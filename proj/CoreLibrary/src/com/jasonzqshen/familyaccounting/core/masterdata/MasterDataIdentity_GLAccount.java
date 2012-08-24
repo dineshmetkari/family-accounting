@@ -11,6 +11,11 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
  * 
  */
 public class MasterDataIdentity_GLAccount extends MasterDataIdentity {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7133840569494974196L;
+
 	public MasterDataIdentity_GLAccount(String id) throws IdentityTooLong,
 			IdentityNoData, IdentityInvalidChar {
 		super(id);
