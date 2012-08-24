@@ -61,16 +61,13 @@ public class DocumentsListActivity extends ListActivity {
 	 * month selection listener
 	 */
 	private final OnItemSelectedListener _MONTH_SELECTION_LISTENER = new OnItemSelectedListener() {
-
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1,
 				int position, long arg3) {
-
 		}
 
 		@Override
 		public void onNothingSelected(AdapterView<?> arg0) {
-
 		}
 	};
 
@@ -120,15 +117,15 @@ public class DocumentsListActivity extends ListActivity {
 	private ArrayAdapter<MonthIdentity> _monthSpinnerAdapter;
 
 	// GL account identities value set
-	private GLAccountMasterData[] _glAccountValueSet;
+	private ArrayList<GLAccountMasterData> _glAccountValueSet;
 	private boolean[] _glAccountSelection;
 
 	// date value set
-	private Date[] _dateValueSet;
+	private ArrayList<Date> _dateValueSet;
 	private boolean[] _dateSelection;
 
 	// business areas value set
-	private BusinessAreaMasterData[] _businessAreaValueSet;
+	private ArrayList<BusinessAreaMasterData> _businessAreaValueSet;
 	private boolean[] _businessAreaSelection;
 
 	/** Called when the activity is first created. */
@@ -188,24 +185,24 @@ public class DocumentsListActivity extends ListActivity {
 			Log.i(TAG, "open value filter " + position);
 			switch (position) {
 			case DocListParam.ACCOUNT_CATEGORY:
-				valueOptions = new CharSequence[_glAccountValueSet.length];
+				valueOptions = new CharSequence[_glAccountValueSet.size()];
 				for (int i = 0; i < valueOptions.length; ++i) {
-					valueOptions[i] = _glAccountValueSet[i].getDescp();
+					valueOptions[i] = _glAccountValueSet.get(i).getDescp();
 				}
 				selection = _glAccountSelection;
 				break;
 			case DocListParam.BUSINESS_CATEGORY:
-				valueOptions = new CharSequence[_businessAreaValueSet.length];
+				valueOptions = new CharSequence[_businessAreaValueSet.size()];
 				for (int i = 0; i < valueOptions.length; ++i) {
-					valueOptions[i] = _businessAreaValueSet[i].getDescp();
+					valueOptions[i] = _businessAreaValueSet.get(i).getDescp();
 				}
 				selection = _businessAreaSelection;
 				break;
 			case DocListParam.DATE_CATEGORY:
 				SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-				valueOptions = new CharSequence[_dateValueSet.length];
+				valueOptions = new CharSequence[_dateValueSet.size()];
 				for (int i = 0; i < valueOptions.length; ++i) {
-					valueOptions[i] = format.format(_dateValueSet[i]);
+					valueOptions[i] = format.format(_dateValueSet.get(i));
 				}
 				selection = _dateSelection;
 				break;
@@ -246,7 +243,8 @@ public class DocumentsListActivity extends ListActivity {
 			if (_glAccountSelection[i] == false) {
 				continue;
 			}
-			GLAccountMasterData account = (GLAccountMasterData) _glAccountValueSet[i];
+			GLAccountMasterData account = (GLAccountMasterData) _glAccountValueSet
+					.get(i);
 			DocumentIndex index = rMgmt
 					.getDocumentIndex(DocumentIndex.ACCOUNT_INDEX);
 			DocumentIndexItem indexItem = index.getIndexItem(account
@@ -320,7 +318,7 @@ public class DocumentsListActivity extends ListActivity {
 	}
 
 	/**
-	 * generate value set
+	 * generate value set, the value set of G/L accounts, business areas, dates
 	 */
 	private void generateValueSet(DocListParam param) {
 		CoreDriver coreDriver = _dataCore.getCoreDriver();
@@ -331,44 +329,49 @@ public class DocumentsListActivity extends ListActivity {
 		MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
 
 		int length = 0;
-		for (DocListParamItem item : param.List) {
-			switch (item.Category) {
-			case DocListParam.ACCOUNT_CATEGORY:
-				length = item.SelectedValue.size();
-				_glAccountValueSet = new GLAccountMasterData[length];
-				_glAccountSelection = new boolean[length];
-				for (int i = 0; i < length; ++i) {
-					MasterDataIdentity_GLAccount accountId = (MasterDataIdentity_GLAccount) item.SelectedValue
-							.get(i);
-					_glAccountValueSet[i] = (GLAccountMasterData) mdMgmt
-							.getMasterData(accountId, MasterDataType.GL_ACCOUNT);
-					_glAccountSelection[i] = true;
-				}
+		if (param != null) {
+			for (DocListParamItem item : param.List) {
+				switch (item.Category) {
+				case DocListParam.ACCOUNT_CATEGORY:
+					length = item.SelectedValue.size();
+					_glAccountValueSet = new ArrayList<GLAccountMasterData>();
+					_glAccountSelection = new boolean[length];
+					for (int i = 0; i < length; ++i) {
+						MasterDataIdentity_GLAccount accountId = (MasterDataIdentity_GLAccount) item.SelectedValue
+								.get(i);
+						_glAccountValueSet.add((GLAccountMasterData) mdMgmt
+								.getMasterData(accountId,
+										MasterDataType.GL_ACCOUNT));
+						_glAccountSelection[i] = true;
+					}
 
-				break;
-			case DocListParam.BUSINESS_CATEGORY:
-				length = item.SelectedValue.size();
-				_businessAreaValueSet = new BusinessAreaMasterData[length];
-				_businessAreaSelection = new boolean[length];
-				for (int i = 0; i < length; ++i) {
-					MasterDataIdentity id = (MasterDataIdentity) item.SelectedValue
-							.get(i);
-					_businessAreaValueSet[i] = (BusinessAreaMasterData) mdMgmt
-							.getMasterData(id, MasterDataType.BUSINESS_AREA);
-					_businessAreaSelection[i] = true;
-				}
+					break;
+				case DocListParam.BUSINESS_CATEGORY:
+					length = item.SelectedValue.size();
+					_businessAreaValueSet = new ArrayList<BusinessAreaMasterData>();
+					_businessAreaSelection = new boolean[length];
+					for (int i = 0; i < length; ++i) {
+						MasterDataIdentity id = (MasterDataIdentity) item.SelectedValue
+								.get(i);
+						_businessAreaValueSet
+								.add((BusinessAreaMasterData) mdMgmt
+										.getMasterData(id,
+												MasterDataType.BUSINESS_AREA));
+						_businessAreaSelection[i] = true;
+					}
 
-				break;
-			case DocListParam.DATE_CATEGORY:
-				length = item.SelectedValue.size();
-				_dateValueSet = new Date[length];
-				_dateSelection = new boolean[length];
-				for (int i = 0; i < length; ++i) {
-					_dateValueSet[i] = (Date) item.SelectedValue.get(i);
-					_dateSelection[i] = true;
-				}
+					break;
+				case DocListParam.DATE_CATEGORY:
+					length = item.SelectedValue.size();
+					_dateValueSet = new ArrayList<Date>();
+					_dateSelection = new boolean[length];
+					for (int i = 0; i < length; ++i) {
+						_dateValueSet.add((Date) item.SelectedValue.get(i));
+						_dateSelection[i] = true;
+					}
 
-				break;
+					break;
+				}
 			}
 		}
 
@@ -376,10 +379,10 @@ public class DocumentsListActivity extends ListActivity {
 			MasterDataFactoryBase factory = mdMgmt
 					.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
 			MasterDataBase[] entities = factory.getAllEntities();
-			_glAccountValueSet = new GLAccountMasterData[entities.length];
-			_glAccountSelection = new boolean[_glAccountValueSet.length];
+			_glAccountValueSet = new ArrayList<GLAccountMasterData>();
+			_glAccountSelection = new boolean[entities.length];
 			for (int i = 0; i < _glAccountSelection.length; ++i) {
-				_glAccountValueSet[i] = (GLAccountMasterData) entities[i];
+				_glAccountValueSet.add((GLAccountMasterData) entities[i]);
 				_glAccountSelection[i] = true;
 			}
 		}
@@ -388,11 +391,11 @@ public class DocumentsListActivity extends ListActivity {
 			MasterDataFactoryBase factory = mdMgmt
 					.getMasterDataFactory(MasterDataType.BUSINESS_AREA);
 			MasterDataBase[] entities = factory.getAllEntities();
-			_businessAreaValueSet = new BusinessAreaMasterData[entities.length];
-			_businessAreaSelection = new boolean[_businessAreaValueSet.length];
+			_businessAreaValueSet = new ArrayList<BusinessAreaMasterData>();
+			;
+			_businessAreaSelection = new boolean[entities.length];
 			for (int i = 0; i < _businessAreaSelection.length; ++i) {
-
-				_businessAreaValueSet[i] = (BusinessAreaMasterData) entities[i];
+				_businessAreaValueSet.add((BusinessAreaMasterData) entities[i]);
 				_businessAreaSelection[i] = true;
 			}
 		}
@@ -412,19 +415,95 @@ public class DocumentsListActivity extends ListActivity {
 			endCalendar.set(Calendar.MONTH, nextMonth._fiscalMonth - 1);
 			endCalendar.set(Calendar.DATE, 1);
 
-			ArrayList<Date> datelist = new ArrayList<Date>();
+			_dateValueSet = new ArrayList<Date>();
 
 			for (; startCalendar.compareTo(endCalendar) < 0; startCalendar.add(
 					Calendar.DATE, 1)) {
-				datelist.add(startCalendar.getTime());
+				_dateValueSet.add(startCalendar.getTime());
 			}
 
-			_dateValueSet = new Date[datelist.size()];
-			_dateSelection = new boolean[_dateValueSet.length];
-			for (int i = 0; i < _dateValueSet.length; ++i) {
-				_dateValueSet[i] = datelist.get(i);
+			_dateSelection = new boolean[_dateValueSet.size()];
+			for (int i = 0; i < _dateValueSet.size(); ++i) {
 				_dateSelection[i] = true;
 			}
 		}
+	}
+
+	/**
+	 * generate document
+	 * 
+	 * @return
+	 */
+	private ArrayList<HeadEntity> generateDocList() {
+		ArrayList<HeadEntity> ret = new ArrayList<HeadEntity>();
+
+		// get month identities
+		MonthIdentity monthId = (MonthIdentity) _monthFilter.getSelectedItem();
+		CoreDriver coreDriver = _dataCore.getCoreDriver();
+
+		if (coreDriver.isInitialized() == false) {
+			return ret;
+		}
+
+		ReportsManagement rMgmt = _dataCore.getReportsManagement();
+		MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
+		// get document based on G/L account
+		for (int i = 0; i < _glAccountSelection.length; ++i) {
+			if (_glAccountSelection[i] == false) {
+				continue;
+			}
+			GLAccountMasterData account = _glAccountValueSet.get(i);
+			DocumentIndex index = rMgmt
+					.getDocumentIndex(DocumentIndex.ACCOUNT_INDEX);
+			DocumentIndexItem indexItem = index.getIndexItem(account
+					.getGLIdentity());
+			if (indexItem == null) {
+				continue;
+			}
+
+			boolean isAll = true;
+			for (int j = 0; j < _businessAreaSelection.length; ++j) {
+				if (_businessAreaSelection[j] == false) {
+					isAll = false;
+					break;
+				}
+			}
+
+			// get selected value
+			ArrayList<HeadEntity> docs = indexItem
+					.getEntities(monthId, monthId);
+			for (HeadEntity doc : docs) {
+				int dateIndex = _dateValueSet.indexOf(doc.getPostingDate());
+				if (_dateSelection[dateIndex] == true) {
+					if (isAll == false) {
+						ItemEntity[] docItems = doc.getItems();
+						boolean flag = false;
+						for (ItemEntity docItem : docItems) {
+							MasterDataIdentity id = docItem.getBusinessArea();
+							if (id == null) {
+								continue;
+							}
+							MasterDataBase businessArea = mdMgmt.getMasterData(
+									id, MasterDataType.BUSINESS_AREA);
+							int bIndex = _businessAreaValueSet
+									.indexOf(businessArea);
+							if (_businessAreaSelection[bIndex] == true) {
+								flag = true;
+								break;
+							}
+						}
+
+						if (flag) {
+							ret.add(doc);
+						}
+					} else {
+						ret.add(doc);
+					}
+
+				}
+			}
+		}
+
+		return ret;
 	}
 }
