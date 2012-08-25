@@ -57,7 +57,6 @@ public class MainActivity extends ListActivity {
 	private final OnCheckedChangeListener _dimenChanged = new OnCheckedChangeListener() {
 		@Override
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
-
 		}
 	};
 
