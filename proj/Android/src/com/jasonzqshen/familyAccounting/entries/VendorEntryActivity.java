@@ -37,7 +37,7 @@ public class VendorEntryActivity extends Activity {
 	public final static String TAG = "VENDOR";
 
 	private final SimpleDateFormat _FORMAT = new SimpleDateFormat("yyyy/MM/dd");
-
+	
 	private TableRow _dateRow;
 	private TextView _dateValue;
 	private Calendar _calendar;

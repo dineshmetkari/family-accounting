@@ -34,7 +34,6 @@ public class DocumentsListAdapter extends BaseAdapter {
 		_context = context;
 		_items = items;
 		_layoutInflater = LayoutInflater.from(_context);
-
 	}
 
 	@Override

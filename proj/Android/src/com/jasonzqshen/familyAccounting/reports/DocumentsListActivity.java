@@ -62,8 +62,8 @@ public class DocumentsListActivity extends ListActivity {
 	 */
 	private final OnItemSelectedListener _MONTH_SELECTION_LISTENER = new OnItemSelectedListener() {
 		@Override
-		public void onItemSelected(AdapterView<?> arg0, View arg1,
-				int position, long arg3) {
+		public void onItemSelected(AdapterView<?> arg0, View view,
+				int position, long id) {
 		}
 
 		@Override
@@ -224,57 +224,12 @@ public class DocumentsListActivity extends ListActivity {
 	 * get document list
 	 */
 	private void setDocListData() {
-		// get month identities
-		MonthIdentity monthId = (MonthIdentity) _monthFilter.getSelectedItem();
-		ArrayList<DocumentsListAdapterItem> items = new ArrayList<DocumentsListAdapterItem>();
-		CoreDriver coreDriver = _dataCore.getCoreDriver();
-
-		if (coreDriver.isInitialized() == false) {
-			return;
+		int position = this._groupSpinner.getSelectedItemPosition();
+		switch (position) {
+		case DocListParam.ACCOUNT_CATEGORY:
+			this.setDocList_GLAccount();
+			break;
 		}
-
-		TransactionDataManagement transMgmt = coreDriver
-				.getTransDataManagement();
-		GLAccountBalanceCollection balCol = transMgmt.getAccBalCol();
-		MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
-		ReportsManagement rMgmt = _dataCore.getReportsManagement();
-
-		for (int i = 0; i < _glAccountSelection.length; ++i) {
-			if (_glAccountSelection[i] == false) {
-				continue;
-			}
-			GLAccountMasterData account = (GLAccountMasterData) _glAccountValueSet
-					.get(i);
-			DocumentIndex index = rMgmt
-					.getDocumentIndex(DocumentIndex.ACCOUNT_INDEX);
-			DocumentIndexItem indexItem = index.getIndexItem(account
-					.getGLIdentity());
-			if (indexItem == null) {
-				continue;
-			}
-
-			MasterDataBase data = mdMgmt.getMasterData(account.getGLIdentity(),
-					MasterDataType.GL_ACCOUNT);
-
-			GLAccountBalanceItem balItem = balCol.getBalanceItem(account
-					.getGLIdentity());
-			// add group head
-			items.add(new DocumentsListAdapterItem(
-					DocumentsListAdapterItem.HEAD_VIEW, null, data.getDescp(),
-					balItem.getAmount(monthId), null));
-
-			// get selected value
-
-			ArrayList<HeadEntity> docs = indexItem
-					.getEntities(monthId, monthId);
-			for (HeadEntity headEntity : docs) {
-				addDocItem(items, headEntity, account.getGLIdentity());
-			}
-		}
-
-		// construct adapter
-		_listAdapter = new DocumentsListAdapter(this, items);
-		this.setListAdapter(_listAdapter);
 	}
 
 	/**
@@ -430,29 +385,38 @@ public class DocumentsListActivity extends ListActivity {
 	}
 
 	/**
-	 * generate document
-	 * 
-	 * @return
+	 * set document list when group-by is G/L Account
 	 */
-	private ArrayList<HeadEntity> generateDocList() {
-		ArrayList<HeadEntity> ret = new ArrayList<HeadEntity>();
+	private void setDocList_GLAccount() {
+		boolean businessIsAll = true;
+		for (int j = 0; j < _businessAreaSelection.length; ++j) {
+			if (_businessAreaSelection[j] == false) {
+				businessIsAll = false;
+				break;
+			}
+		}
 
 		// get month identities
 		MonthIdentity monthId = (MonthIdentity) _monthFilter.getSelectedItem();
+		ArrayList<DocumentsListAdapterItem> items = new ArrayList<DocumentsListAdapterItem>();
 		CoreDriver coreDriver = _dataCore.getCoreDriver();
 
 		if (coreDriver.isInitialized() == false) {
-			return ret;
+			return;
 		}
 
-		ReportsManagement rMgmt = _dataCore.getReportsManagement();
+		TransactionDataManagement transMgmt = coreDriver
+				.getTransDataManagement();
+		GLAccountBalanceCollection balCol = transMgmt.getAccBalCol();
 		MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
-		// get document based on G/L account
+		ReportsManagement rMgmt = _dataCore.getReportsManagement();
+
 		for (int i = 0; i < _glAccountSelection.length; ++i) {
 			if (_glAccountSelection[i] == false) {
 				continue;
 			}
-			GLAccountMasterData account = _glAccountValueSet.get(i);
+			GLAccountMasterData account = (GLAccountMasterData) _glAccountValueSet
+					.get(i);
 			DocumentIndex index = rMgmt
 					.getDocumentIndex(DocumentIndex.ACCOUNT_INDEX);
 			DocumentIndexItem indexItem = index.getIndexItem(account
@@ -461,22 +425,28 @@ public class DocumentsListActivity extends ListActivity {
 				continue;
 			}
 
-			boolean isAll = true;
-			for (int j = 0; j < _businessAreaSelection.length; ++j) {
-				if (_businessAreaSelection[j] == false) {
-					isAll = false;
-					break;
-				}
-			}
+			MasterDataBase data = mdMgmt.getMasterData(account.getGLIdentity(),
+					MasterDataType.GL_ACCOUNT);
+
+			GLAccountBalanceItem balItem = balCol.getBalanceItem(account
+					.getGLIdentity());
+			// add group head
+			items.add(new DocumentsListAdapterItem(
+					DocumentsListAdapterItem.HEAD_VIEW, null, data.getDescp(),
+					balItem.getAmount(monthId), null));
 
 			// get selected value
+
 			ArrayList<HeadEntity> docs = indexItem
 					.getEntities(monthId, monthId);
-			for (HeadEntity doc : docs) {
-				int dateIndex = _dateValueSet.indexOf(doc.getPostingDate());
+			for (HeadEntity headEntity : docs) {
+				// check the document is in the date value set and business
+				// value set
+				int dateIndex = _dateValueSet.indexOf(headEntity
+						.getPostingDate());
 				if (_dateSelection[dateIndex] == true) {
-					if (isAll == false) {
-						ItemEntity[] docItems = doc.getItems();
+					if (businessIsAll == false) {
+						ItemEntity[] docItems = headEntity.getItems();
 						boolean flag = false;
 						for (ItemEntity docItem : docItems) {
 							MasterDataIdentity id = docItem.getBusinessArea();
@@ -494,16 +464,21 @@ public class DocumentsListActivity extends ListActivity {
 						}
 
 						if (flag) {
-							ret.add(doc);
+							addDocItem(items, headEntity,
+									account.getGLIdentity());
 						}
 					} else {
-						ret.add(doc);
+						addDocItem(items, headEntity, account.getGLIdentity());
 					}
 
 				}
+
 			}
 		}
 
-		return ret;
+		// construct adapter
+		_listAdapter = new DocumentsListAdapter(this, items);
+		this.setListAdapter(_listAdapter);
 	}
+
 }
