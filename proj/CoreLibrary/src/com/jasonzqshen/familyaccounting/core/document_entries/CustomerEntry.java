@@ -11,6 +11,8 @@ import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataFactoryBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
@@ -23,291 +25,303 @@ import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 
 public class CustomerEntry implements IDocumentEntry {
-	public final static String CUSTOMER = "CUSTOMER";
-	public final static String REC_ACC = "REC_ACC";
-	public final static String GL_ACCOUNT = "GL_ACCOUNT";
-	public final static String POSTING_DATE = "POSTING_DATE";
-	public final static String AMOUNT = "AMOUNT";
-	public final static String TEXT = "TEXT";
+    public final static String CUSTOMER = "CUSTOMER";
 
-	private final CoreDriver _coreDriver;
+    public final static String REC_ACC = "REC_ACC";
 
-	private MasterDataIdentity_GLAccount _recAcc;
-	private MasterDataIdentity_GLAccount _glAccount;
-	private MasterDataIdentity _customer;
-	private Date _date;
-	private CurrencyAmount _amount;
-	private String _text;
-	private boolean _isSaved;
-	private HeadEntity _doc;
+    public final static String GL_ACCOUNT = "GL_ACCOUNT";
 
-	public CustomerEntry(CoreDriver coreDriver) {
-		_coreDriver = coreDriver;
-	}
+    private final CoreDriver _coreDriver;
 
-	/**
-	 * set customer
-	 * 
-	 * @param customer
-	 * @throws NotInValueRangeException
-	 */
-	private void setCustomer(MasterDataIdentity customer)
-			throws NotInValueRangeException {
-		if (customer == null) {
-			throw new NotInValueRangeException(CUSTOMER, "");
-		}
+    private MasterDataIdentity_GLAccount _recAcc;
 
-		MasterDataManagement master = _coreDriver.getMasterDataManagement();
-		if (!master.containsMasterData(customer, MasterDataType.CUSTOMER)) {
-			throw new NotInValueRangeException(CUSTOMER, customer);
-		}
+    private MasterDataIdentity_GLAccount _glAccount;
 
-		_customer = customer;
-	}
+    private MasterDataIdentity _customer;
 
-	/**
-	 * set G/L account
-	 * 
-	 * @param glAccount
-	 * @throws NoFieldNameException
-	 */
-	private void setGLAccount(MasterDataIdentity_GLAccount glAccount)
-			throws NotInValueRangeException, NoFieldNameException {
-		if (glAccount == null) {
-			throw new NotInValueRangeException(GL_ACCOUNT, "");
-		}
+    private Date _date;
 
-		Object[] valueSet = this.getValueSet(GL_ACCOUNT);
-		for (Object obj : valueSet) {
-			GLAccountMasterData glAcc = (GLAccountMasterData) obj;
-			if (glAcc.getGLIdentity().equals(glAccount)) {
-				_glAccount = glAccount;
-				return;
-			}
-		}
+    private CurrencyAmount _amount;
 
-		throw new NotInValueRangeException(GL_ACCOUNT, glAccount);
-	}
+    private String _text;
 
-	/**
-	 * set reconciliation account
-	 * 
-	 * @param recAcc
-	 * @throws NotInValueRangeException
-	 * @throws NoFieldNameException
-	 */
-	private void setRecAccount(MasterDataIdentity_GLAccount recAcc)
-			throws NotInValueRangeException, NoFieldNameException {
-		if (recAcc == null) {
-			throw new NotInValueRangeException(REC_ACC, "");
-		}
+    private boolean _isSaved;
 
-		Object[] valueSet = this.getValueSet(REC_ACC);
-		for (Object obj : valueSet) {
-			GLAccountMasterData glAccount = (GLAccountMasterData) obj;
-			if (glAccount.getGLIdentity().equals(recAcc)) {
-				_recAcc = recAcc;
-				return;
-			}
-		}
+    private HeadEntity _doc;
 
-		throw new NotInValueRangeException(REC_ACC, recAcc);
-	}
+    public CustomerEntry(CoreDriver coreDriver) {
+        _coreDriver = coreDriver;
+    }
 
-	public void setValue(String fieldName, Object value)
-			throws NoFieldNameException, NotInValueRangeException {
-		if (_isSaved) {
-			return;
-		}
+    /**
+     * set customer
+     * 
+     * @param customer
+     * @throws NotInValueRangeException
+     */
+    private void setCustomer(MasterDataIdentity customer)
+            throws NotInValueRangeException {
+        if (customer == null) {
+            throw new NotInValueRangeException(CUSTOMER, "");
+        }
 
-		if (value == null) {
-			throw new NotInValueRangeException(fieldName, "");
-		}
+        MasterDataManagement master = _coreDriver.getMasterDataManagement();
+        if (!master.containsMasterData(customer, MasterDataType.CUSTOMER)) {
+            throw new NotInValueRangeException(CUSTOMER, customer);
+        }
 
-		if (fieldName.equals(CUSTOMER)) {
-			if (!(value instanceof MasterDataIdentity)) {
-				throw new NotInValueRangeException(fieldName, value);
-			}
-			MasterDataIdentity customer = (MasterDataIdentity) value;
-			setCustomer(customer);
-		} else if (fieldName.equals(GL_ACCOUNT)) {
-			if (!(value instanceof MasterDataIdentity_GLAccount)) {
-				throw new NotInValueRangeException(fieldName, value);
-			}
-			MasterDataIdentity_GLAccount glAccount = (MasterDataIdentity_GLAccount) value;
-			setGLAccount(glAccount);
-		} else if (fieldName.equals(REC_ACC)) {
-			if (!(value instanceof MasterDataIdentity_GLAccount)) {
-				throw new NotInValueRangeException(fieldName, value);
-			}
-			MasterDataIdentity_GLAccount recAcc = (MasterDataIdentity_GLAccount) value;
-			setRecAccount(recAcc);
-		} else if (fieldName.equals(POSTING_DATE)) {
-			if (!(value instanceof Date)) {
-				throw new NotInValueRangeException(fieldName, value);
-			}
-			Date date = (Date) value;
-			_date = date;
-		} else if (fieldName.equals(AMOUNT)) {
-			try {
-				CurrencyAmount amount = CurrencyAmount.parse(value.toString());
-				if (amount.isZero() || amount.isNegative()) {
-					throw new NotInValueRangeException(fieldName, value);
-				}
-				_amount = amount;
-			} catch (CurrencyAmountFormatException e) {
-				throw new NotInValueRangeException(fieldName, value);
-			}
-		} else if (fieldName.equals(TEXT)) {
-			_text = value.toString();
-		} else {
-			throw new NoFieldNameException(fieldName);
-		}
+        _customer = customer;
+    }
 
-	}
+    /**
+     * set G/L account
+     * 
+     * @param glAccount
+     * @throws NoFieldNameException
+     */
+    private void setGLAccount(MasterDataIdentity_GLAccount glAccount)
+            throws NotInValueRangeException, NoFieldNameException {
+        if (glAccount == null) {
+            throw new NotInValueRangeException(GL_ACCOUNT, "");
+        }
 
-	public Object getValue(String fieldName) throws NoFieldNameException {
-		if (fieldName.equals(CUSTOMER)) {
-			return _customer;
-		} else if (fieldName.equals(GL_ACCOUNT)) {
-			return _glAccount;
-		} else if (fieldName.equals(REC_ACC)) {
-			return _recAcc;
-		} else if (fieldName.equals(POSTING_DATE)) {
-			return _date;
-		} else if (fieldName.equals(AMOUNT)) {
-			return new CurrencyAmount(_amount);
-		} else if (fieldName.equals(TEXT)) {
-			return _text;
-		}
-		throw new NoFieldNameException(fieldName);
-	}
+        Object[] valueSet = this.getValueSet(GL_ACCOUNT);
+        for (Object obj : valueSet) {
+            GLAccountMasterData glAcc = (GLAccountMasterData) obj;
+            if (glAcc.getGLIdentity().equals(glAccount)) {
+                _glAccount = glAccount;
+                return;
+            }
+        }
 
-	public Object getDefaultValue(String fieldName) throws NoFieldNameException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        throw new NotInValueRangeException(GL_ACCOUNT, glAccount);
+    }
 
-	public void checkBeforeSave() throws MandatoryFieldIsMissing {
-		if (_recAcc == null) {
-			throw new MandatoryFieldIsMissing(REC_ACC);
-		}
+    /**
+     * set reconciliation account
+     * 
+     * @param recAcc
+     * @throws NotInValueRangeException
+     * @throws NoFieldNameException
+     */
+    private void setRecAccount(MasterDataIdentity_GLAccount recAcc)
+            throws NotInValueRangeException, NoFieldNameException {
+        if (recAcc == null) {
+            throw new NotInValueRangeException(REC_ACC, "");
+        }
 
-		if (_glAccount == null) {
-			throw new MandatoryFieldIsMissing(GL_ACCOUNT);
-		}
+        Object[] valueSet = this.getValueSet(REC_ACC);
+        for (Object obj : valueSet) {
+            GLAccountMasterData glAccount = (GLAccountMasterData) obj;
+            if (glAccount.getGLIdentity().equals(recAcc)) {
+                _recAcc = recAcc;
+                return;
+            }
+        }
 
-		if (_customer == null) {
-			throw new MandatoryFieldIsMissing(CUSTOMER);
-		}
+        throw new NotInValueRangeException(REC_ACC, recAcc);
+    }
 
-		if (_date == null) {
-			throw new MandatoryFieldIsMissing(POSTING_DATE);
-		}
+    public void setValue(String fieldName, Object value)
+            throws NoFieldNameException, NotInValueRangeException {
+        if (_isSaved) {
+            return;
+        }
 
-		if (_amount.isZero() || _amount.isNegative()) {
-			throw new MandatoryFieldIsMissing(AMOUNT);
-		}
+        if (value == null) {
+            throw new NotInValueRangeException(fieldName, "");
+        }
 
-	}
+        if (fieldName.equals(CUSTOMER)) {
+            if (!(value instanceof MasterDataIdentity)) {
+                throw new NotInValueRangeException(fieldName, value);
+            }
+            MasterDataIdentity customer = (MasterDataIdentity) value;
+            setCustomer(customer);
+        } else if (fieldName.equals(GL_ACCOUNT)) {
+            if (!(value instanceof MasterDataIdentity_GLAccount)) {
+                throw new NotInValueRangeException(fieldName, value);
+            }
+            MasterDataIdentity_GLAccount glAccount = (MasterDataIdentity_GLAccount) value;
+            setGLAccount(glAccount);
+        } else if (fieldName.equals(REC_ACC)) {
+            if (!(value instanceof MasterDataIdentity_GLAccount)) {
+                throw new NotInValueRangeException(fieldName, value);
+            }
+            MasterDataIdentity_GLAccount recAcc = (MasterDataIdentity_GLAccount) value;
+            setRecAccount(recAcc);
+        } else if (fieldName.equals(POSTING_DATE)) {
+            if (!(value instanceof Date)) {
+                throw new NotInValueRangeException(fieldName, value);
+            }
+            Date date = (Date) value;
+            _date = date;
+        } else if (fieldName.equals(AMOUNT)) {
+            try {
+                CurrencyAmount amount = CurrencyAmount.parse(value.toString());
+                if (amount.isZero() || amount.isNegative()) {
+                    throw new NotInValueRangeException(fieldName, value);
+                }
+                _amount = amount;
+            } catch (CurrencyAmountFormatException e) {
+                throw new NotInValueRangeException(fieldName, value);
+            }
+        } else if (fieldName.equals(TEXT)) {
+            _text = value.toString();
+        } else {
+            throw new NoFieldNameException(fieldName);
+        }
 
-	public void save(boolean store) throws MandatoryFieldIsMissing {
-		if (_isSaved) {
-			return;
-		}
-		checkBeforeSave();
+    }
 
-		try {
-			HeadEntity doc = new HeadEntity(_coreDriver,
-					_coreDriver.getMasterDataManagement());
-			doc.setDocText(_text);
-			doc.setDocumentType(DocumentType.CUSTOMER_INVOICE);
-			doc.setPostingDate(_date);
+    public Object getValue(String fieldName) throws NoFieldNameException {
+        if (fieldName.equals(CUSTOMER)) {
+            return _customer;
+        } else if (fieldName.equals(GL_ACCOUNT)) {
+            return _glAccount;
+        } else if (fieldName.equals(REC_ACC)) {
+            return _recAcc;
+        } else if (fieldName.equals(POSTING_DATE)) {
+            return _date;
+        } else if (fieldName.equals(AMOUNT)) {
+            return new CurrencyAmount(_amount);
+        } else if (fieldName.equals(TEXT)) {
+            return _text;
+        }
+        throw new NoFieldNameException(fieldName);
+    }
 
-			// credit item
-			ItemEntity creditItem = doc.createEntity();
-			creditItem.setAmount(CreditDebitIndicator.CREDIT, _amount);
-			creditItem.setGLAccount(_glAccount);
+    public Object getDefaultValue(String fieldName) throws NoFieldNameException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-			// debit item
-			ItemEntity debitItem = doc.createEntity();
-			debitItem.setAmount(CreditDebitIndicator.DEBIT, _amount);
-			debitItem.setCustomer(_customer, _recAcc);
+    public void checkBeforeSave() throws MandatoryFieldIsMissing {
+        if (_recAcc == null) {
+            throw new MandatoryFieldIsMissing(REC_ACC);
+        }
 
-			boolean ret = doc.save(store);
-			if (ret) {
-				_isSaved = true;
-				_doc = doc;
-			}
-		} catch (NullValueNotAcceptable e) {
-			throw new SystemException(e);
-		} catch (MasterDataIdentityNotDefined e) {
-			throw new SystemException(e);
-		}
-	}
+        if (_glAccount == null) {
+            throw new MandatoryFieldIsMissing(GL_ACCOUNT);
+        }
 
-	public boolean isSaved() {
-		return _isSaved;
-	}
+        if (_customer == null) {
+            throw new MandatoryFieldIsMissing(CUSTOMER);
+        }
 
-	public HeadEntity getDocument() {
-		if (_isSaved) {
-			return _doc;
-		}
+        if (_date == null) {
+            throw new MandatoryFieldIsMissing(POSTING_DATE);
+        }
 
-		return null;
-	}
+        if (_amount.isZero() || _amount.isNegative()) {
+            throw new MandatoryFieldIsMissing(AMOUNT);
+        }
 
-	public Object[] getValueSet(String fieldName) throws NoFieldNameException {
-		if (fieldName.equals(GL_ACCOUNT)) {
-			MasterDataManagement manage = _coreDriver.getMasterDataManagement();
-			return manage.getRevenueAccounts();
-		} else if (fieldName.equals(REC_ACC)) {
-			MasterDataManagement manage = _coreDriver.getMasterDataManagement();
-			return manage.getLiquidityAccounts();
-		}
-		throw new NoFieldNameException(fieldName);
-	}
+    }
 
-	/**
-	 * pasrse document to customer entry
-	 * 
-	 * @param head
-	 * @return return null if cannot parse to customer entry.
-	 */
-	public static CustomerEntry parse(HeadEntity head) {
-		// check
-		if (head.getDocumentType() != DocumentType.CUSTOMER_INVOICE) {
-			return null;
-		}
-		ItemEntity[] items = head.getItems();
-		if (items.length != 2) {
-			return null;
-		}
-		// credit item
-		ItemEntity creditItem = items[0];
-		if (creditItem.getAccountType() != AccountType.GL_ACCOUNT) {
-			return null;
-		}
-		ItemEntity debitItem = items[1];
-		if (debitItem.getAccountType() != AccountType.CUSTOMER) {
-			return null;
-		}
+    public void save(boolean store) throws MandatoryFieldIsMissing {
+        if (_isSaved) {
+            return;
+        }
+        checkBeforeSave();
 
-		CustomerEntry entry = new CustomerEntry(head._coreDriver);
-		entry._glAccount = creditItem.getGLAccount();
-		entry._recAcc = debitItem.getGLAccount();
-		entry._customer = debitItem.getCustomer();
-		entry._date = head.getPostingDate();
-		entry._amount = creditItem.getAmount();
-		if (creditItem.getCDIndicator() == CreditDebitIndicator.DEBIT) {
-			// reverse
-			entry._amount.negate();
-		}
-		entry._text = head.getDocText();
-		entry._isSaved = true;
-		entry._doc = head;
+        try {
+            HeadEntity doc = new HeadEntity(_coreDriver,
+                    _coreDriver.getMasterDataManagement());
+            doc.setDocText(_text);
+            doc.setDocumentType(DocumentType.CUSTOMER_INVOICE);
+            doc.setPostingDate(_date);
 
-		return entry;
-	}
+            // credit item
+            ItemEntity creditItem = doc.createEntity();
+            creditItem.setAmount(CreditDebitIndicator.CREDIT, _amount);
+            creditItem.setGLAccount(_glAccount);
+
+            // debit item
+            ItemEntity debitItem = doc.createEntity();
+            debitItem.setAmount(CreditDebitIndicator.DEBIT, _amount);
+            debitItem.setCustomer(_customer, _recAcc);
+
+            boolean ret = doc.save(store);
+            if (ret) {
+                _isSaved = true;
+                _doc = doc;
+            }
+        } catch (NullValueNotAcceptable e) {
+            throw new SystemException(e);
+        } catch (MasterDataIdentityNotDefined e) {
+            throw new SystemException(e);
+        }
+    }
+
+    public boolean isSaved() {
+        return _isSaved;
+    }
+
+    public HeadEntity getDocument() {
+        if (_isSaved) {
+            return _doc;
+        }
+
+        return null;
+    }
+
+    public MasterDataBase[] getValueSet(String fieldName)
+            throws NoFieldNameException {
+        if (fieldName.equals(GL_ACCOUNT)) {
+            MasterDataManagement manage = _coreDriver.getMasterDataManagement();
+            return manage.getRevenueAccounts();
+        } else if (fieldName.equals(REC_ACC)) {
+            MasterDataManagement manage = _coreDriver.getMasterDataManagement();
+            return manage.getLiquidityAccounts();
+        } else if (fieldName.equals(CUSTOMER)) {
+            MasterDataManagement manage = _coreDriver.getMasterDataManagement();
+            MasterDataFactoryBase factory = manage
+                    .getMasterDataFactory(MasterDataType.CUSTOMER);
+            return factory.getAllEntities();
+        }
+        throw new NoFieldNameException(fieldName);
+    }
+
+    /**
+     * pasrse document to customer entry
+     * 
+     * @param head
+     * @return return null if cannot parse to customer entry.
+     */
+    public static CustomerEntry parse(HeadEntity head) {
+        // check
+        if (head.getDocumentType() != DocumentType.CUSTOMER_INVOICE) {
+            return null;
+        }
+        ItemEntity[] items = head.getItems();
+        if (items.length != 2) {
+            return null;
+        }
+        // credit item
+        ItemEntity creditItem = items[0];
+        if (creditItem.getAccountType() != AccountType.GL_ACCOUNT) {
+            return null;
+        }
+        ItemEntity debitItem = items[1];
+        if (debitItem.getAccountType() != AccountType.CUSTOMER) {
+            return null;
+        }
+
+        CustomerEntry entry = new CustomerEntry(head._coreDriver);
+        entry._glAccount = creditItem.getGLAccount();
+        entry._recAcc = debitItem.getGLAccount();
+        entry._customer = debitItem.getCustomer();
+        entry._date = head.getPostingDate();
+        entry._amount = creditItem.getAmount();
+        if (creditItem.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+            // reverse
+            entry._amount.negate();
+        }
+        entry._text = head.getDocText();
+        entry._isSaved = true;
+        entry._doc = head;
+
+        return entry;
+    }
 }

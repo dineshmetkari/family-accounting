@@ -1,47 +1,52 @@
 package com.jasonzqshen.familyaccounting.core.document_entries;
 
-
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.NoFieldNameException;
 import com.jasonzqshen.familyaccounting.core.exception.NotInValueRangeException;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 
 public interface IDocumentEntry {
+    public final static String POSTING_DATE = "POSTING_DATE";
 
-	void setValue(String fieldName, Object value) throws NoFieldNameException,
-			NotInValueRangeException;
+    public final static String AMOUNT = "AMOUNT";
 
-	Object getValue(String fieldName) throws NoFieldNameException;
+    public final static String TEXT = "TEXT";
 
-	Object getDefaultValue(String fieldName) throws NoFieldNameException;
-	
-	Object[] getValueSet(String fieldName) throws NoFieldNameException;
+    void setValue(String fieldName, Object value) throws NoFieldNameException,
+            NotInValueRangeException;
 
-	/**
-	 * check before save
-	 * 
-	 * @throws MandatoryFieldIsMissing
-	 */
-	void checkBeforeSave() throws MandatoryFieldIsMissing;
+    Object getValue(String fieldName) throws NoFieldNameException;
 
-	/**
-	 * save document
-	 * 
-	 * @throws MandatoryFieldIsMissing
-	 */
-	void save(boolean saved) throws MandatoryFieldIsMissing;
+    Object getDefaultValue(String fieldName) throws NoFieldNameException;
 
-	/**
-	 * is saved
-	 * 
-	 * @return
-	 */
-	boolean isSaved();
+    MasterDataBase[] getValueSet(String fieldName) throws NoFieldNameException;
 
-	/**
-	 * get document, after save
-	 * 
-	 * @return
-	 */
-	HeadEntity getDocument();
+    /**
+     * check before save
+     * 
+     * @throws MandatoryFieldIsMissing
+     */
+    void checkBeforeSave() throws MandatoryFieldIsMissing;
+
+    /**
+     * save document
+     * 
+     * @throws MandatoryFieldIsMissing
+     */
+    void save(boolean saved) throws MandatoryFieldIsMissing;
+
+    /**
+     * is saved
+     * 
+     * @return
+     */
+    boolean isSaved();
+
+    /**
+     * get document, after save
+     * 
+     * @return
+     */
+    HeadEntity getDocument();
 }

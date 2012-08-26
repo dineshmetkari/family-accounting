@@ -11,6 +11,7 @@ import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataFactoryBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
@@ -27,9 +28,6 @@ public class VendorEntry implements IDocumentEntry {
 	public final static String VENDOR = "VENDOR";
 	public final static String REC_ACC = "REC_ACC";
 	public final static String GL_ACCOUNT = "GL_ACCOUNT";
-	public final static String POSTING_DATE = "POSTING_DATE";
-	public final static String AMOUNT = "AMOUNT";
-	public final static String TEXT = "TEXT";
 	public final static String BUSINESS_AREA = "BUSINESS_AREA";
 
 	private final CoreDriver _coreDriver;
@@ -304,7 +302,7 @@ public class VendorEntry implements IDocumentEntry {
 		return null;
 	}
 
-	public Object[] getValueSet(String fieldName) throws NoFieldNameException {
+    public MasterDataBase[] getValueSet(String fieldName) throws NoFieldNameException {
 		MasterDataManagement manage = _coreDriver.getMasterDataManagement();
 		if (fieldName.equals(GL_ACCOUNT)) {
 			return manage.getCostAccounts();
