@@ -6,9 +6,14 @@
     <item name="dialog_entries" type="id"/>
     <item name="dialog_date_picker" type="id"/>
     <item name="dialog_vendor_selection" type="id"/>
+    <item name="dialog_customer_selection" type="id"/>
     <item name="dialog_outgoing_selection" type="id"/>
+    <item name="dialog_incoming_selection" type="id"/>
     <item name="dialog_cost_selection" type="id"/>
+    <item name="dialog_profit_selection" type="id"/>
     <item name="dialog_business_area_selection" type="id"/>
+    <item name="dialog_src_account_selection" type="id"/>
+    <item name="dialog_dst_account_selection" type="id"/>
     <item name="dialog_amount_format_error" type="id"/>
     <item name="dialog_amount_range_value" type="id"/>
     <item name="dialog_document_saved" type="id"/>

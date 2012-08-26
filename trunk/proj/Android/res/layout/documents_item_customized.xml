@@ -11,11 +11,12 @@
         android:layout_height="wrap_content"
         android:text="@string/documents_customized_entry"
         android:textAppearance="@style/TextAppearance.Large" />
-
+
     <TextView
         android:id="@+id/descp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:ems="10"
         android:text="@string/main_test_descp"
         android:textAppearance="@style/TextAppearance.Medium"

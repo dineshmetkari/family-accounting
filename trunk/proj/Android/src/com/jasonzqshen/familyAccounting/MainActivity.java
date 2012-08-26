@@ -10,6 +10,8 @@ import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import com.jasonzqshen.familyAccounting.data.DataCore;
+import com.jasonzqshen.familyAccounting.entries.CustomerEntryActivity;
+import com.jasonzqshen.familyAccounting.entries.GLEntryActivity;
 import com.jasonzqshen.familyAccounting.entries.VendorEntryActivity;
 import com.jasonzqshen.familyAccounting.exceptions.CoreDriverInitException;
 import com.jasonzqshen.familyAccounting.exceptions.ExternalStorageException;
@@ -47,297 +49,341 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends ListActivity {
-	public static final String TAG = "MAIN";
+    public static final String TAG = "MAIN";
 
-	private MainActivityHandler _handler = new MainActivityHandler(this);
-	private final OnCheckedChangeListener _dimenChanged = new OnCheckedChangeListener() {
-		@Override
-		public void onCheckedChanged(RadioGroup group, int checkedId) {
-		}
-	};
+    private MainActivityHandler _handler = new MainActivityHandler(this);
 
-	/**
-	 * menu button click
-	 */
-	private final OnClickListener MENU_BTN_CLICK = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			showDialog(R.id.dialog_entries);
-		}
-	};
+    private final OnCheckedChangeListener _dimenChanged = new OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+        }
+    };
 
-	/**
-	 * menu button click
-	 */
-	private final OnClickListener REPORT_BTN_CLICK = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			_handler.navigate2BalanceReport();
-		}
-	};
+    /**
+     * menu button click
+     */
+    private final OnClickListener MENU_BTN_CLICK = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showDialog(R.id.dialog_entries);
+        }
+    };
 
-	private final DialogInterface.OnClickListener ENTRY_CLICK = new DialogInterface.OnClickListener() {
-		@Override
-		public void onClick(DialogInterface dialog, int which) {
-			MenuAdapterItem menuItem = (MenuAdapterItem) _entryListAdapter
-					.getItem(which);
-			Log.d(TAG, "menu dialog click on " + which);
+    /**
+     * cost row click
+     */
+    private final OnClickListener COST_ROW_CLICK = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            // click on cost account list
+            // negative to show the details of cost
+            CoreDriver coreDriver = _dataCore.getCoreDriver();
+            if (coreDriver.isInitialized() == false) {
+                return;
+            }
 
-			if (menuItem.ItemType == MenuAdapterItem.HEAD_TYPE) {
-				// showDialog(R.id.dialog_entries);
-			} else {
-				if (menuItem.Action != null) {
-					menuItem.Action.execute();
-				}
-			}
-		}
+            MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
+            GLAccountMasterData[] costAccounts = mdMgmt.getCostAccounts();
+            ArrayList<MasterDataIdentity_GLAccount> list = new ArrayList<MasterDataIdentity_GLAccount>();
+            for (GLAccountMasterData glAccount : costAccounts) {
+                list.add(glAccount.getGLIdentity());
+            }
 
-	};
+            MonthIdentity monthId = coreDriver.getCurMonthId();
+            _handler.navigate2CostDetails(monthId, list);
+        }
+    };
 
-	private AccountReportAdapter _costAccountAdapter;
-	private MenuAdapter _entryListAdapter;
+    /**
+     * menu button click
+     */
+    private final OnClickListener REPORT_BTN_CLICK = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            _handler.navigate2BalanceReport();
+        }
+    };
 
-	private final DataCore _dataCore;
+    private final DialogInterface.OnClickListener ENTRY_CLICK = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            MenuAdapterItem menuItem = (MenuAdapterItem) _entryListAdapter
+                    .getItem(which);
+            Log.d(TAG, "menu dialog click on " + which);
 
-	/**
-	 * constructor, initialize the data
-	 */
-	public MainActivity() {
-		// initialize data component
-		_dataCore = DataCore.getInstance();
+            if (menuItem.ItemType == MenuAdapterItem.HEAD_TYPE) {
+                // showDialog(R.id.dialog_entries);
+            } else {
+                if (menuItem.Action != null) {
+                    menuItem.Action.execute();
+                }
+            }
+        }
 
-	}
+    };
 
-	/**
-	 * chart
-	 */
-	private DefaultRenderer _renderer = new DefaultRenderer();
-	private CategorySeries _series = new CategorySeries("");
-	private GraphicalView _chartView;
+    private AccountReportAdapter _costAccountAdapter;
 
-	/**
-	 * UI controller
-	 */
-	private TextView _costValue = null;
-	private TextView _revenueValue = null;
-	private RadioGroup _radioGroup = null;
-	private ImageButton _newButton = null;
-	private ImageButton _reportButton = null;
+    private MenuAdapter _entryListAdapter;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+    private final DataCore _dataCore;
 
-		try {
-			_dataCore.initialize();
-		} catch (ExternalStorageException e) {
-			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
-		} catch (CoreDriverInitException e) {
-			Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
-		}
-		// initialize render
-		buildPieChartRenderer();
+    /**
+     * constructor, initialize the data
+     */
+    public MainActivity() {
+        // initialize data component
+        _dataCore = DataCore.getInstance();
 
-		// get text view
-		_costValue = (TextView) this.findViewById(R.id.cost_value);
-		_revenueValue = (TextView) this.findViewById(R.id.revenue_value);
-		_radioGroup = (RadioGroup) this.findViewById(R.id.dimenSelection);
-		_radioGroup.setOnCheckedChangeListener(_dimenChanged);
+    }
 
-		_newButton = (ImageButton) this.findViewById(R.id.new_icon);
-		_newButton.setOnClickListener(MENU_BTN_CLICK);
+    /**
+     * chart
+     */
+    private DefaultRenderer _renderer = new DefaultRenderer();
 
-		_reportButton = (ImageButton) this.findViewById(R.id.report_icon);
-		_reportButton.setOnClickListener(REPORT_BTN_CLICK);
+    private CategorySeries _series = new CategorySeries("");
 
-		contructEntryAdatper();
-	}
+    private GraphicalView _chartView;
 
-	/**
-	 * Builds a bar render
-	 * 
-	 */
-	private void buildPieChartRenderer() {
-		// initialize render
-		_renderer.setApplyBackgroundColor(false);
-		// _renderer.setBackgroundColor(Color.argb(100, 50, 50, 50));
-		_renderer.setChartTitleTextSize(ChartUtil.PIE_CHART_TITLE_SIZE);
-		_renderer.setLabelsTextSize(ChartUtil.PIE_CHART_LABEL_SIZE);
-		_renderer.setLegendTextSize(ChartUtil.PIE_CHART_LABEL_SIZE);
-		_renderer.setLabelsColor(Color.BLACK);
-		_renderer.setMargins(new int[] { 20, 30, 15, 0 });
-		_renderer.setZoomEnabled(false);
-		_renderer.setPanEnabled(false);
-		_renderer.setStartAngle(90);
-		_renderer.setChartTitle(this.getString(R.string.main_chart_title));
-	}
+    /**
+     * UI controller
+     */
+    private TextView _costValue = null;
 
-	protected void onResume() {
-		super.onResume();
+    private TableRow _costRow = null;
 
-		drawChart();
-		setData();
-	}
+    private TextView _revenueValue = null;
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
+    private RadioGroup _radioGroup = null;
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_main_menu:
-			_handler.navigate2MainMenu();
-			break;
-		}
+    private ImageButton _newButton = null;
 
-		return true;
-	}
+    private ImageButton _reportButton = null;
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case R.id.dialog_entries:
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
 
-			return new AlertDialog.Builder(this)
-					.setTitle(R.string.main_entries)
-					.setAdapter(_entryListAdapter, ENTRY_CLICK).create();
-		}
+        try {
+            _dataCore.initialize();
+        } catch (ExternalStorageException e) {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+        } catch (CoreDriverInitException e) {
+            Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
+        }
+        // initialize render
+        buildPieChartRenderer();
 
-		return null;
-	}
+        // get text view
+        _costValue = (TextView) this.findViewById(R.id.cost_value);
+        _costRow = (TableRow) this.findViewById(R.id.cost_row);
+        _costRow.setOnClickListener(COST_ROW_CLICK);
 
-	/**
-	 * draw chart
-	 */
-	private void drawChart() {
-		if (_chartView != null) {
-			_chartView.repaint();
-			return;
-		}
+        _revenueValue = (TextView) this.findViewById(R.id.revenue_value);
+        _radioGroup = (RadioGroup) this.findViewById(R.id.dimenSelection);
+        _radioGroup.setOnCheckedChangeListener(_dimenChanged);
 
-		_chartView = ChartFactory.getPieChartView(this, _series, _renderer);
+        _newButton = (ImageButton) this.findViewById(R.id.new_icon);
+        _newButton.setOnClickListener(MENU_BTN_CLICK);
 
-		LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
-		layout.addView(_chartView, new LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT));
-	}
+        _reportButton = (ImageButton) this.findViewById(R.id.report_icon);
+        _reportButton.setOnClickListener(REPORT_BTN_CLICK);
 
-	/**
-	 * set data
-	 */
-	private void setData() {
-		// set the data in bar chart
-		CoreDriver coreDriver = _dataCore.getCoreDriver();
-		if (coreDriver.isInitialized() == false) {
-			return;
-		}
-		// clear
-		this._series.clear();
+        contructEntryAdatper();
+    }
 
-		MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
-		GLAccountBalanceCollection balCol = coreDriver.getTransDataManagement()
-				.getAccBalCol();
+    /**
+     * Builds a bar render
+     * 
+     */
+    private void buildPieChartRenderer() {
+        // initialize render
+        _renderer.setApplyBackgroundColor(false);
+        // _renderer.setBackgroundColor(Color.argb(100, 50, 50, 50));
+        _renderer.setChartTitleTextSize(ChartUtil.PIE_CHART_TITLE_SIZE);
+        _renderer.setLabelsTextSize(ChartUtil.PIE_CHART_LABEL_SIZE);
+        _renderer.setLegendTextSize(ChartUtil.PIE_CHART_LABEL_SIZE);
+        _renderer.setLabelsColor(Color.BLACK);
+        _renderer.setMargins(new int[] { 20, 30, 15, 0 });
+        _renderer.setZoomEnabled(false);
+        _renderer.setPanEnabled(false);
+        _renderer.setStartAngle(90);
+        _renderer.setChartTitle(this.getString(R.string.main_chart_title));
+    }
 
-		// for cost detail
-		ArrayList<AccountReportAdapterItem> list = new ArrayList<AccountReportAdapterItem>();
-		// generate data
-		int count = 0;
-		for (int i = 0; i < GLAccountGroup.COST_GROUP.length; i++) {
-			GLAccountGroup group = GLAccountGroup.COST_GROUP[i];
-			MasterDataIdentity_GLAccount[] ids = mdMgmt
-					.getGLAccountsBasedGroup(group);
-			for (int j = 0; j < ids.length; ++j) {
-				GLAccountMasterData masterData = (GLAccountMasterData) mdMgmt
-						.getMasterData(ids[j], MasterDataType.GL_ACCOUNT);
-				GLAccountBalanceItem item = balCol.getBalanceItem(ids[j]);
+    protected void onResume() {
+        super.onResume();
 
-				_series.add(masterData.getDescp(), item.getSumAmount()
-						.toNumber());
-				SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
-				renderer.setColor(ChartUtil.COLORS[count
-						% ChartUtil.COLORS.length]);
-				renderer.setChartValuesTextSize(ChartUtil.PIE_CHART_VALUE_TEXT_SIZE);
-				renderer.setChartValuesSpacing(ChartUtil.PIE_CHART_VALUE_SPACING);
-				renderer.setDisplayChartValues(true);
+        drawChart();
+        setData();
+    }
 
-				_renderer.addSeriesRenderer(renderer);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
 
-				list.add(new AccountReportAdapterItem(masterData.getDescp(),
-						item.getSumAmount(),
-						AccountReportAdapterItem.ITEM_VIEW, masterData));
-				count++;
-			}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_main_menu:
+            _handler.navigate2MainMenu();
+            break;
+        }
 
-		}
-		if (_chartView != null) {
-			_chartView.repaint();
-		}
-		// revenue
-		CurrencyAmount revenueAmount = new CurrencyAmount();
-		for (GLAccountGroup group : GLAccountGroup.REVENUE_GROUP) {
-			CurrencyAmount cur = balCol.getGroupBalance(group);
-			revenueAmount.addTo(cur);
-		}
-		this._revenueValue.setText(revenueAmount.toString());
+        return true;
+    }
 
-		// cost
-		CurrencyAmount costAmount = new CurrencyAmount();
-		for (GLAccountGroup group : GLAccountGroup.COST_GROUP) {
-			CurrencyAmount cur = balCol.getGroupBalance(group);
-			costAmount.addTo(cur);
-		}
-		this._costValue.setText(costAmount.toString());
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+        case R.id.dialog_entries:
 
-		// set adapter
-		Collections.sort(list);
-		_costAccountAdapter = new AccountReportAdapter(this, list);
-		this.setListAdapter(_costAccountAdapter);
-	}
+            return new AlertDialog.Builder(this)
+                    .setTitle(R.string.main_entries)
+                    .setAdapter(_entryListAdapter, ENTRY_CLICK).create();
+        }
 
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
-		// click on cost account list
-		// negative to show the details of cost
-		AccountReportAdapterItem item = (AccountReportAdapterItem) _costAccountAdapter
-				.getItem(position);
-		CoreDriver coreDriver = _dataCore.getCoreDriver();
-		if (coreDriver.isInitialized() == false) {
-			return;
-		}
+        return null;
+    }
 
-		MonthIdentity monthId = coreDriver.getCurMonthId();
-		_handler.navigate2CostDetails(monthId, item.Account.getGLIdentity());
-	}
+    /**
+     * draw chart
+     */
+    private void drawChart() {
+        if (_chartView != null) {
+            _chartView.repaint();
+            return;
+        }
 
-	/**
-	 * construct entry adapter
-	 */
-	private void contructEntryAdatper() {
-		// set entries list
-		ArrayList<MenuAdapterItem> list = new ArrayList<MenuAdapterItem>();
+        _chartView = ChartFactory.getPieChartView(this, _series, _renderer);
 
-		list.add(new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
-				R.string.menu_customizing_entry, null));
-		list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
-				R.drawable.settings, R.string.menu_customized_entry, null));
-		list.add(new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
-				R.string.menu_entry, null));
-		list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
-				R.drawable.new_entry, R.string.menu_vendor_entry,
-				new ActivityAction(VendorEntryActivity.class, this)));
-		list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
-				R.drawable.new_entry, R.string.menu_customer_entry, null));
-		list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
-				R.drawable.new_entry, R.string.menu_gl_entry, null));
+        LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
+        layout.addView(_chartView, new LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.FILL_PARENT));
+    }
 
-		_entryListAdapter = new MenuAdapter(this, list);
-	}
+    /**
+     * set data
+     */
+    private void setData() {
+        // set the data in bar chart
+        CoreDriver coreDriver = _dataCore.getCoreDriver();
+        if (coreDriver.isInitialized() == false) {
+            return;
+        }
+        // clear
+        this._series.clear();
+
+        MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
+        GLAccountBalanceCollection balCol = coreDriver.getTransDataManagement()
+                .getAccBalCol();
+
+        // for cost detail
+        ArrayList<AccountReportAdapterItem> list = new ArrayList<AccountReportAdapterItem>();
+        // generate data
+        int count = 0;
+        for (int i = 0; i < GLAccountGroup.COST_GROUP.length; i++) {
+            GLAccountGroup group = GLAccountGroup.COST_GROUP[i];
+            MasterDataIdentity_GLAccount[] ids = mdMgmt
+                    .getGLAccountsBasedGroup(group);
+            for (int j = 0; j < ids.length; ++j) {
+                GLAccountMasterData masterData = (GLAccountMasterData) mdMgmt
+                        .getMasterData(ids[j], MasterDataType.GL_ACCOUNT);
+                GLAccountBalanceItem item = balCol.getBalanceItem(ids[j]);
+
+                _series.add(masterData.getDescp(), item.getSumAmount()
+                        .toNumber());
+                SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
+                
+                // get color
+                int colorID = ChartUtil.COLORS[count
+                                               % ChartUtil.COLORS.length];
+                renderer.setColor(this.getResources().getColor(colorID));
+                renderer.setChartValuesTextSize(ChartUtil.PIE_CHART_VALUE_TEXT_SIZE);
+                renderer.setChartValuesSpacing(ChartUtil.PIE_CHART_VALUE_SPACING);
+                renderer.setDisplayChartValues(true);
+
+                _renderer.addSeriesRenderer(renderer);
+
+                list.add(new AccountReportAdapterItem(masterData.getDescp(),
+                        item.getSumAmount(),
+                        AccountReportAdapterItem.ITEM_VIEW, masterData));
+                count++;
+            }
+
+        }
+        if (_chartView != null) {
+            _chartView.repaint();
+        }
+        // revenue
+        CurrencyAmount revenueAmount = new CurrencyAmount();
+        for (GLAccountGroup group : GLAccountGroup.REVENUE_GROUP) {
+            CurrencyAmount cur = balCol.getGroupBalance(group);
+            revenueAmount.addTo(cur);
+        }
+        this._revenueValue.setText(revenueAmount.toString());
+
+        // cost
+        CurrencyAmount costAmount = new CurrencyAmount();
+        for (GLAccountGroup group : GLAccountGroup.COST_GROUP) {
+            CurrencyAmount cur = balCol.getGroupBalance(group);
+            costAmount.addTo(cur);
+        }
+        this._costValue.setText(costAmount.toString());
+
+        // set adapter
+        Collections.sort(list);
+        _costAccountAdapter = new AccountReportAdapter(this, list);
+        this.setListAdapter(_costAccountAdapter);
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        // click on cost account list
+        // negative to show the details of cost
+        AccountReportAdapterItem item = (AccountReportAdapterItem) _costAccountAdapter
+                .getItem(position);
+        CoreDriver coreDriver = _dataCore.getCoreDriver();
+        if (coreDriver.isInitialized() == false) {
+            return;
+        }
+
+        MonthIdentity monthId = coreDriver.getCurMonthId();
+        _handler.navigate2CostDetails(monthId, item.Account.getGLIdentity());
+    }
+
+    /**
+     * construct entry adapter
+     */
+    private void contructEntryAdatper() {
+        // set entries list
+        ArrayList<MenuAdapterItem> list = new ArrayList<MenuAdapterItem>();
+
+        list.add(new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
+                R.string.menu_customizing_entry, null));
+        list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
+                R.drawable.settings, R.string.menu_customized_entry, null));
+        list.add(new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
+                R.string.menu_entry, null));
+        list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
+                R.drawable.new_entry, R.string.menu_vendor_entry,
+                new ActivityAction(VendorEntryActivity.class, this)));
+        list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
+                R.drawable.new_entry, R.string.menu_customer_entry,
+                new ActivityAction(CustomerEntryActivity.class, this)));
+        list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
+                R.drawable.new_entry, R.string.menu_gl_entry,
+                new ActivityAction(GLEntryActivity.class, this)));
+
+        _entryListAdapter = new MenuAdapter(this, list);
+    }
 }
