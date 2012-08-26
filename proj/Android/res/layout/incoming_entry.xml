@@ -29,7 +29,7 @@
             android:layout_height="50dp"
             android:layout_weight="0.7"
             android:gravity="center"
-            android:text="@string/entry_outgoing_entry"
+            android:text="@string/entry_incoming_entry"
             android:textAppearance="@style/TextAppearance.ActionBarTitle" />
 
         <ImageButton
@@ -126,7 +126,7 @@
             android:background="@color/medium_gray" />
 
         <TableRow
-            android:id="@+id/vendorRow"
+            android:id="@+id/customerRow"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/text_view_transparent"
@@ -143,11 +143,11 @@
                 android:paddingBottom="@dimen/TextBottomMargin"
                 android:paddingLeft="@dimen/TextLeftMargin"
                 android:paddingTop="@dimen/TextTopMargin"
-                android:text="@string/entry_vendor"
+                android:text="@string/entry_customer"
                 android:textAppearance="@style/TextAppearance.Medium" />
 
             <TextView
-                android:id="@+id/vendorValue"
+                android:id="@+id/customerValue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
@@ -161,7 +161,7 @@
             android:background="@color/medium_gray" />
 
         <TableRow
-            android:id="@+id/outgoingRow"
+            android:id="@+id/incomingRow"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/text_view_transparent"
@@ -178,11 +178,11 @@
                 android:paddingBottom="@dimen/TextBottomMargin"
                 android:paddingLeft="@dimen/TextLeftMargin"
                 android:paddingTop="@dimen/TextTopMargin"
-                android:text="@string/entry_outgoing_account"
+                android:text="@string/entry_incoming_account"
                 android:textAppearance="@style/TextAppearance.Medium" />
 
             <TextView
-                android:id="@+id/outgoingValue"
+                android:id="@+id/incomingValue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
@@ -196,7 +196,7 @@
             android:background="@color/medium_gray" />
 
         <TableRow
-            android:id="@+id/costRow"
+            android:id="@+id/profitRow"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/text_view_transparent"
@@ -213,11 +213,11 @@
                 android:paddingBottom="@dimen/TextBottomMargin"
                 android:paddingLeft="@dimen/TextLeftMargin"
                 android:paddingTop="@dimen/TextTopMargin"
-                android:text="@string/entry_cost_account"
+                android:text="@string/entry_profit_account"
                 android:textAppearance="@style/TextAppearance.Medium" />
 
             <TextView
-                android:id="@+id/costValue"
+                android:id="@+id/profitValue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
@@ -229,42 +229,7 @@
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@color/medium_gray" />
-
-        <TableRow
-            android:id="@+id/businessAreaRow"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/text_view_transparent"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:minHeight="48dp"
-            android:weightSum="1" >
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.4"
-                android:gravity="center_vertical"
-                android:paddingBottom="@dimen/TextBottomMargin"
-                android:paddingLeft="@dimen/TextLeftMargin"
-                android:paddingTop="@dimen/TextTopMargin"
-                android:text="@string/entry_business_area"
-                android:textAppearance="@style/TextAppearance.Medium" />
-
-            <TextView
-                android:id="@+id/businessAreaValue"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.6"
-                android:text=""
-                android:textAppearance="@style/TextAppearance.Medium" />
-        </TableRow>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/medium_gray" />
-
+
         <EditText
             android:id="@+id/text"
             android:layout_width="fill_parent"
@@ -275,6 +240,7 @@
             android:inputType="textMultiLine"
             android:minHeight="96dp"
             android:textAppearance="@style/TextAppearance.Medium" >
+
         </EditText>
     </TableLayout>
 

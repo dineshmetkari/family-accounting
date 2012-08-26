@@ -11,6 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:background="@android:color/white"
         android:text="@string/main_test_descp"
         android:textAppearance="@style/TextAppearance.Medium"
         android:textStyle="italic" >

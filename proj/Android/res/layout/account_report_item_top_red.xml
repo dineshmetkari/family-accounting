@@ -2,13 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_red_top"
-    android:minHeight="26dip"
+    android:background="@color/red_ffc0"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/ListLeftPadding"
     android:paddingRight="@dimen/ListRightPadding"
-    android:paddingTop="@dimen/ListTopPadding"
-    android:paddingBottom="@dimen/ListBottomPadding"
     android:weightSum="1" >
 
     <TextView

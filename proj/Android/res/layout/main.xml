@@ -58,6 +58,7 @@
 
             <TableRow
                 android:layout_width="fill_parent"
+                android:id="@+id/cost_row"
                 android:layout_height="wrap_content"
                 android:background="@drawable/text_view_background_light_blue"
                 android:clickable="true"

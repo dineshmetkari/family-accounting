@@ -24,5 +24,22 @@
     <color name="background_light_blue">#E3EEF9</color>
     <color name="margin_blue">#376092</color>
     <color name="list_background">#E6E6E6</color>
+    
+    <color name="red_ffaa">#FFAA4643</color>
+    <color name="blue_ff45">#FF4572A7</color>
+    <color name="green_ff89">#FF89A54E</color>
+    <color name="purple_ff71">#FF71588F</color>
+    <color name="blue_ff41">#FF4198AF</color>
+    <color name="orange_ffdb">#FFDB843D</color>
+    <color name="blue_ff4f">#FF4F81BD</color>
+    <color name="red_ffc0">#FFC05046</color>
+    <color name="green_ff9b">#FF9BBB59</color>
+    <color name="purple_ff80">#FF8064A2</color>
+    <color name="blue_ff4b">#FF4BACC6</color>
+    <color name="orange_fff7">#FFF79646</color>
+    <color name="blue_ffaa">#FFAABAD7</color>
+    <color name="red_ffd9">#FFD9AAA9</color>
+    <color name="green_ffc6">#FFC6D6AC</color>
+    <color name="purple_ffba">#FFBAB0C9</color>
 
 </resources>

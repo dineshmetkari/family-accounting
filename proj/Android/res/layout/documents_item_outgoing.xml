@@ -5,16 +5,16 @@
     android:background="@drawable/text_view_transparent"
     android:paddingLeft="@dimen/ListRightPadding"
     android:paddingRight="@dimen/ListLeftPadding" >
-
+
     <TextView
         android:id="@+id/descp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:ems="10"
         android:text="@string/main_test_descp"
         android:textAppearance="@style/TextAppearance.Medium"
         android:textStyle="italic" >
-
     </TextView>
 
     <TableRow
