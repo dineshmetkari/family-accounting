@@ -1,7 +1,9 @@
 <resources>
 
     <item name="dialog_not_implement_alert" type="id"/>
-    <item name="dialog_value_selection" type="id"/>
+    <item name="dialog_account_selection" type="id"/>
+    <item name="dialog_date_selection" type="id"/>
+    <item name="dialog_business_selection" type="id"/>
     <item name="dialog_account_group_selection" type="id"/>
     <item name="dialog_entries" type="id"/>
     <item name="dialog_date_picker" type="id"/>

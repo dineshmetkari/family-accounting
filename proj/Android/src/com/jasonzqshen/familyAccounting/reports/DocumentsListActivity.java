@@ -23,8 +23,10 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
+import com.jasonzqshen.familyaccounting.core.reports.DocumentBusinessIndex;
 import com.jasonzqshen.familyaccounting.core.reports.DocumentIndex;
 import com.jasonzqshen.familyaccounting.core.reports.DocumentIndexItem;
+import com.jasonzqshen.familyaccounting.core.reports.DocumentIndexItemWithBalance;
 import com.jasonzqshen.familyaccounting.core.reports.ReportsManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.GLAccountBalanceCollection;
 import com.jasonzqshen.familyaccounting.core.transaction.GLAccountBalanceItem;
@@ -101,7 +103,18 @@ public class DocumentsListActivity extends ListActivity {
     private final View.OnClickListener _VALUE_SELECTION_LISTENER = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            showDialog(R.id.dialog_value_selection);
+            int position = _groupSpinner.getSelectedItemPosition();
+            switch (position) {
+            case DocListParam.ACCOUNT_CATEGORY:
+                showDialog(R.id.dialog_account_selection);
+                break;
+            case DocListParam.BUSINESS_CATEGORY:
+                showDialog(R.id.dialog_business_selection);
+                break;
+            case DocListParam.DATE_CATEGORY:
+                showDialog(R.id.dialog_date_selection);
+                break;
+            }
         }
     };
 
@@ -206,37 +219,16 @@ public class DocumentsListActivity extends ListActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
+        CharSequence[] valueOptions = null;
+        boolean[] selection = null;
         switch (id) {
-        case R.id.dialog_value_selection:
-            CharSequence[] valueOptions = null;
-            boolean[] selection = null;
-            int position = _groupSpinner.getSelectedItemPosition();
+        case R.id.dialog_account_selection:
 
-            Log.i(TAG, "open value filter " + position);
-            switch (position) {
-            case DocListParam.ACCOUNT_CATEGORY:
-                valueOptions = new CharSequence[_glAccountValueSet.size()];
-                for (int i = 0; i < valueOptions.length; ++i) {
-                    valueOptions[i] = _glAccountValueSet.get(i).getDescp();
-                }
-                selection = _glAccountSelection;
-                break;
-            case DocListParam.BUSINESS_CATEGORY:
-                valueOptions = new CharSequence[_businessAreaValueSet.size()];
-                for (int i = 0; i < valueOptions.length; ++i) {
-                    valueOptions[i] = _businessAreaValueSet.get(i).getDescp();
-                }
-                selection = _businessAreaSelection;
-                break;
-            case DocListParam.DATE_CATEGORY:
-                SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-                valueOptions = new CharSequence[_dateValueSet.size()];
-                for (int i = 0; i < valueOptions.length; ++i) {
-                    valueOptions[i] = format.format(_dateValueSet.get(i));
-                }
-                selection = _dateSelection;
-                break;
+            valueOptions = new CharSequence[_glAccountValueSet.size()];
+            for (int i = 0; i < valueOptions.length; ++i) {
+                valueOptions[i] = _glAccountValueSet.get(i).getDescp();
             }
+            selection = _glAccountSelection;
 
             return new AlertDialog.Builder(this)
                     .setTitle(R.string.documents_select_value)
@@ -244,7 +236,33 @@ public class DocumentsListActivity extends ListActivity {
                             _VALUE_MULTIPLE_CHOICE_LISTENER)
                     .setPositiveButton(R.string.ok,
                             _VALUE_SELECTION_OK_LISTENER).create();
+        case R.id.dialog_date_selection:
+            SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+            valueOptions = new CharSequence[_dateValueSet.size()];
+            for (int i = 0; i < valueOptions.length; ++i) {
+                valueOptions[i] = format.format(_dateValueSet.get(i));
+            }
+            selection = _dateSelection;
+            return new AlertDialog.Builder(this)
+                    .setTitle(R.string.documents_select_value)
+                    .setMultiChoiceItems(valueOptions, selection,
+                            _VALUE_MULTIPLE_CHOICE_LISTENER)
+                    .setPositiveButton(R.string.ok,
+                            _VALUE_SELECTION_OK_LISTENER).create();
 
+        case R.id.dialog_business_selection:
+            valueOptions = new CharSequence[_businessAreaValueSet.size()];
+            for (int i = 0; i < valueOptions.length; ++i) {
+                valueOptions[i] = _businessAreaValueSet.get(i).getDescp();
+            }
+            selection = _businessAreaSelection;
+
+            return new AlertDialog.Builder(this)
+                    .setTitle(R.string.documents_select_value)
+                    .setMultiChoiceItems(valueOptions, selection,
+                            _VALUE_MULTIPLE_CHOICE_LISTENER)
+                    .setPositiveButton(R.string.ok,
+                            _VALUE_SELECTION_OK_LISTENER).create();
         }
 
         return null;
@@ -262,6 +280,9 @@ public class DocumentsListActivity extends ListActivity {
             break;
         case DocListParam.DATE_CATEGORY:
             this.setDocList_Date();
+            break;
+        case DocListParam.BUSINESS_CATEGORY:
+            this.setDocList_Business();
             break;
         }
     }
@@ -421,6 +442,65 @@ public class DocumentsListActivity extends ListActivity {
     }
 
     /**
+     * set document list when group-by is business area
+     */
+    private void setDocList_Business() {
+        // get month identities
+        MonthIdentity monthId = (MonthIdentity) _monthFilter.getSelectedItem();
+        ArrayList<DocumentsListAdapterItem> items = new ArrayList<DocumentsListAdapterItem>();
+        CoreDriver coreDriver = _dataCore.getCoreDriver();
+
+        if (coreDriver.isInitialized() == false) {
+            return;
+        }
+
+        ReportsManagement rMgmt = _dataCore.getReportsManagement();
+        DocumentBusinessIndex index = (DocumentBusinessIndex) rMgmt
+                .getDocumentIndex(DocumentIndex.BUSINESS_INDEX);
+
+        for (int i = 0; i < _businessAreaSelection.length; ++i) {
+            if (_businessAreaSelection[i] == false) {
+                continue;
+            }
+            MasterDataBase business = _businessAreaValueSet.get(i);
+
+            DocumentIndexItemWithBalance indexItem = index
+                    .getIndexItem(business.getIdentity());
+            if (indexItem == null) {
+                continue;
+            }
+            // add group head
+            items.add(new DocumentsListAdapterItem(
+                    DocumentsListAdapterItem.HEAD_VIEW, null, business
+                            .getDescp(), indexItem.getAmount(monthId, monthId),
+                    null));
+
+            // get selected value
+            ArrayList<HeadEntity> docs = indexItem
+                    .getEntities(monthId, monthId);
+            Collections.reverse(docs);
+            for (HeadEntity headEntity : docs) {
+                // check the document is in the date value set and G/L account
+                // value set
+                if (containDate(headEntity.getPostingDate()) == true) {
+                    ItemEntity[] itemEntities = headEntity.getItems();
+                    for (ItemEntity entity : itemEntities) {
+                        if (containGLAccount(entity.getGLAccount())) {
+                            addDocItem(items, headEntity, entity.getGLAccount());
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        // construct adapter
+        _listAdapter = new DocumentsListAdapter(this, items);
+        this.setListAdapter(_listAdapter);
+    }
+
+    /**
      * set document list when group-by is Date
      */
     private void setDocList_Date() {
@@ -510,7 +590,6 @@ public class DocumentsListActivity extends ListActivity {
         TransactionDataManagement transMgmt = coreDriver
                 .getTransDataManagement();
         GLAccountBalanceCollection balCol = transMgmt.getAccBalCol();
-        MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
         ReportsManagement rMgmt = _dataCore.getReportsManagement();
 
         for (int i = 0; i < _glAccountSelection.length; ++i) {
@@ -522,20 +601,16 @@ public class DocumentsListActivity extends ListActivity {
             DocumentIndex index = rMgmt
                     .getDocumentIndex(DocumentIndex.ACCOUNT_INDEX);
             DocumentIndexItem indexItem = index.getIndexItem(account
-                    .getGLIdentity());
+                    .getIdentity());
             if (indexItem == null) {
                 continue;
             }
-
-            MasterDataBase data = mdMgmt.getMasterData(account.getGLIdentity(),
-                    MasterDataType.GL_ACCOUNT);
-
             GLAccountBalanceItem balItem = balCol.getBalanceItem(account
-                    .getGLIdentity());
+                    .getIdentity());
             // add group head
             items.add(new DocumentsListAdapterItem(
-                    DocumentsListAdapterItem.HEAD_VIEW, null, data.getDescp(),
-                    balItem.getAmount(monthId), null));
+                    DocumentsListAdapterItem.HEAD_VIEW, null, account
+                            .getDescp(), balItem.getAmount(monthId), null));
 
             // get selected value
 
@@ -556,7 +631,7 @@ public class DocumentsListActivity extends ListActivity {
                     }
 
                     if (flag) {
-                        addDocItem(items, headEntity, account.getGLIdentity());
+                        addDocItem(items, headEntity, account.getIdentity());
                     }
 
                 }
@@ -609,7 +684,7 @@ public class DocumentsListActivity extends ListActivity {
      */
     private boolean containGLAccount(MasterDataIdentity_GLAccount glAccountId) {
         for (int i = 0; i < _glAccountValueSet.size(); ++i) {
-            if (_glAccountValueSet.get(i).getGLIdentity().equals(glAccountId)) {
+            if (_glAccountValueSet.get(i).getIdentity().equals(glAccountId)) {
                 return _glAccountSelection[i];
             }
         }

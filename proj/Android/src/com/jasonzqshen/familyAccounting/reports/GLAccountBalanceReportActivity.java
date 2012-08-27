@@ -76,6 +76,9 @@ public class GLAccountBalanceReportActivity extends ListActivity {
                         .getDescp(group), groupAmount,
                         AccountReportAdapterItem.HEAD_VIEW_RED, null));
             } else {
+                if (group == GLAccountGroup.EQUITY) {
+                    groupAmount.negate();
+                }
                 arrList.add(new AccountReportAdapterItem(GLAccountGroup
                         .getDescp(group), groupAmount,
                         AccountReportAdapterItem.HEAD_VIEW, null));
@@ -87,6 +90,10 @@ public class GLAccountBalanceReportActivity extends ListActivity {
                         .getMasterData(id, MasterDataType.GL_ACCOUNT);
                 CurrencyAmount amount = balCol.getBalanceItem(id)
                         .getSumAmount();
+
+                if (group == GLAccountGroup.EQUITY) {
+                    amount.negate();
+                }
                 arrList.add(new AccountReportAdapterItem(account.getDescp(),
                         amount, AccountReportAdapterItem.ITEM_VIEW, account));
             }
@@ -121,7 +128,7 @@ public class GLAccountBalanceReportActivity extends ListActivity {
         }
 
         ArrayList<Object> list = new ArrayList<Object>();
-        list.add(item.Account.getGLIdentity());
+        list.add(item.Account.getIdentity());
 
         // add parameters
         ArrayList<DocListParamItem> items = new ArrayList<DocListParamItem>();
