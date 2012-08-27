@@ -120,38 +120,13 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/black" />
-
-        <RadioGroup
-            android:id="@+id/dimenSelection"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <RadioButton
-                android:id="@+id/accountDimen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/main_accounts" />
-
-            <RadioButton
-                android:id="@+id/BusinessArea"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/main_business_area" />
-        </RadioGroup>
-
-        <View
-            android:layout_width="fill_parent"
             android:layout_height="3dp"
             android:background="@color/margin_blue" />
 
         <ListView
             android:id="@id/android:list"
             android:layout_width="fill_parent"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
             android:listSelector="@android:color/transparent" />
 
         <View

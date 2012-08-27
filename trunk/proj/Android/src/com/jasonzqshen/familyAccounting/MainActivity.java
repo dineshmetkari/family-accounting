@@ -15,6 +15,7 @@ import com.jasonzqshen.familyAccounting.entries.GLEntryActivity;
 import com.jasonzqshen.familyAccounting.entries.VendorEntryActivity;
 import com.jasonzqshen.familyAccounting.exceptions.CoreDriverInitException;
 import com.jasonzqshen.familyAccounting.exceptions.ExternalStorageException;
+import com.jasonzqshen.familyAccounting.reports.DocumentsListNavigation;
 import com.jasonzqshen.familyAccounting.utils.ActivityAction;
 import com.jasonzqshen.familyAccounting.utils.ChartUtil;
 import com.jasonzqshen.familyAccounting.widgets.AccountReportAdapter;
@@ -47,8 +48,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,12 +56,6 @@ public class MainActivity extends ListActivity {
     public static final String TAG = "MAIN";
 
     private MainActivityHandler _handler = new MainActivityHandler(this);
-
-    private final OnCheckedChangeListener _dimenChanged = new OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-        }
-    };
 
     /**
      * menu button click
@@ -80,22 +73,7 @@ public class MainActivity extends ListActivity {
     private final OnClickListener COST_ROW_CLICK = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            // click on cost account list
-            // negative to show the details of cost
-            CoreDriver coreDriver = _dataCore.getCoreDriver();
-            if (coreDriver.isInitialized() == false) {
-                return;
-            }
-
-            MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
-            GLAccountMasterData[] costAccounts = mdMgmt.getCostAccounts();
-            ArrayList<MasterDataIdentity_GLAccount> list = new ArrayList<MasterDataIdentity_GLAccount>();
-            for (GLAccountMasterData glAccount : costAccounts) {
-                list.add(glAccount.getGLIdentity());
-            }
-
-            MonthIdentity monthId = coreDriver.getCurMonthId();
-            _handler.navigate2CostDetails(monthId, list);
+            DocumentsListNavigation.navigate2CostDetails(MainActivity.this);
         }
     };
 
@@ -160,8 +138,6 @@ public class MainActivity extends ListActivity {
 
     private TextView _revenueValue = null;
 
-    private RadioGroup _radioGroup = null;
-
     private ImageButton _newButton = null;
 
     private ImageButton _reportButton = null;
@@ -187,8 +163,6 @@ public class MainActivity extends ListActivity {
         _costRow.setOnClickListener(COST_ROW_CLICK);
 
         _revenueValue = (TextView) this.findViewById(R.id.revenue_value);
-        _radioGroup = (RadioGroup) this.findViewById(R.id.dimenSelection);
-        _radioGroup.setOnCheckedChangeListener(_dimenChanged);
 
         _newButton = (ImageButton) this.findViewById(R.id.new_icon);
         _newButton.setOnClickListener(MENU_BTN_CLICK);
@@ -303,10 +277,9 @@ public class MainActivity extends ListActivity {
                 _series.add(masterData.getDescp(), item.getSumAmount()
                         .toNumber());
                 SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
-                
+
                 // get color
-                int colorID = ChartUtil.COLORS[count
-                                               % ChartUtil.COLORS.length];
+                int colorID = ChartUtil.COLORS[count % ChartUtil.COLORS.length];
                 renderer.setColor(this.getResources().getColor(colorID));
                 renderer.setChartValuesTextSize(ChartUtil.PIE_CHART_VALUE_TEXT_SIZE);
                 renderer.setChartValuesSpacing(ChartUtil.PIE_CHART_VALUE_SPACING);
@@ -328,6 +301,7 @@ public class MainActivity extends ListActivity {
         CurrencyAmount revenueAmount = new CurrencyAmount();
         for (GLAccountGroup group : GLAccountGroup.REVENUE_GROUP) {
             CurrencyAmount cur = balCol.getGroupBalance(group);
+            cur.negate();
             revenueAmount.addTo(cur);
         }
         this._revenueValue.setText(revenueAmount.toString());
@@ -358,7 +332,8 @@ public class MainActivity extends ListActivity {
         }
 
         MonthIdentity monthId = coreDriver.getCurMonthId();
-        _handler.navigate2CostDetails(monthId, item.Account.getGLIdentity());
+        DocumentsListNavigation.navigate2DocList(this, monthId,
+                item.Account.getIdentity());
     }
 
     /**
