@@ -96,12 +96,12 @@ public class ClosingManagement {
 
 		for (GLAccountMasterData revenueAcc : revenueAccounts) {
 			GLAccountBalanceItem balItem = col.getBalanceItem(revenueAcc
-					.getGLIdentity());
+					.getIdentity());
 			createLineItem(headEntity, balance, balItem);
 		}
 		for (GLAccountMasterData costAcc : costAccounts) {
 			GLAccountBalanceItem balItem = col.getBalanceItem(costAcc
-					.getGLIdentity());
+					.getIdentity());
 			createLineItem(headEntity, balance, balItem);
 		}
 
@@ -118,7 +118,7 @@ public class ClosingManagement {
 			ItemEntity equityItem = headEntity.createEntity();
 			try {
 				equityItem.setGLAccount(mdMgmt.getEquityAccount()
-						.getGLIdentity());
+						.getIdentity());
 			} catch (NullValueNotAcceptable e) {
 				_coreDriver.logDebugInfo(this.getClass(), 111, e.toString(),
 						MessageType.ERROR);

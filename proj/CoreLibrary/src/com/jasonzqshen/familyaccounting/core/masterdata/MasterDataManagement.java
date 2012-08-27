@@ -462,7 +462,7 @@ public class MasterDataManagement extends ManagementBase {
 		for (MasterDataBase data : datas) {
 			GLAccountMasterData glAccount = (GLAccountMasterData) data;
 			if (glAccount.getGroup() == group) {
-				array.add(glAccount.getGLIdentity());
+				array.add(glAccount.getIdentity());
 			}
 		}
 

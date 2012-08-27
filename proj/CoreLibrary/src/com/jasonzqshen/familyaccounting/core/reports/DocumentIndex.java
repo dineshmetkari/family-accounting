@@ -12,77 +12,81 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 
 public abstract class DocumentIndex {
-	/**
-	 * comparator based on posting date
-	 */
-	public final static Comparator<HeadEntity> COMPARATOR_DATE = new Comparator<HeadEntity>() {
-		@Override
-		public int compare(HeadEntity head1, HeadEntity head2) {
-			return head1.getPostingDate().compareTo(head2.getPostingDate());
-		}
-	};
+    /**
+     * comparator based on posting date
+     */
+    public final static Comparator<HeadEntity> COMPARATOR_DATE = new Comparator<HeadEntity>() {
+        @Override
+        public int compare(HeadEntity head1, HeadEntity head2) {
+            return head1.getPostingDate().compareTo(head2.getPostingDate());
+        }
+    };
 
-	public final static int ACCOUNT_INDEX = 0;
-	public final static int INDEX_COUNT = 1;
+    public final static int ACCOUNT_INDEX = 0;
 
-	protected final Hashtable<MasterDataIdentity, DocumentIndexItem> _list;
-	protected final CoreDriver _coreDriver;
+    public final static int BUSINESS_INDEX = 1;
 
-	// load document listener
-	private final LoadDocumentListener _loadDocumentListener = new LoadDocumentListener() {
-		public void onLoadDocumentListener(Object source, HeadEntity document) {
-			newDoc(document);
-		}
-	};
+    public final static int INDEX_COUNT = 2;
 
-	// save document listener
-	private final SaveDocumentListener _saveDocumentListener = new SaveDocumentListener() {
-		public void onSaveDocumentListener(HeadEntity document) {
-			newDoc(document);
-		}
-	};
+    protected final Hashtable<MasterDataIdentity, DocumentIndexItem> _list;
 
-	/**
-	 * document index
-	 * 
-	 * @param coreDriver
-	 */
-	protected DocumentIndex(CoreDriver coreDriver) {
-		_coreDriver = coreDriver;
-		_list = new Hashtable<MasterDataIdentity, DocumentIndexItem>();
+    protected final CoreDriver _coreDriver;
 
-		_coreDriver.getListenersManagement().addSaveDocListener(
-				_saveDocumentListener);
-		_coreDriver.getListenersManagement().addLoadDocListener(
-				_loadDocumentListener);
-	}
+    // load document listener
+    private final LoadDocumentListener _loadDocumentListener = new LoadDocumentListener() {
+        public void onLoadDocumentListener(Object source, HeadEntity document) {
+            newDoc(document);
+        }
+    };
 
-	/**
-	 * 
-	 * @return
-	 */
-	public ArrayList<MasterDataIdentity> getKeys() {
-		ArrayList<MasterDataIdentity> ret = new ArrayList<MasterDataIdentity>(
-				_list.keySet());
-		Collections.sort(ret);
+    // save document listener
+    private final SaveDocumentListener _saveDocumentListener = new SaveDocumentListener() {
+        public void onSaveDocumentListener(HeadEntity document) {
+            newDoc(document);
+        }
+    };
 
-		return ret;
-	}
+    /**
+     * document index
+     * 
+     * @param coreDriver
+     */
+    protected DocumentIndex(CoreDriver coreDriver) {
+        _coreDriver = coreDriver;
+        _list = new Hashtable<MasterDataIdentity, DocumentIndexItem>();
 
-	/**
-	 * get index item
-	 * 
-	 * @param key
-	 * @return
-	 */
-	public DocumentIndexItem getIndexItem(MasterDataIdentity key) {
-		return _list.get(key);
-	}
+        _coreDriver.getListenersManagement().addSaveDocListener(
+                _saveDocumentListener);
+        _coreDriver.getListenersManagement().addLoadDocListener(
+                _loadDocumentListener);
+    }
 
-	/**
-	 * set report when new document
-	 * 
-	 * @param head
-	 */
-	protected abstract void newDoc(HeadEntity head);
+    /**
+     * 
+     * @return
+     */
+    public ArrayList<MasterDataIdentity> getKeys() {
+        ArrayList<MasterDataIdentity> ret = new ArrayList<MasterDataIdentity>(
+                _list.keySet());
+        Collections.sort(ret);
+
+        return ret;
+    }
+
+    /**
+     * get index item
+     * 
+     * @param key
+     * @return
+     */
+    public DocumentIndexItem getIndexItem(MasterDataIdentity key) {
+        return _list.get(key);
+    }
+
+    /**
+     * set report when new document
+     * 
+     * @param head
+     */
+    protected abstract void newDoc(HeadEntity head);
 }

@@ -67,12 +67,8 @@ public class GLAccountMasterData extends MasterDataBase {
 
 	}
 
-	/**
-	 * get identity for G/L account
-	 * 
-	 * @return identity
-	 */
-	public MasterDataIdentity_GLAccount getGLIdentity() {
+	@Override
+	public MasterDataIdentity_GLAccount getIdentity() {
 		return (MasterDataIdentity_GLAccount) _identity;
 	}
 
