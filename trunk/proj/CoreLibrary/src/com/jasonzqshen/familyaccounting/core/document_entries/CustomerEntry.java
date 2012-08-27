@@ -88,7 +88,7 @@ public class CustomerEntry implements IDocumentEntry {
         Object[] valueSet = this.getValueSet(GL_ACCOUNT);
         for (Object obj : valueSet) {
             GLAccountMasterData glAcc = (GLAccountMasterData) obj;
-            if (glAcc.getGLIdentity().equals(glAccount)) {
+            if (glAcc.getIdentity().equals(glAccount)) {
                 _glAccount = glAccount;
                 return;
             }
@@ -113,7 +113,7 @@ public class CustomerEntry implements IDocumentEntry {
         Object[] valueSet = this.getValueSet(REC_ACC);
         for (Object obj : valueSet) {
             GLAccountMasterData glAccount = (GLAccountMasterData) obj;
-            if (glAccount.getGLIdentity().equals(recAcc)) {
+            if (glAccount.getIdentity().equals(recAcc)) {
                 _recAcc = recAcc;
                 return;
             }

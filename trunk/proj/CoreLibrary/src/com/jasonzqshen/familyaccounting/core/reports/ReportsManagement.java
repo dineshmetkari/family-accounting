@@ -6,36 +6,40 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 
 public class ReportsManagement {
-	protected final DocumentIndex[] indexes;
-	protected final CoreDriver _coreDriver;
+    protected final DocumentIndex[] indexes;
 
-	public ReportsManagement(CoreDriver coreDriver) {
-		_coreDriver = coreDriver;
+    protected final CoreDriver _coreDriver;
 
-		indexes = new DocumentIndex[DocumentIndex.INDEX_COUNT];
-		indexes[DocumentIndex.ACCOUNT_INDEX] = new DocumentAccountIndex(
-				_coreDriver);
-	}
+    public ReportsManagement(CoreDriver coreDriver) {
+        _coreDriver = coreDriver;
 
-	/**
-	 * index type
-	 * 
-	 * @param indexType
-	 * @return
-	 */
-	public ArrayList<MasterDataIdentity> getDocumentAccountIndexKeys(
-			int indexType) {
-		DocumentIndex index = indexes[indexType];
-		return index.getKeys();
-	}
+        indexes = new DocumentIndex[DocumentIndex.INDEX_COUNT];
+        indexes[DocumentIndex.ACCOUNT_INDEX] = new DocumentAccountIndex(
+                _coreDriver);
+        indexes[DocumentIndex.BUSINESS_INDEX] = new DocumentBusinessIndex(
+                _coreDriver);
+    }
 
-	/**
-	 * get index
-	 * @param indexType
-	 * @return
-	 */
-	public DocumentIndex getDocumentIndex(int indexType) {
-		DocumentIndex index = indexes[indexType];
-		return index;
-	}
+    /**
+     * index type
+     * 
+     * @param indexType
+     * @return
+     */
+    public ArrayList<MasterDataIdentity> getDocumentAccountIndexKeys(
+            int indexType) {
+        DocumentIndex index = indexes[indexType];
+        return index.getKeys();
+    }
+
+    /**
+     * get index
+     * 
+     * @param indexType
+     * @return
+     */
+    public DocumentIndex getDocumentIndex(int indexType) {
+        DocumentIndex index = indexes[indexType];
+        return index;
+    }
 }
