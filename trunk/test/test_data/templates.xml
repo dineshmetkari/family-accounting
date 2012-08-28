@@ -1,7 +1,7 @@
 <root>
 	<template id="1" type="VENDOR" name="Traffic expense on work">
-		<field name="AMOUNT" value="10.00"/>
-		<field name="VENDOR" value="SUBWAY"/>
+		<field name="AMOUNT" value="123.45"/>
+		<field name="VENDOR" value="BUS"/>
 		<field name="TEXT" value="Traffic expense on work"/>
 		<field name="REC_ACC" value="1430100001"/>
 		<field name="GL_ACCOUNT" value="5000100001" />
