@@ -1,4 +1,4 @@
 <root>
-	<entity id="MS" name="Microsoft"/>
-	<entity id="SAP" name="SAP. AG"/>
+	<entity id="C1" name="Customer 1"/>
+	<entity id="C2" name="Customer 2"/>
 </root>
