@@ -1,24 +1,24 @@
 <root>
-	<entity id="1000100001" name="Jason's cash on hands"  /> 
-	<entity id="1000100002" name="Shirley's cash on hands"   /> 
-	<entity id="1010100001" name="Jason's CMB bank account 6235" bank_account='CMB_6235'  />
-	<entity id="1010100002" name="Jason's SPDB bank account 3704" bank_account='SPDB_3704'  />
-	<entity id="1010100003" name="Shirley's CMB bank account 1001" bank_account='CMB_1001'  />
-	<entity id="1010100004" name="Shirley's ICBC bank account 3704" bank_account='ICBC_1001'  />
+	<entity id="1000100001" name="cash on hands 1"  /> 
+	<entity id="1000100002" name="cash on hands 2"   /> 
+	<entity id="1010100001" name="bank account 6235" bank_account='CMB_6235'  />
+	<entity id="1010100002" name="bank account 3704" bank_account='SPDB_3704'  />
+	<entity id="1010100003" name="bank account 1001" bank_account='CMB_1001'  />
+	<entity id="1010100004" name="bank account 3704" bank_account='ICBC_1001'  />
 	<entity id="1060100001" name="Deposites in ICBC" bank_account='ICBC_0001' />
 	<entity id="1060100002" name="Share investment" />
 	<entity id="1060100003" name="Housing investment" />
 	<entity id="1060100004" name="Gold investment" />
 	<entity id="1060100005" name="Bank products investment" />
-	<entity id="1430100001" name="Jason's traffic card" />
-	<entity id="1430100002" name="Shirley's traffic card" />
+	<entity id="1430100001" name="traffic card 1" />
+	<entity id="1430100002" name="traffic card 2" />
 	<entity id="1500100001" name="Electronic equipments" />
 	<entity id="1500100002" name="Car" />
-	<entity id="2000100001" name="Jason's credit card" bank_account='CMB_6620' />
-	<entity id="2000100002" name="Shirley's credit card" bank_account='CMB_1002' />
+	<entity id="2000100001" name="credit card 1" bank_account='CMB_6620' />
+	<entity id="2000100002" name="credit card 2" bank_account='CMB_1002' />
 	<entity id="3010100001" name="Equity"  />
-	<entity id="4000100001" name="Jason's salary incoming" />
-	<entity id="4000100002" name="Shirley's salary imcoming" />
+	<entity id="4000100001" name="salary incoming 1" />
+	<entity id="4000100002" name="salary imcoming 2" />
 	<entity id="4010100001" name="Interest incoming" />
 	<entity id="4010100002" name="Housing investment revenue" />
 	<entity id="4010100003" name="Gold investment revenue" />
