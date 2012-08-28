@@ -1,9 +1,9 @@
 <root>
-	<document doc_num="1000000001" fiscal_year="2012" fiscal_month="08" date="2012.08.02" text="test" doc_type="K" is_reversed="true" ref="1000000002_2012_08">
+	<document doc_num="1000000001" fiscal_year="2012" fiscal_month="08" date="2012.08.02" text="Traffic expense on work" doc_type="K" is_reversed="true" ref="1000000002_2012_08">
 		<item line_num="0" account_type="K" vendor="BUS" gl_account="1000100001" amount="123.45" cd_indicator="C" />
 		<item line_num="1" account_type="S" gl_account="5000100001" amount="123.45" cd_indicator="D" business_area="WORK"/>
 	</document>
-	<document doc_num="1000000002" fiscal_year="2012" fiscal_month="08" date="2012.08.02" text="test" doc_type="K" is_reversed="true" ref="1000000002_2012_08">
+	<document doc_num="1000000002" fiscal_year="2012" fiscal_month="08" date="2012.08.02" text="Traffic expense on work" doc_type="K" is_reversed="true" ref="1000000002_2012_08">
 		<item line_num="0" account_type="K" vendor="BUS" gl_account="1000100001" amount="123.45" cd_indicator="D" />
 		<item line_num="1" account_type="S" gl_account="5000100001" amount="123.45" cd_indicator="C" business_area="WORK"/>
 	</document>
