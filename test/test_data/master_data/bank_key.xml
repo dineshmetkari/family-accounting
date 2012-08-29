@@ -1,5 +1,3 @@
 <root>
 	<entity id='CMB' name="China Merchants Bank" />
-	<entity id='SPDB' name="Shanghai Pudong Development Bank" />
-	<entity id='ICBC' name="Industrial and Commercial Bank of China" />
 </root>

@@ -1,11 +1,5 @@
 <root>
 	<entity id='WORK' 			name="Work" critical='H'/>
 	<entity id='ENTERTAIN' 		name="Entertainment(or with Yanyan), like dinner, movie..." critical='M'/>
-	<entity id='FAMILY' 		name="Expense on family relationship" critical='H'/>
-	<entity id='TEAM_MATES' 	name="Expense on colleagues relationship" critical='H'/>
-	<entity id='FRIENDS' 		name="Expense on friends relationship" critical='H'/>
 	<entity id='SNACKS' 		name="Expense on snack" critical='L'/>
-	<entity id='HEALTH' 		name="Expense on health like gym, sports, massage... " critical='M'/>
-	<entity id='DAILY_LIFE' 	name="Expense on daily life like shampoo, haircut, mobile expense... " critical='M'/>
-	<entity id='LUX_LIFE' 		name="Luxury expense on life, like MAC..." critical='M'/>
 </root>

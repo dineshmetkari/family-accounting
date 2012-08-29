@@ -1,6 +1,5 @@
 <root>
-	<entity id="CMB_6620" name="Jason's CMB credit card" bank_key='CMB' bank_account='0000000000006620' type='C'/>
-	
-	<entity id="CMB_6235" name="Jason's CMB bank account" bank_key='CMB' bank_account='0000000000006235' type='D'/>
+	<entity id="CMB_6620" name="credit card" bank_key='CMB' bank_account='0000000000006620' type='C'/>
+	<entity id="CMB_6235" name="bank account" bank_key='CMB' bank_account='0000000000006235' type='D'/>
 	
 </root>
