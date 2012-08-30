@@ -9,7 +9,7 @@ package com.jasonzqshen.familyaccounting.core.utils;
  * 
  */
 public enum BankAccountType {
-	SAVING_ACCOUNT('C'), DEBIT_CARD('D');
+	SAVING_ACCOUNT('D'), CREDIT_CARD('C');
 
 	private char _value;
 

@@ -184,6 +184,9 @@ public class CustomerEntry implements IDocumentEntry {
         } else if (fieldName.equals(POSTING_DATE)) {
             return _date;
         } else if (fieldName.equals(AMOUNT)) {
+            if (_amount == null || _amount.isZero()) {
+                return null;
+            }
             return new CurrencyAmount(_amount);
         } else if (fieldName.equals(TEXT)) {
             return _text;

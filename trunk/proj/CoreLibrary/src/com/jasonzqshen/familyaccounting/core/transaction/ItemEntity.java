@@ -206,8 +206,14 @@ public class ItemEntity implements Comparable<ItemEntity> {
 		if (glAccount == null) {
 			throw new NullValueNotAcceptable("G/L account");
 		}
-		MasterDataIdentity accountId = _management.getMasterData(glAccount,
-				MasterDataType.GL_ACCOUNT).getIdentity();
+		MasterDataBase data = _management.getMasterData(glAccount,
+                MasterDataType.GL_ACCOUNT);
+		if (data == null) {
+            throw new MasterDataIdentityNotDefined(glAccount,
+                    MasterDataType.GL_ACCOUNT);
+        }
+		
+		MasterDataIdentity accountId = data.getIdentity();
 		if (accountId == null) {
 			throw new MasterDataIdentityNotDefined(glAccount,
 					MasterDataType.GL_ACCOUNT);
