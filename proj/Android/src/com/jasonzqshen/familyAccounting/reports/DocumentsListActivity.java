@@ -66,6 +66,78 @@ public class DocumentsListActivity extends ListActivity {
 
     private DocumentsListAdapter _listAdapter;
 
+    private DocumentsListAdapterItem _selectedDocItem;
+
+    /**
+     * set long click listener
+     */
+    private final AdapterView.OnItemLongClickListener _ITEM_LONG_CLICK_LISTENER = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> adapter, View view,
+                int position, long id) {
+            _selectedDocItem = (DocumentsListAdapterItem) _listAdapter
+                    .getItem(position);
+            if (_selectedDocItem.Type == DocumentsListAdapterItem.HEAD_VIEW) {
+                return false;
+            }
+
+            showDialog(R.id.dialog_doc_menu);
+            return true;
+        }
+    };
+
+    /**
+     * document menu click
+     */
+    private final DialogInterface.OnClickListener _DOC_MENU_CLICK_LISTENER = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int position) {
+            switch (position) {
+            case 0:
+                // reverse
+                showDialog(R.id.dialog_reverse_confirm);
+                break;
+            }
+            dialog.dismiss();
+        }
+    };
+
+    /**
+     * reverse ok click
+     */
+    private final DialogInterface.OnClickListener _REVERSE_OK_LISTENER = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            CoreDriver coreDriver = _dataCore.getCoreDriver();
+            if (coreDriver.isInitialized() == false) {
+                return;
+            }
+
+            TransactionDataManagement transMgmt = coreDriver
+                    .getTransDataManagement();
+            HeadEntity reversingDoc = transMgmt
+                    .reverseDocument(_selectedDocItem.Document.getDocument()
+                            .getDocIdentity());
+            if (reversingDoc == null) {
+                showDialog(R.id.dialog_doc_reverse_with_failure);
+            } else {
+                showDialog(R.id.dialog_doc_reversed);
+            }
+
+            dialog.dismiss();
+        }
+    };
+
+    /**
+     * reverse cancel click
+     */
+    private final DialogInterface.OnClickListener _DIALOG_CLOSE_LISTENER = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+        }
+    };
+
     /**
      * month selection listener
      */
@@ -129,8 +201,10 @@ public class DocumentsListActivity extends ListActivity {
             switch (position) {
             case DocListParam.ACCOUNT_CATEGORY:
                 _glAccountSelection[clicked] = selected;
+                break;
             case DocListParam.BUSINESS_CATEGORY:
                 _businessAreaSelection[clicked] = selected;
+                break;
             case DocListParam.DATE_CATEGORY:
                 _dateSelection[clicked] = selected;
                 break;
@@ -208,6 +282,9 @@ public class DocumentsListActivity extends ListActivity {
                 .getSerializableExtra(DocListParam.PARAM_NAME);
         ;
         generateValueSet(param);
+
+        this.getListView()
+                .setOnItemLongClickListener(_ITEM_LONG_CLICK_LISTENER);
     }
 
     @Override
@@ -263,6 +340,33 @@ public class DocumentsListActivity extends ListActivity {
                             _VALUE_MULTIPLE_CHOICE_LISTENER)
                     .setPositiveButton(R.string.ok,
                             _VALUE_SELECTION_OK_LISTENER).create();
+        case R.id.dialog_doc_menu:
+            return new AlertDialog.Builder(this).setItems(R.array.doc_menus,
+                    _DOC_MENU_CLICK_LISTENER).create();
+        case R.id.dialog_reverse_confirm:
+            String text = this.getString(R.string.message_reverse_confirm);
+            text = String.format(text, _selectedDocItem.Document.getDocument()
+                    .getDocIdentity());
+            return new AlertDialog.Builder(this)
+                    .setTitle(R.string.documents_reverse_doc)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setMessage(text)
+                    .setPositiveButton(R.string.ok, _REVERSE_OK_LISTENER)
+                    .setNegativeButton(R.string.cancel, _DIALOG_CLOSE_LISTENER)
+                    .create();
+        case R.id.dialog_doc_reversed:
+            return new AlertDialog.Builder(this)
+                    .setTitle(R.string.documents_reverse_doc)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setMessage(R.string.message_doc_reversed)
+                    .setPositiveButton(R.string.ok, _DIALOG_CLOSE_LISTENER)
+                    .create();
+        case R.id.dialog_doc_reverse_with_failure:
+            return new AlertDialog.Builder(this).setTitle(R.string.error)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setMessage(R.string.message_doc_reverse_with_failure)
+                    .setPositiveButton(R.string.ok, _DIALOG_CLOSE_LISTENER)
+                    .create();
         }
 
         return null;
@@ -480,6 +584,9 @@ public class DocumentsListActivity extends ListActivity {
                     .getEntities(monthId, monthId);
             Collections.reverse(docs);
             for (HeadEntity headEntity : docs) {
+                if (headEntity.IsReversed()) { // skip reversed document
+                    continue;
+                }
                 // check the document is in the date value set and G/L account
                 // value set
                 if (containDate(headEntity.getPostingDate()) == true) {
@@ -524,6 +631,9 @@ public class DocumentsListActivity extends ListActivity {
         CurrencyAmount amount = null;
         for (int i = 0; i < docs.size(); ++i) {
             HeadEntity doc = docs.get(i);
+            if (doc.IsReversed()) { // skip reversed document
+                continue;
+            }
             Date date = docs.get(i).getPostingDate();
             int valueSetIndex = this.getDateIndex(date);
             if (_dateSelection[valueSetIndex] == false) {
@@ -618,6 +728,9 @@ public class DocumentsListActivity extends ListActivity {
                     .getEntities(monthId, monthId);
             Collections.reverse(docs);
             for (HeadEntity headEntity : docs) {
+                if (headEntity.IsReversed()) { // skip reversed document
+                    continue;
+                }
                 // check the document is in the date value set and business
                 // value set
                 if (containDate(headEntity.getPostingDate()) == true) {

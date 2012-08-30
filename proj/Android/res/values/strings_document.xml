@@ -17,5 +17,6 @@
     <string name="documents_select_value">Value Filter</string>
     <string name="documents_title">Documents</string>
     <string name="documents_customized_entry">Customized Entry</string>
+    <string name="documents_reverse_doc">Reverse Document</string>
 
 </resources>

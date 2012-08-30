@@ -8,6 +8,7 @@
     <string name="main_test_descp">This is just testing description. The string is to test the long value in text field</string>
     <string name="main_test_date">2012/08/02</string>
     <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <string name="error">Error</string>
 
 </resources>

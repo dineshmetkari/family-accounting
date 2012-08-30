@@ -16,12 +16,12 @@
         android:weightSum="1" >
 
         <ImageButton
-            android:id="@+id/menu_icon"
+            android:id="@+id/new_temp_icon"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="0.15"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/menu" />
+            android:src="@drawable/new_template"  />
 
         <TextView
             android:id="@+id/HomeTextView"

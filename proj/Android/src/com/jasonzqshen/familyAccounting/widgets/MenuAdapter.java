@@ -13,93 +13,101 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MenuAdapter extends BaseAdapter {
-	public static final int TYPE_COUNT = 2;
-	public static final int HEAD_TYPE = 0;
-	public static final int ITEM_TYPE = 1;
+    public static final int TYPE_COUNT = 2;
 
-	private final ArrayList<MenuAdapterItem> _items;
-	private final LayoutInflater _layoutInflater;
-	private final Context _context;
+    public static final int HEAD_TYPE = 0;
 
-	public MenuAdapter(Context context, ArrayList<MenuAdapterItem> items) {
-		_items = items;
-		_context = context;
-		_layoutInflater = LayoutInflater.from(_context);
-	}
+    public static final int ITEM_TYPE = 1;
 
-	@Override
-	public int getCount() {
-		return _items.size();
-	}
+    private final ArrayList<MenuAdapterItem> _items;
 
-	@Override
-	public Object getItem(int position) {
-		return _items.get(position);
-	}
+    private final LayoutInflater _layoutInflater;
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    private final Context _context;
 
-	@Override
-	public int getItemViewType(int position) {
-		return _items.get(position).ItemType;
-	}
+    public MenuAdapter(Context context, ArrayList<MenuAdapterItem> items) {
+        _items = items;
+        _context = context;
+        _layoutInflater = LayoutInflater.from(_context);
+    }
 
-	@Override
-	public int getViewTypeCount() {
-		return TYPE_COUNT;
-	}
+    @Override
+    public int getCount() {
+        return _items.size();
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		View view = convertView;
+    @Override
+    public Object getItem(int position) {
+        return _items.get(position);
+    }
 
-		int type = getItemViewType(position);
-		MenuAdapterItem item = _items.get(position);
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-		switch (type) {
-		case HEAD_TYPE:
-			if (null == view) {
-				view = _layoutInflater.inflate(R.layout.menu_head, null);
-			}
-			fillHeadView(view, item);
-			break;
+    @Override
+    public int getItemViewType(int position) {
+        return _items.get(position).ItemType;
+    }
 
-		case ITEM_TYPE:
-			if (null == view) {
-				view = _layoutInflater.inflate(R.layout.menu_item, null);
-			}
-			fillItemView(view, item);
-			break;
-		}
+    @Override
+    public int getViewTypeCount() {
+        return TYPE_COUNT;
+    }
 
-		return view;
-	}
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = convertView;
 
-	/**
-	 * fill top menu item
-	 * 
-	 * @param view
-	 * @param item
-	 */
-	private void fillHeadView(View view, MenuAdapterItem item) {
-		TextView textView = (TextView) view.findViewById(R.id.menu_text);
-		textView.setText(_context.getString(item.TextID));
-	}
+        int type = getItemViewType(position);
+        MenuAdapterItem item = _items.get(position);
 
-	/**
-	 * fill item view
-	 * 
-	 * @param view
-	 * @param item
-	 */
-	private void fillItemView(View view, MenuAdapterItem item) {
-		TextView textView = (TextView) view.findViewById(R.id.menu_text);
-		textView.setText(_context.getString(item.TextID));
+        switch (type) {
+        case HEAD_TYPE:
+            if (null == view) {
+                view = _layoutInflater.inflate(R.layout.menu_head, null);
+            }
+            fillHeadView(view, item);
+            break;
 
-		ImageView image = (ImageView) view.findViewById(R.id.menu_image);
-		image.setImageResource(item.ImageID);
-	}
+        case ITEM_TYPE:
+            if (null == view) {
+                view = _layoutInflater.inflate(R.layout.menu_item, null);
+            }
+            fillItemView(view, item);
+            break;
+        }
+
+        return view;
+    }
+
+    /**
+     * fill top menu item
+     * 
+     * @param view
+     * @param item
+     */
+    private void fillHeadView(View view, MenuAdapterItem item) {
+        TextView textView = (TextView) view.findViewById(R.id.menu_text);
+        textView.setText(_context.getString(item.TextID));
+    }
+
+    /**
+     * fill item view
+     * 
+     * @param view
+     * @param item
+     */
+    private void fillItemView(View view, MenuAdapterItem item) {
+        TextView textView = (TextView) view.findViewById(R.id.menu_text);
+        if (item.Text == null) {
+            textView.setText(_context.getString(item.TextID));
+        } else {
+            textView.setText(item.Text);
+        }
+
+        ImageView image = (ImageView) view.findViewById(R.id.menu_image);
+        image.setImageResource(item.ImageID);
+    }
 }

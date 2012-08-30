@@ -5,17 +5,19 @@
     android:background="@drawable/text_view_transparent"
     android:paddingLeft="@dimen/ListRightPadding"
     android:paddingRight="@dimen/ListLeftPadding" >
-
+
     <TextView
         android:id="@+id/descp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:background="@android:color/white"
+        android:ems="10"
+        android:paddingBottom="@dimen/TextBottomMargin"
+        android:paddingLeft="@dimen/TextLeftMargin"
+        android:paddingRight="@dimen/TextRightMargin"
+        android:paddingTop="@dimen/TextTopMargin"
         android:text="@string/main_test_descp"
-        android:textAppearance="@style/TextAppearance.Medium"
-        android:textStyle="italic" >
-
+        android:textAppearance="@style/TextAppearance.Medium" >
     </TextView>
 
     <TableRow
