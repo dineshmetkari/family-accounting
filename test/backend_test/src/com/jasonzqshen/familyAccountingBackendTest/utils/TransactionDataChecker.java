@@ -2,8 +2,6 @@ package com.jasonzqshen.familyAccountingBackendTest.utils;
 
 import static org.junit.Assert.*;
 
-import java.util.Calendar;
-
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
@@ -15,275 +13,340 @@ import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 
 public class TransactionDataChecker {
-	/**
-	 * check transaction data
-	 * 
-	 * @param coreDriver
-	 */
-	public static void checkTransactionData(CoreDriver coreDriver) {
-		TransactionDataManagement transManagement = coreDriver
-				.getTransDataManagement();
-		MonthIdentity[] monthIds = transManagement.getAllMonthIds();
-		assertEquals(2, monthIds.length);
+    /**
+     * check transaction data
+     * 
+     * @param coreDriver
+     */
+    public static void checkTransactionData(CoreDriver coreDriver) {
+        TransactionDataManagement transManagement = coreDriver
+                .getTransDataManagement();
+        MonthIdentity[] monthIds = transManagement.getAllMonthIds();
+        assertEquals(2, monthIds.length);
 
-		MonthLedger ledger07 = transManagement.getLedger(monthIds[0]);
-		MonthLedger ledger08 = transManagement.getLedger(monthIds[1]);
-		assertEquals(true, ledger07.isClosed());
-		assertEquals(false, ledger08.isClosed());
-		assertTrue(transManagement.getCurrentLedger() == ledger08);
+        MonthLedger ledger07 = transManagement.getLedger(monthIds[0]);
+        MonthLedger ledger08 = transManagement.getLedger(monthIds[1]);
+        assertEquals(true, ledger07.isClosed());
+        assertEquals(false, ledger08.isClosed());
+        assertTrue(transManagement.getCurrentLedger() == ledger08);
 
-		checkLedger2012_07(ledger07.getEntities());
-		checkLedger2012_08(ledger08.getEntities());
-	}
+        checkLedger2012_07(ledger07.getEntities());
+        checkLedger2012_08(ledger08.getEntities());
+    }
 
-	/**
-	 * check ledger 2012_07
-	 * 
-	 * @param collection
-	 */
-	public static void checkLedger2012_07(HeadEntity[] docs) {
-		assertEquals(3, docs.length);
+    /**
+     * check ledger 2012_07
+     * 
+     * @param collection
+     */
+    public static void checkLedger2012_07(HeadEntity[] docs) {
+        assertEquals(4, docs.length);
 
-		// check values
-		for (int i = 0; i < docs.length; ++i) {
-			HeadEntity head = docs[i];
-			// posting date
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(head.getPostingDate());
-			assertEquals(2012, cal.get(Calendar.YEAR));
-			assertEquals(7, cal.get(Calendar.MONTH) + 1);
-			assertEquals(2, cal.get(Calendar.DATE));
+        checkVendorDoc(docs[0]);
+        checkCustomerDoc(docs[1]);
+        checkGLDoc(docs[2]);
+        checkClosingDoc(docs[3]);
+    }
 
-			// document type
-			if (i == 0) {
-				assertEquals(DocumentType.VENDOR_INVOICE,
-						head.getDocumentType());
-			} else if (i == 1) {
-				assertEquals(DocumentType.CUSTOMER_INVOICE,
-						head.getDocumentType());
-			} else {
-				assertEquals(DocumentType.GL, head.getDocumentType());
-			}
+    /**
+     * check vendor document
+     * 
+     * @param vendorDoc
+     */
+    private static void checkVendorDoc(HeadEntity vendorDoc) {
+        // check document number
+        assertEquals(TestData.DOC_NUM1, vendorDoc.getDocumentNumber()
+                .toString());
+        // check posting date
+        assertEquals(TestData.DATE_2012_07,
+                TestData.DATE_FORMAT.format(vendorDoc.getPostingDate()));
+        MonthIdentity monthId = vendorDoc.getMonthId();
+        assertEquals(TestData.YEAR, monthId._fiscalYear);
+        assertEquals(TestData.MONTH_07, monthId._fiscalMonth);
+        // check document type
+        assertEquals(DocumentType.VENDOR_INVOICE, vendorDoc.getDocumentType());
+        // check text
+        assertEquals(TestData.TEXT_VENDOR_DOC, vendorDoc.getDocText());
+        // check is reversed
+        assertEquals(false, vendorDoc.IsReversed());
+        assertEquals(null, vendorDoc.getReference());
 
-			// is reversed
-			assertEquals(false, head.IsReversed());
-			assertEquals(null, head.getReference());
+        assertEquals(2, vendorDoc.getItemCount());
+        ItemEntity[] items = vendorDoc.getItems();
+        // check the vendor item
+        assertEquals(0, items[0].getLineNum());
+        assertEquals(AccountType.VENDOR, items[0].getAccountType());
+        assertEquals(CreditDebitIndicator.CREDIT, items[0].getCDIndicator());
+        assertEquals(TestData.AMOUNT_VENDOR, items[0].getAmount());
+        assertEquals(null, items[0].getCustomer());
+        assertEquals(TestData.VENDOR_BUS, items[0].getVendor().toString());
+        assertEquals(TestData.GL_ACCOUNT_CASH, items[0].getGLAccount()
+                .toString());
+        assertEquals(null, items[0].getBusinessArea());
 
-			if (i == 2) {
-				checkClosingDoc(head);
-			} else {
-				// text
-				assertEquals(TestUtilities.TEST_DESCP, head.getDocText());
+        // check cost item
+        assertEquals(1, items[1].getLineNum());
+        assertEquals(AccountType.GL_ACCOUNT, items[1].getAccountType());
+        assertEquals(CreditDebitIndicator.DEBIT, items[1].getCDIndicator());
+        assertEquals(TestData.AMOUNT_VENDOR, items[1].getAmount());
+        assertEquals(null, items[1].getCustomer());
+        assertEquals(null, items[1].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_COST, items[1].getGLAccount()
+                .toString());
+        assertEquals(TestData.BUSINESS_AREA_WORK, items[1].getBusinessArea()
+                .toString());
+    }
 
-				// items
-				ItemEntity[] items = head.getItems();
-				assertEquals(2, items.length);
-				if (i == 0) {
-					checkCostItem(items[0]);
-					checkVendorItem(items[1]);
-				} else {
-					checkProfitItem(items[0]);
-					checkCustomerItem(items[1]);
-				}
-			}
+    /**
+     * check customer document
+     * 
+     * @param customerDoc
+     */
+    private static void checkCustomerDoc(HeadEntity customerDoc) {
+        // check document number
+        assertEquals(TestData.DOC_NUM2, customerDoc.getDocumentNumber()
+                .toString());
+        // check posting date
+        assertEquals(TestData.DATE_2012_07,
+                TestData.DATE_FORMAT.format(customerDoc.getPostingDate()));
+        MonthIdentity monthId = customerDoc.getMonthId();
+        assertEquals(TestData.YEAR, monthId._fiscalYear);
+        assertEquals(TestData.MONTH_07, monthId._fiscalMonth);
+        // check document type
+        assertEquals(DocumentType.CUSTOMER_INVOICE,
+                customerDoc.getDocumentType());
+        // check text
+        assertEquals(TestData.TEXT_CUSTOMER_DOC, customerDoc.getDocText());
+        // check is reversed
+        assertEquals(false, customerDoc.IsReversed());
+        assertEquals(null, customerDoc.getReference());
 
-		}
-	}
+        assertEquals(2, customerDoc.getItemCount());
+        ItemEntity[] items = customerDoc.getItems();
+        // check revenue item
+        assertEquals(0, items[0].getLineNum());
+        assertEquals(AccountType.GL_ACCOUNT, items[0].getAccountType());
+        assertEquals(CreditDebitIndicator.CREDIT, items[0].getCDIndicator());
+        assertEquals(TestData.AMOUNT_CUSTOMER, items[0].getAmount());
+        assertEquals(null, items[0].getCustomer());
+        assertEquals(null, items[0].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_REV, items[0].getGLAccount()
+                .toString());
+        assertEquals(null, items[0].getBusinessArea());
 
-	/**
-	 * check ledger 2012_07
-	 * 
-	 * @param collection
-	 */
-	public static void checkLedger2012_08(HeadEntity[] docs) {
-		assertEquals(2, docs.length);
+        // check customer item
+        assertEquals(1, items[1].getLineNum());
+        assertEquals(AccountType.CUSTOMER, items[1].getAccountType());
+        assertEquals(CreditDebitIndicator.DEBIT, items[1].getCDIndicator());
+        assertEquals(TestData.AMOUNT_CUSTOMER, items[1].getAmount());
+        assertEquals(TestData.CUSTOMER1, items[1].getCustomer().toString());
+        assertEquals(null, items[1].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_BANK, items[1].getGLAccount()
+                .toString());
+        assertEquals(null, items[1].getBusinessArea());
+    }
 
-		// check values
-		for (int i = 0; i < docs.length; ++i) {
-			HeadEntity head = docs[i];
-			// posting date
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(head.getPostingDate());
-			assertEquals(2012, cal.get(Calendar.YEAR));
-			assertEquals(8, cal.get(Calendar.MONTH) + 1);
-			assertEquals(2, cal.get(Calendar.DATE));
+    /**
+     * check customer document
+     * 
+     * @param customerDoc
+     */
+    private static void checkGLDoc(HeadEntity glDoc) {
+        // check document number
+        assertEquals(TestData.DOC_NUM3, glDoc.getDocumentNumber().toString());
+        // check posting date
+        assertEquals(TestData.DATE_2012_07,
+                TestData.DATE_FORMAT.format(glDoc.getPostingDate()));
+        MonthIdentity monthId = glDoc.getMonthId();
+        assertEquals(TestData.YEAR, monthId._fiscalYear);
+        assertEquals(TestData.MONTH_07, monthId._fiscalMonth);
+        // check document type
+        assertEquals(DocumentType.GL, glDoc.getDocumentType());
+        // check text
+        assertEquals(TestData.TEXT_GL_DOC, glDoc.getDocText());
+        // check is reversed
+        assertEquals(false, glDoc.IsReversed());
+        assertEquals(null, glDoc.getReference());
 
-			// document type
-			assertEquals(DocumentType.VENDOR_INVOICE, head.getDocumentType());
+        assertEquals(2, glDoc.getItemCount());
+        ItemEntity[] items = glDoc.getItems();
+        // check the source item
+        assertEquals(0, items[0].getLineNum());
+        assertEquals(AccountType.GL_ACCOUNT, items[0].getAccountType());
+        assertEquals(CreditDebitIndicator.CREDIT, items[0].getCDIndicator());
+        assertEquals(TestData.AMOUNT_GL, items[0].getAmount());
+        assertEquals(null, items[0].getCustomer());
+        assertEquals(null, items[0].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_BANK, items[0].getGLAccount()
+                .toString());
+        assertEquals(null, items[0].getBusinessArea());
 
-			// is reversed
-			assertEquals(true, head.IsReversed());
-			assertEquals(docs[1].getDocIdentity(), head.getReference());
+        // check destination item
+        assertEquals(1, items[1].getLineNum());
+        assertEquals(AccountType.GL_ACCOUNT, items[1].getAccountType());
+        assertEquals(CreditDebitIndicator.DEBIT, items[1].getCDIndicator());
+        assertEquals(TestData.AMOUNT_GL, items[1].getAmount());
+        assertEquals(null, items[1].getCustomer());
+        assertEquals(null, items[1].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_CASH, items[1].getGLAccount()
+                .toString());
+        assertEquals(null, items[1].getBusinessArea());
+    }
 
-			if (i == 2) {
-				checkClosingDoc(head);
-			} else {
-				// text
-				assertEquals(TestUtilities.TEST_DESCP, head.getDocText());
+    /**
+     * check ledger 2012_07
+     * 
+     * @param collection
+     */
+    public static void checkLedger2012_08(HeadEntity[] docs) {
+        assertEquals(2, docs.length);
+        checkVendorDoc_08(docs[0], docs[1]);
+        checkReverseDoc_08(docs[1]);
+    }
 
-				// items
-				ItemEntity[] items = head.getItems();
-				assertEquals(2, items.length);
-				if (i == 0) {
-					checkCostItem(items[0]);
-					checkVendorItem(items[1]);
-				} else {
-					checkCostItemRev(items[0]);
-					checkVendorItemRev(items[1]);
-				}
-			}
+    /**
+     * check closing document
+     * 
+     * @param closingDoc
+     */
+    private static void checkClosingDoc(HeadEntity closingDoc) {
+        // text
+        assertEquals(MonthLedger.CLOSING_DOC_TAG, closingDoc.getDocText());
+        // items
+        ItemEntity[] items = closingDoc.getItems();
+        assertEquals(3, items.length);
 
-		}
-	}
+        // check revenue item
+        assertEquals(0, items[0].getLineNum());
+        assertEquals(AccountType.GL_ACCOUNT, items[0].getAccountType());
+        assertEquals(CreditDebitIndicator.DEBIT, items[0].getCDIndicator());
+        assertEquals(TestData.AMOUNT_CUSTOMER, items[0].getAmount());
+        assertEquals(null, items[0].getCustomer());
+        assertEquals(null, items[0].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_REV, items[0].getGLAccount()
+                .toString());
+        assertEquals(null, items[0].getBusinessArea());
 
-	/**
-	 * check closing document
-	 * 
-	 * @param closingDoc
-	 */
-	private static void checkClosingDoc(HeadEntity closingDoc) {
-		// text
-		assertEquals(MonthLedger.CLOSING_DOC_TAG, closingDoc.getDocText());
-		// items
-		ItemEntity[] items = closingDoc.getItems();
-		assertEquals(3, items.length);
+        // check cost item
+        assertEquals(1, items[1].getLineNum());
+        assertEquals(AccountType.GL_ACCOUNT, items[1].getAccountType());
+        assertEquals(CreditDebitIndicator.CREDIT, items[1].getCDIndicator());
+        assertEquals(TestData.AMOUNT_VENDOR, items[1].getAmount());
+        assertEquals(null, items[1].getCustomer());
+        assertEquals(null, items[1].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_COST, items[1].getGLAccount()
+                .toString());
+        assertEquals(null, items[1].getBusinessArea());
 
-		checkProfitItemRev(items[0]);
-		ItemEntity item = items[1];
-		assertEquals(TestUtilities.GL_ACCOUNT_COST, item.getGLAccount()
-				.toString());
-		assertEquals(null, item.getVendor());
-		assertEquals(null, item.getCustomer());
-		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
-		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
-		
-		
-		item = items[2];
-		assertEquals(TestUtilities.GL_ACCOUNT_ENQUITY, item.getGLAccount()
-				.toString());
-		assertEquals(null, item.getVendor());
-		assertEquals(null, item.getCustomer());
-		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(TestUtilities.TEST_AMOUNT3, item.getAmount().toString());
-		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
-	}
+        // equity
+        assertEquals(2, items[2].getLineNum());
+        assertEquals(AccountType.GL_ACCOUNT, items[2].getAccountType());
+        assertEquals(CreditDebitIndicator.CREDIT, items[2].getCDIndicator());
+        assertEquals(TestData.AMOUNT_EQUITY, items[2].getAmount());
+        assertEquals(null, items[2].getCustomer());
+        assertEquals(null, items[2].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_EQUITY, items[2].getGLAccount()
+                .toString());
+        assertEquals(null, items[2].getBusinessArea());
+    }
 
-	/**
-	 * check cost item
-	 * 
-	 * @param costItem
-	 */
-	private static void checkCostItem(ItemEntity item) {
-		assertEquals(TestUtilities.GL_ACCOUNT_COST, item.getGLAccount()
-				.toString());
-		assertEquals(null, item.getVendor());
-		assertEquals(null, item.getCustomer());
-		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
-		assertEquals(CreditDebitIndicator.DEBIT, item.getCDIndicator());
+    /**
+     * check vendor document in Month 8
+     * 
+     * @param vendorDoc
+     */
+    private static void checkVendorDoc_08(HeadEntity vendorDoc,
+            HeadEntity refDoc) {
+        // check document number
+        assertEquals(TestData.DOC_NUM1, vendorDoc.getDocumentNumber()
+                .toString());
+        // check posting date
+        assertEquals(TestData.DATE_2012_08,
+                TestData.DATE_FORMAT.format(vendorDoc.getPostingDate()));
+        MonthIdentity monthId = vendorDoc.getMonthId();
+        assertEquals(TestData.YEAR, monthId._fiscalYear);
+        assertEquals(TestData.MONTH_08, monthId._fiscalMonth);
+        // check document type
+        assertEquals(DocumentType.VENDOR_INVOICE, vendorDoc.getDocumentType());
+        // check text
+        assertEquals(TestData.TEXT_VENDOR_DOC, vendorDoc.getDocText());
+        // check is reversed
+        assertEquals(true, vendorDoc.IsReversed());
+        assertEquals(refDoc.getDocIdentity(), vendorDoc.getReference());
 
-		assertEquals(TestUtilities.BUSINESS_AREA, item.getBusinessArea()
-				.toString());
-	}
+        assertEquals(2, vendorDoc.getItemCount());
+        ItemEntity[] items = vendorDoc.getItems();
+        // check the vendor item
+        assertEquals(0, items[0].getLineNum());
+        assertEquals(AccountType.VENDOR, items[0].getAccountType());
+        assertEquals(CreditDebitIndicator.CREDIT, items[0].getCDIndicator());
+        assertEquals(TestData.AMOUNT_VENDOR, items[0].getAmount());
+        assertEquals(null, items[0].getCustomer());
+        assertEquals(TestData.VENDOR_BUS, items[0].getVendor().toString());
+        assertEquals(TestData.GL_ACCOUNT_CASH, items[0].getGLAccount()
+                .toString());
+        assertEquals(null, items[0].getBusinessArea());
 
-	/**
-	 * check vendor item
-	 * 
-	 * @param costItem
-	 */
-	private static void checkVendorItem(ItemEntity item) {
-		assertEquals(TestUtilities.GL_ACCOUNT2, item.getGLAccount().toString());
-		assertEquals(TestUtilities.VENDOR, item.getVendor().toString());
-		assertEquals(null, item.getCustomer());
-		assertEquals(AccountType.VENDOR, item.getAccountType());
-		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
-		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
+        // check cost item
+        assertEquals(1, items[1].getLineNum());
+        assertEquals(AccountType.GL_ACCOUNT, items[1].getAccountType());
+        assertEquals(CreditDebitIndicator.DEBIT, items[1].getCDIndicator());
+        assertEquals(TestData.AMOUNT_VENDOR, items[1].getAmount());
+        assertEquals(null, items[1].getCustomer());
+        assertEquals(null, items[1].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_COST, items[1].getGLAccount()
+                .toString());
+        assertEquals(TestData.BUSINESS_AREA_WORK, items[1].getBusinessArea()
+                .toString());
+    }
 
-		assertEquals(null, item.getBusinessArea());
-	}
+    /**
+     * check reverse document in Month 8
+     * 
+     * @param vendorDoc
+     */
+    private static void checkReverseDoc_08(HeadEntity vendorDoc) {
+        // check document number
+        assertEquals(TestData.DOC_NUM2, vendorDoc.getDocumentNumber()
+                .toString());
+        // check posting date
+        assertEquals(TestData.DATE_2012_08,
+                TestData.DATE_FORMAT.format(vendorDoc.getPostingDate()));
+        MonthIdentity monthId = vendorDoc.getMonthId();
+        assertEquals(TestData.YEAR, monthId._fiscalYear);
+        assertEquals(TestData.MONTH_08, monthId._fiscalMonth);
+        // check document type
+        assertEquals(DocumentType.VENDOR_INVOICE, vendorDoc.getDocumentType());
+        // check text
+        assertEquals(TestData.TEXT_VENDOR_DOC, vendorDoc.getDocText());
+        // check is reversed
+        assertEquals(true, vendorDoc.IsReversed());
+        assertEquals(vendorDoc.getDocIdentity(), vendorDoc.getReference());
 
-	/**
-	 * check cost item
-	 * 
-	 * @param costItem
-	 */
-	private static void checkCostItemRev(ItemEntity item) {
-		assertEquals(TestUtilities.GL_ACCOUNT_COST, item.getGLAccount()
-				.toString());
-		assertEquals(null, item.getVendor());
-		assertEquals(null, item.getCustomer());
-		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
-		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
+        assertEquals(2, vendorDoc.getItemCount());
+        ItemEntity[] items = vendorDoc.getItems();
+        // check the vendor item
+        assertEquals(0, items[0].getLineNum());
+        assertEquals(AccountType.VENDOR, items[0].getAccountType());
+        assertEquals(CreditDebitIndicator.DEBIT, items[0].getCDIndicator());
+        assertEquals(TestData.AMOUNT_VENDOR, items[0].getAmount());
+        assertEquals(null, items[0].getCustomer());
+        assertEquals(TestData.VENDOR_BUS, items[0].getVendor().toString());
+        assertEquals(TestData.GL_ACCOUNT_CASH, items[0].getGLAccount()
+                .toString());
+        assertEquals(null, items[0].getBusinessArea());
 
-		assertEquals(TestUtilities.BUSINESS_AREA, item.getBusinessArea()
-				.toString());
-	}
+        // check cost item
+        assertEquals(1, items[1].getLineNum());
+        assertEquals(AccountType.GL_ACCOUNT, items[1].getAccountType());
+        assertEquals(CreditDebitIndicator.CREDIT, items[1].getCDIndicator());
+        assertEquals(TestData.AMOUNT_VENDOR, items[1].getAmount());
+        assertEquals(null, items[1].getCustomer());
+        assertEquals(null, items[1].getVendor());
+        assertEquals(TestData.GL_ACCOUNT_COST, items[1].getGLAccount()
+                .toString());
+        assertEquals(TestData.BUSINESS_AREA_WORK, items[1].getBusinessArea()
+                .toString());
+    }
 
-	/**
-	 * check vendor item
-	 * 
-	 * @param costItem
-	 */
-	private static void checkVendorItemRev(ItemEntity item) {
-		assertEquals(TestUtilities.GL_ACCOUNT2, item.getGLAccount().toString());
-		assertEquals(TestUtilities.VENDOR, item.getVendor().toString());
-		assertEquals(null, item.getCustomer());
-		assertEquals(AccountType.VENDOR, item.getAccountType());
-		assertEquals(TestUtilities.TEST_AMOUNT1, item.getAmount().toString());
-		assertEquals(CreditDebitIndicator.DEBIT, item.getCDIndicator());
-
-		assertEquals(null, item.getBusinessArea());
-	}
-
-	/**
-	 * check profit item
-	 * 
-	 * @param costItem
-	 */
-	private static void checkProfitItem(ItemEntity item) {
-		assertEquals(TestUtilities.GL_ACCOUNT_PROFIT, item.getGLAccount()
-				.toString());
-		assertEquals(null, item.getVendor());
-		assertEquals(null, item.getCustomer());
-		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(TestUtilities.TEST_AMOUNT2, item.getAmount().toString());
-		assertEquals(CreditDebitIndicator.CREDIT, item.getCDIndicator());
-
-		assertEquals(null, item.getBusinessArea());
-	}
-
-	/**
-	 * check profit item
-	 * 
-	 * @param costItem
-	 */
-	private static void checkProfitItemRev(ItemEntity item) {
-		assertEquals(TestUtilities.GL_ACCOUNT_PROFIT, item.getGLAccount()
-				.toString());
-		assertEquals(null, item.getVendor());
-		assertEquals(null, item.getCustomer());
-		assertEquals(AccountType.GL_ACCOUNT, item.getAccountType());
-		assertEquals(TestUtilities.TEST_AMOUNT2, item.getAmount().toString());
-		assertEquals(CreditDebitIndicator.DEBIT, item.getCDIndicator());
-
-		assertEquals(null, item.getBusinessArea());
-	}
-
-	/**
-	 * check customer item
-	 * 
-	 * @param costItem
-	 */
-	private static void checkCustomerItem(ItemEntity item) {
-		assertEquals(TestUtilities.GL_ACCOUNT2, item.getGLAccount().toString());
-		assertEquals(TestUtilities.CUSTOMER, item.getCustomer().toString());
-		assertEquals(null, item.getVendor());
-		assertEquals(AccountType.CUSTOMER, item.getAccountType());
-		assertEquals(TestUtilities.TEST_AMOUNT2, item.getAmount().toString());
-		assertEquals(CreditDebitIndicator.DEBIT, item.getCDIndicator());
-
-		assertEquals(null, item.getBusinessArea());
-	}
 }

@@ -25,6 +25,10 @@ public class TestUtilities {
 
     public static final String TEST_ROOT_LEDGER_CLOSING = "./ledger_closing";
 
+    public static final String TEST_ROOT_CREATE_WITH_TEMPLATE = "./create_with_template";
+
+    public static final String TEST_ROOT_TEMPLATE_CREATION = "./template_creation";
+
     public static final String TEST_BANK_KEY = "CMB";
 
     public static final String TEST_ACCOUNT_NUMBER = "1234123412341234";
@@ -49,19 +53,12 @@ public class TestUtilities {
 
     public static final String TEST_DESCP = "test";
 
-    public static final String[] GL_IDS = { "1000100001", "1000100002",
-            "1010100001", "1010100002", "1010100003", "1010100004",
-            "1060100001", "1060100002", "1060100003", "1060100004",
-            "1060100005", "1430100001", "1430100002", "1500100001",
-            "1500100002", "2000100001", "2000100002", "3010100001",
-            "4000100001", "4000100002", "4010100001", "4010100002",
-            "4010100003", "4010100004", "5000100001", "5000100002",
-            "5000100003", "5000100004", "5000100005", "5000100006",
-            "5000100007" };
+    public static final String[] GL_IDS = { "1000100001", "1010100001",
+            "3010100001", "4000100001", "5000100001" };
 
     public static final String[] VENDOR_IDS = { "SUBWAY", "BUS" };
 
-    public static final String[] CUSTOMER_IDS = { "MS", "SAP" };
+    public static final String[] CUSTOMER_IDS = { "C1", "C2" };
 
     public static final String[] BUSINESS_IDS = { "WORK", "ENTERTAIN",
             "FAMILY", "TEAM_MATES", "FRIENDS", "SNACKS", "HEALTH",
@@ -69,14 +66,13 @@ public class TestUtilities {
 
     public static final String[] BANK_KEY_IDS = { "CMB", "SPDB", "ICBC" };
 
-    public static final String[] BANK_ACCOUNT_IDS = { "CMB_6620", "CMB_1002",
-            "CMB_6235", "CMB_1001", "SPDB_3704", "ICBC_0001", "ICBC_1001" };
+    public static final String[] BANK_ACCOUNT_IDS = { "CMB_6620", "CMB_6235" };
 
     public static final String[] DOCUMNET_NUMS = { "1000000001", "1000000002" };
 
-    public static final String GL_ACCOUNT1 = "1000100001";
+    public static final String GL_ACCOUNT_CASH = "1000100001";
 
-    public static final String GL_ACCOUNT2 = "1000100002";
+    public static final String GL_ACCOUNT_BANK = "1010100001";
 
     public static final String GL_ACCOUNT_COST = "5000100001";
 
@@ -84,11 +80,9 @@ public class TestUtilities {
 
     public static final String GL_ACCOUNT_PROFIT = "4010100001";
 
-    public static final double AMOUNT = 100;
-
     public static final String VENDOR = "0000000BUS";
 
-    public static final String CUSTOMER = "00000000MS";
+    public static final String CUSTOMER = "00000000C1";
 
     public static final String BUSINESS_AREA = "000000WORK";
 
@@ -171,69 +165,67 @@ public class TestUtilities {
 
         try {
             // meta data
-            File metaDataFile = new File(TestUtilities.TEST_ROOT_LEDGER_CLOSING
-                    + "/" + CoreDriver.META_DATA);
+            File metaDataFile = new File(rootPath + "/" + CoreDriver.META_DATA);
             FileWriter writer = new FileWriter(metaDataFile);
             writer.write(META_DATA_CONTENT_2012_07, 0,
                     META_DATA_CONTENT_2012_07.length());
             writer.close();
 
             // master data folder
-            File masterDataFolder = new File(
-                    TestUtilities.TEST_ROOT_LEDGER_CLOSING + "/"
-                            + MasterDataManagement.MASTER_DATA_FOLDER);
+            File masterDataFolder = new File(rootPath + "/"
+                    + MasterDataManagement.MASTER_DATA_FOLDER);
             masterDataFolder.mkdir();
 
             // bank account
-            writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
-                    + "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+            writer = new FileWriter(rootPath + "/"
+                    + MasterDataManagement.MASTER_DATA_FOLDER + '/'
                     + "bank_account.xml");
             writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
             writer.close();
 
             // bank key
-            writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
-                    + "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+            writer = new FileWriter(rootPath + "/"
+                    + MasterDataManagement.MASTER_DATA_FOLDER + '/'
                     + "bank_key.xml");
             writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
             writer.close();
 
             // business
-            writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
-                    + "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+            writer = new FileWriter(rootPath + "/"
+                    + MasterDataManagement.MASTER_DATA_FOLDER + '/'
                     + "business.xml");
             writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
             writer.close();
 
             // customer
-            writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
-                    + "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+            writer = new FileWriter(rootPath + "/"
+                    + MasterDataManagement.MASTER_DATA_FOLDER + '/'
                     + "customer.xml");
             writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
             writer.close();
 
             // gl_account
-            writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
-                    + "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+            writer = new FileWriter(rootPath + "/"
+                    + MasterDataManagement.MASTER_DATA_FOLDER + '/'
                     + "gl_account.xml");
             writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
             writer.close();
 
             // vendor
-            writer = new FileWriter(TestUtilities.TEST_ROOT_LEDGER_CLOSING
-                    + "/" + MasterDataManagement.MASTER_DATA_FOLDER + '/'
+            writer = new FileWriter(rootPath + "/"
+                    + MasterDataManagement.MASTER_DATA_FOLDER + '/'
                     + "vendor.xml");
             writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
             writer.close();
 
             // transaction data folder
-            File tranFolder = new File(TestUtilities.TEST_ROOT_LEDGER_CLOSING
-                    + "/" + TransactionDataManagement.TRANSACTION_DATA_FOLDER);
+            File tranFolder = new File(rootPath + "/"
+                    + TransactionDataManagement.TRANSACTION_DATA_FOLDER);
             tranFolder.mkdir();
 
             // 2012_07
-            File tranFile = new File(TestUtilities.TEST_ROOT_LEDGER_CLOSING
-                    + "/" + "transaction_data/" + "2012_07.xml");
+            File tranFile = new File(rootPath + "/" + "transaction_data/"
+                    + "2012_07.xml");
             writer = new FileWriter(tranFile);
             writer.write(TRAN_CONTENT, 0, TRAN_CONTENT.length());
             writer.close();
@@ -255,8 +247,7 @@ public class TestUtilities {
 
         try {
             // meta data
-            File metaDataFile = new File(rootPath
-                    + "/" + CoreDriver.META_DATA);
+            File metaDataFile = new File(rootPath + "/" + CoreDriver.META_DATA);
             FileWriter writer = new FileWriter(metaDataFile);
             writer.write(META_DATA_CONTENT_2012_08, 0,
                     META_DATA_CONTENT_2012_08.length());

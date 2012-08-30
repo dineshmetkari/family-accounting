@@ -1,119 +1,131 @@
 package com.jasonzqshen.familyAccountingBackendTest.utils;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.BankAccountMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.BankKeyMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.BankKeyMasterDataFactory;
 import com.jasonzqshen.familyaccounting.core.masterdata.BusinessAreaMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.BusinessAreaMasterDataFactory;
-import com.jasonzqshen.familyaccounting.core.masterdata.CustomerMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.CustomerMasterDataFactory;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterDataFactory;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
-import com.jasonzqshen.familyaccounting.core.masterdata.VendorMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.VendorMasterDataFactory;
+import com.jasonzqshen.familyaccounting.core.utils.BankAccountType;
+import com.jasonzqshen.familyaccounting.core.utils.CriticalLevel;
 
 public class MasterDataChecker {
-	/**
-	 * check the master data information
-	 * 
-	 * @param coreDriver
-	 */
-	public static void checkMasterData(CoreDriver coreDriver) {
-		MasterDataManagement masterDataManagement = coreDriver
-				.getMasterDataManagement();
+    /**
+     * check the master data information
+     * 
+     * @param coreDriver
+     */
+    public static void checkMasterData(CoreDriver coreDriver) {
 
-		MasterDataBase[] datas;
+        MasterDataManagement masterDataManagement = coreDriver
+                .getMasterDataManagement();
 
-		// check vendor data
-		VendorMasterDataFactory vendorFactory = (VendorMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.VENDOR);
-		assertEquals(TestUtilities.VENDOR_IDS.length,
-				vendorFactory.getMasterDataCount());
-		datas = vendorFactory.getAllEntities();
-		for (MasterDataBase data : datas) {
-			VendorMasterData vendor = (VendorMasterData) data;
-			assertTrue(TestUtilities.containsID(MasterDataType.VENDOR,
-					vendor.getIdentity()));
-			assertTrue(vendor.getDescp() != null);
-		}
+        MasterDataBase[] datas;
 
-		// check customer data
-		CustomerMasterDataFactory customerFactory = (CustomerMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.CUSTOMER);
-		assertEquals(TestUtilities.CUSTOMER_IDS.length,
-				customerFactory.getMasterDataCount());
-		datas = customerFactory.getAllEntities();
-		for (MasterDataBase data : datas) {
-			CustomerMasterData customer = (CustomerMasterData) data;
-			assertTrue(TestUtilities.containsID(MasterDataType.CUSTOMER,
-					customer.getIdentity()));
-			assertTrue(customer.getDescp() != null);
-		}
+        // check vendor data
+        VendorMasterDataFactory vendorFactory = (VendorMasterDataFactory) masterDataManagement
+                .getMasterDataFactory(MasterDataType.VENDOR);
+        assertEquals(2, vendorFactory.getMasterDataCount());
+        datas = vendorFactory.getAllEntities();
+        assertEquals(TestData.VENDOR_BUS, datas[0].getIdentity().toString());
+        assertEquals(TestData.VENDOR_BUS_DESCP, datas[0].getDescp());
+        assertEquals(TestData.VENDOR_SUBWAY, datas[1].getIdentity().toString());
+        assertEquals(TestData.VENDOR_SUBWAY_DESCP, datas[1].getDescp());
 
-		// check business area
-		BusinessAreaMasterDataFactory businessAreaFactory = (BusinessAreaMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.BUSINESS_AREA);
-		assertEquals(TestUtilities.BUSINESS_IDS.length,
-				businessAreaFactory.getMasterDataCount());
-		datas = businessAreaFactory.getAllEntities();
-		for (MasterDataBase data : datas) {
-			BusinessAreaMasterData businessArea = (BusinessAreaMasterData) data;
-			assertTrue(TestUtilities.containsID(MasterDataType.BUSINESS_AREA,
-					businessArea.getIdentity()));
-			assertTrue(businessArea.getDescp() != null);
-			assertTrue(businessArea.getCriticalLevel() != null);
-		}
+        // check customer data
+        CustomerMasterDataFactory customerFactory = (CustomerMasterDataFactory) masterDataManagement
+                .getMasterDataFactory(MasterDataType.CUSTOMER);
+        assertEquals(2, customerFactory.getMasterDataCount());
+        datas = customerFactory.getAllEntities();
+        assertEquals(TestData.CUSTOMER1, datas[0].getIdentity().toString());
+        assertEquals(TestData.CUSTOMER1_DESCP, datas[0].getDescp());
+        assertEquals(TestData.CUSTOMER2, datas[1].getIdentity().toString());
+        assertEquals(TestData.CUSTOMER2_DESCP, datas[1].getDescp());
 
-		// check bank key
-		BankKeyMasterDataFactory bankKeyFactory = (BankKeyMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.BANK_KEY);
-		assertEquals(bankKeyFactory.getMasterDataCount(),
-				TestUtilities.BANK_KEY_IDS.length);
-		datas = bankKeyFactory.getAllEntities();
-		for (MasterDataBase data : datas) {
-			BankKeyMasterData bankKey = (BankKeyMasterData) data;
-			assertTrue(TestUtilities.containsID(MasterDataType.BANK_KEY,
-					bankKey.getIdentity()));
-			assertTrue(bankKey.getDescp() != null);
-		}
+        // check business area
+        BusinessAreaMasterDataFactory businessAreaFactory = (BusinessAreaMasterDataFactory) masterDataManagement
+                .getMasterDataFactory(MasterDataType.BUSINESS_AREA);
+        assertEquals(3, businessAreaFactory.getMasterDataCount());
+        datas = businessAreaFactory.getAllEntities();
+        assertEquals(TestData.BUSINESS_AREA_WORK, datas[0].getIdentity()
+                .toString());
+        assertEquals(TestData.BUSINESS_AREA_WORK_DESCP, datas[0].getDescp());
+        assertEquals(CriticalLevel.HIGH,
+                ((BusinessAreaMasterData) datas[0]).getCriticalLevel());
+        assertEquals(TestData.BUSINESS_AREA_SNACKS, datas[1].getIdentity()
+                .toString());
+        assertEquals(TestData.BUSINESS_AREA_SNACKS_DESCP, datas[1].getDescp());
+        assertEquals(CriticalLevel.LOW,
+                ((BusinessAreaMasterData) datas[1]).getCriticalLevel());
+        assertEquals(TestData.BUSINESS_AREA_ENTERTAIN, datas[2].getIdentity()
+                .toString());
+        assertEquals(TestData.BUSINESS_AREA_ENTERTAIN_DESCP,
+                datas[2].getDescp());
+        assertEquals(CriticalLevel.MEDIUM,
+                ((BusinessAreaMasterData) datas[2]).getCriticalLevel());
 
-		// check bank account
-		BankAccountMasterDataFactory bankAccountFactory = (BankAccountMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.BANK_ACCOUNT);
-		assertEquals(TestUtilities.BANK_ACCOUNT_IDS.length,
-				bankAccountFactory.getMasterDataCount());
-		datas = bankAccountFactory.getAllEntities();
-		for (MasterDataBase data : datas) {
-			BankAccountMasterData bankAccount = (BankAccountMasterData) data;
-			assertTrue(TestUtilities.containsID(MasterDataType.BANK_ACCOUNT,
-					bankAccount.getIdentity()));
-			assertTrue(bankAccount.getDescp() != null);
-			assertTrue(bankAccount.getBankAccType() != null);
-			assertTrue(bankAccount.getBankKey() != null);
-			assertTrue(bankAccount.getBankAccountNumber() != null);
-		}
+        // check bank key
+        BankKeyMasterDataFactory bankKeyFactory = (BankKeyMasterDataFactory) masterDataManagement
+                .getMasterDataFactory(MasterDataType.BANK_KEY);
+        assertEquals(1, bankKeyFactory.getMasterDataCount());
+        datas = bankKeyFactory.getAllEntities();
+        assertEquals(TestData.BANK_KEY, datas[0].getIdentity().toString());
+        assertEquals(TestData.BANK_KEY_DESCP, datas[0].getDescp());
 
-		// check G/L account
-		GLAccountMasterDataFactory accountFactory = (GLAccountMasterDataFactory) masterDataManagement
-				.getMasterDataFactory(MasterDataType.GL_ACCOUNT);
-		assertEquals(accountFactory.getMasterDataCount(),
-				TestUtilities.GL_IDS.length);
-		datas = accountFactory.getAllEntities();
-		for (MasterDataBase data : datas) {
-			GLAccountMasterData account = (GLAccountMasterData) data;
-			assertTrue(TestUtilities.containsID(MasterDataType.GL_ACCOUNT,
-					account.getIdentity()));
-			assertTrue(account.getDescp() != null);
-		}
+        // check bank account
+        BankAccountMasterDataFactory bankAccountFactory = (BankAccountMasterDataFactory) masterDataManagement
+                .getMasterDataFactory(MasterDataType.BANK_ACCOUNT);
+        assertEquals(2, bankAccountFactory.getMasterDataCount());
+        datas = bankAccountFactory.getAllEntities();
+        assertEquals(TestData.BANK_ACCOUNT_CMB_6235, datas[0].getIdentity()
+                .toString());
+        assertEquals(TestData.BANK_ACCOUNT_CMB_6235_DESCP, datas[0].getDescp());
+        assertEquals(TestData.BANK_ACCOUNT_CMB_6235_ACC,
+                ((BankAccountMasterData) datas[0]).getBankAccountNumber()
+                        .toString());
+        assertEquals(BankAccountType.SAVING_ACCOUNT,
+                ((BankAccountMasterData) datas[0]).getBankAccType());
+        assertEquals(TestData.BANK_ACCOUNT_CMB_6620, datas[1].getIdentity()
+                .toString());
+        assertEquals(TestData.BANK_ACCOUNT_CMB_6620_DESCP, datas[1].getDescp());
+        assertEquals(TestData.BANK_ACCOUNT_CMB_6620_ACC,
+                ((BankAccountMasterData) datas[1]).getBankAccountNumber()
+                        .toString());
+        assertEquals(BankAccountType.CREDIT_CARD,
+                ((BankAccountMasterData) datas[1]).getBankAccType());
 
-	}
+        // check G/L account
+        GLAccountMasterDataFactory accountFactory = (GLAccountMasterDataFactory) masterDataManagement
+                .getMasterDataFactory(MasterDataType.GL_ACCOUNT);
+        assertEquals(5, accountFactory.getMasterDataCount());
+        datas = accountFactory.getAllEntities();
+        assertEquals(TestData.GL_ACCOUNT_CASH, datas[0].getIdentity()
+                .toString());
+        assertEquals(TestData.GL_ACCOUNT_CASH_DESCP, datas[0].getDescp());
+        assertEquals(TestData.GL_ACCOUNT_BANK, datas[1].getIdentity()
+                .toString());
+        assertEquals(TestData.GL_ACCOUNT_BANK_DESCP, datas[1].getDescp());
+        assertEquals(TestData.BANK_ACCOUNT_CMB_6235,
+                ((GLAccountMasterData) datas[1]).getBankAccount().toString());
+        assertEquals(TestData.GL_ACCOUNT_EQUITY, datas[2].getIdentity()
+                .toString());
+        assertEquals(TestData.GL_ACCOUNT_EQUITY_DESCP, datas[2].getDescp());
+        assertEquals(TestData.GL_ACCOUNT_REV, datas[3].getIdentity()
+                .toString());
+        assertEquals(TestData.GL_ACCOUNT_REV_DESCP, datas[3].getDescp());
+        assertEquals(TestData.GL_ACCOUNT_COST, datas[4].getIdentity()
+                .toString());
+        assertEquals(TestData.GL_ACCOUNT_COST_DESCP, datas[4].getDescp());
+
+    }
 
 }
