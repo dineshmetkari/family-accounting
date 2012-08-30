@@ -2,6 +2,7 @@ package com.jasonzqshen.familyAccountingBackendTest.core;
 
 import static org.junit.Assert.assertEquals;
 
+import com.jasonzqshen.familyAccountingBackendTest.utils.TestData;
 import com.jasonzqshen.familyAccountingBackendTest.utils.TestUtilities;
 import com.jasonzqshen.familyAccountingBackendTest.utils.TesterBase;
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
@@ -27,9 +28,9 @@ public class AccountBalanceReportTester extends TesterBase {
 		GLAccountBalanceCollection balCol = transMgmt.getAccBalCol();
 
 		MasterDataIdentity_GLAccount glAccount2 = new MasterDataIdentity_GLAccount(
-				TestUtilities.GL_ACCOUNT2);
+				TestData.GL_ACCOUNT_CASH);
 		GLAccountBalanceItem balItem = balCol.getBalanceItem(glAccount2);
-		CurrencyAmount amount2 = new CurrencyAmount(419.76);
+		CurrencyAmount amount2 = new CurrencyAmount(-23.45);
 		assertEquals(amount2, balItem.getSumAmount());
 		assertEquals(amount2, balItem.getAmount(coreDriver.getStartMonthId()));
 		assertEquals(new CurrencyAmount(),
