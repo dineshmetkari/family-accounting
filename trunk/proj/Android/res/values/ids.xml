@@ -19,5 +19,12 @@
     <item name="dialog_amount_format_error" type="id"/>
     <item name="dialog_amount_range_value" type="id"/>
     <item name="dialog_document_saved" type="id"/>
+    <item name="dialog_text_empty_warning" type="id"/>
+    <item name="dialog_template_saved" type="id"/>
+    <item name="dialog_template_save_with_failure" type="id"/>
+    <item name="dialog_doc_menu" type="id"/>
+    <item name="dialog_reverse_confirm" type="id"/>
+    <item name="dialog_doc_reversed" type="id"/>
+    <item name="dialog_doc_reverse_with_failure" type="id"/>
 
 </resources>

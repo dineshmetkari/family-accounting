@@ -2,7 +2,9 @@ package com.jasonzqshen.familyAccounting;
 
 import java.util.ArrayList;
 
+import com.jasonzqshen.familyAccounting.data.DataCore;
 import com.jasonzqshen.familyAccounting.entries.CustomerEntryActivity;
+import com.jasonzqshen.familyAccounting.entries.EntryActivityBase;
 import com.jasonzqshen.familyAccounting.entries.GLEntryActivity;
 import com.jasonzqshen.familyAccounting.entries.VendorEntryActivity;
 import com.jasonzqshen.familyAccounting.reports.DocumentsListActivity;
@@ -11,7 +13,10 @@ import com.jasonzqshen.familyAccounting.utils.ActivityAction;
 import com.jasonzqshen.familyAccounting.utils.CostDetailsAction;
 import com.jasonzqshen.familyAccounting.widgets.MenuAdapter;
 import com.jasonzqshen.familyAccounting.widgets.MenuAdapterItem;
+import com.jasonzqshen.familyaccounting.core.document_entries.EntryTemplate;
+import com.jasonzqshen.familyaccounting.core.document_entries.EntryTemplatesManagement;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -22,11 +27,10 @@ import android.widget.ListView;
 
 public class MainMenuActivity extends ListActivity {
 
+    public final MenuAdapterItem CUSTOMIZEING_ENTRY_HEAD = new MenuAdapterItem(
+            MenuAdapter.HEAD_TYPE, 0, R.string.menu_customizing_entry, null);
+
     private final MenuAdapterItem[] _MENU_ITEMS = new MenuAdapterItem[] {
-            new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
-                    R.string.menu_customizing_entry, null),
-            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
-                    R.string.menu_customized_entry, null),
             new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0, R.string.menu_entry,
                     null),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.new_entry,
@@ -77,10 +81,51 @@ public class MainMenuActivity extends ListActivity {
     }
 
     /**
+     * add template entry
+     */
+    public static void addTemplateEntry(ArrayList<MenuAdapterItem> items, Activity activity) {
+        DataCore dataCore = DataCore.getInstance();
+        if (dataCore.getCoreDriver().isInitialized() == false) {
+            return;
+        }
+
+        EntryTemplatesManagement tempMgmt = dataCore.getTemplateManagement();
+        ArrayList<EntryTemplate> templates = tempMgmt.getEntryTemplates();
+        for (EntryTemplate t : templates) {
+            ActivityAction action;
+            switch (t.getEntryType()) {
+            case EntryTemplate.CUSTOMER_ENTRY_TYPE:
+                action = new ActivityAction(CustomerEntryActivity.class, activity);
+                break;
+            case EntryTemplate.VENDOR_ENTRY_TYPE:
+                action = new ActivityAction(VendorEntryActivity.class, activity);
+                break;
+            case EntryTemplate.GL_ENTRY_TYPE:
+                action = new ActivityAction(GLEntryActivity.class, activity);
+                break;
+            default:
+                continue;
+            }
+
+            // add parameters
+            action.ParamName = EntryActivityBase.PARAM_TEMP_ID;
+            action.ParamValue = t.getIdentity();
+
+            items.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE, 0,
+                    t.getName(), action));
+        }
+
+    }
+
+    /**
      * refresh
      */
     private void refersh() {
         ArrayList<MenuAdapterItem> items = new ArrayList<MenuAdapterItem>();
+        // add customizing entry
+        items.add(CUSTOMIZEING_ENTRY_HEAD);
+        addTemplateEntry(items, this);
+
         for (MenuAdapterItem t : _MENU_ITEMS) {
             items.add(t);
         }

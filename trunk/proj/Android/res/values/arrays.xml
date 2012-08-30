@@ -5,5 +5,9 @@
         <item>Business Area</item>
         <item>Date</item>
     </string-array>
+    <string-array name="doc_menus">
+        <item>Reverse</item>
+
+    </string-array>
 
 </resources>

@@ -345,8 +345,8 @@ public class MainActivity extends ListActivity {
 
         list.add(new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
                 R.string.menu_customizing_entry, null));
-        list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
-                R.drawable.settings, R.string.menu_customized_entry, null));
+        MainMenuActivity.addTemplateEntry(list, this);
+        
         list.add(new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
                 R.string.menu_entry, null));
         list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
