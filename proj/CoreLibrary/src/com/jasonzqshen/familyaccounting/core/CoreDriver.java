@@ -433,8 +433,6 @@ public class CoreDriver {
 		for (ManagementBase m : _managements.values()) {
 			m.clear();
 		}
-
-		_infos.clear();
 		_isInitialized = false;
 	}
 
