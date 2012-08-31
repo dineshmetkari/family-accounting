@@ -24,5 +24,7 @@
     <string name="entry_incoming_account">Incoming Account:</string>
     <string name="entry_customer">Customer:</string>
     <string name="entry_profit_account">Profit Account:</string>
+    <string name="entry_check_balance">Check Balance</string>
+    <string name="entry_org_balance">Enter currency amount</string>
 
 </resources>

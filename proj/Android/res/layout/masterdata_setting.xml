@@ -21,17 +21,15 @@
             android:layout_height="50dp"
             android:layout_weight="0.15"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/new_doc" />
+            android:src="@drawable/new_master_data" />
 
         <TextView
-            android:id="@+id/HomeTextView"
+            android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="0.7"
             android:gravity="center"
-            android:text="@string/balance_report_title"
             android:textAppearance="@style/TextAppearance.ActionBarTitle" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -47,9 +45,9 @@
         <ListView
             android:id="@id/android:list"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="@android:color/transparent"
-            android:listSelector="@android:color/transparent" />
+            android:layout_height="wrap_content"
+            android:listSelector="@android:color/transparent" >
+        </ListView>
     </LinearLayout>
 
 </LinearLayout>

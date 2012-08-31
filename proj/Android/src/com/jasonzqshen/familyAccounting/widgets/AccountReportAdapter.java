@@ -12,98 +12,112 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class AccountReportAdapter extends BaseAdapter {
-	private final Context _context;
-	private final ArrayList<AccountReportAdapterItem> _list;
-	private final LayoutInflater _layoutInflater;
+    public static final String TAG = "AccountReportAdapter";
 
-	public AccountReportAdapter(Context context,
-			ArrayList<AccountReportAdapterItem> list) {
-		_context = context;
-		_list = list;
-		_layoutInflater = LayoutInflater.from(_context);
-	}
+    private final Context _context;
 
-	@Override
-	public int getCount() {
-		return _list.size();
-	}
+    private final ArrayList<AccountReportAdapterItem> _list;
 
-	@Override
-	public Object getItem(int position) {
-		return _list.get(position);
-	}
+    private final LayoutInflater _layoutInflater;
 
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
+    public AccountReportAdapter(Context context,
+            ArrayList<AccountReportAdapterItem> list) {
+        _context = context;
+        _list = list;
+        _layoutInflater = LayoutInflater.from(_context);
+    }
 
-	@Override
-	public int getItemViewType(int position) {
-		return _list.get(position).Type;
-	}
+    @Override
+    public int getCount() {
+        return _list.size();
+    }
 
-	@Override
-	public int getViewTypeCount() {
-		return AccountReportAdapterItem.VIEW_TYPE_COUNT;
-	}
+    @Override
+    public Object getItem(int position) {
+        return _list.get(position);
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		View view = convertView;
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-		AccountReportAdapterItem item = _list.get(position);
-		switch (item.Type) {
-		case AccountReportAdapterItem.HEAD_VIEW:
-			if (null == view) {
-				view = _layoutInflater.inflate(
-						R.layout.account_report_item_top, null);
-			}
-			fillHeadView(view, item);
-			break;
-		case AccountReportAdapterItem.ITEM_VIEW:
-			if (null == view) {
-				view = _layoutInflater.inflate(
-						R.layout.account_report_item_center, null);
-			}
-			fillItemView(view, item);
-			break;
-		case AccountReportAdapterItem.HEAD_VIEW_RED:
-			if (null == view) {
-				view = _layoutInflater.inflate(
-						R.layout.account_report_item_top_red, null);
-			}
-			fillHeadView(view, item);
-			break;
-		}
+    @Override
+    public int getItemViewType(int position) {
+        return _list.get(position).Type;
+    }
 
-		return view;
-	}
+    @Override
+    public int getViewTypeCount() {
+        return AccountReportAdapterItem.VIEW_TYPE_COUNT;
+    }
 
-	/**
-	 * fill item view
-	 * 
-	 * @param view
-	 */
-	private void fillItemView(View view, AccountReportAdapterItem item) {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = convertView;
 
-		TextView descp = (TextView) view.findViewById(R.id.descp);
-		descp.setText(item.Descp);
-		TextView value = (TextView) view.findViewById(R.id.amount);
-		value.setText(item.Amount.toString());
-	}
+        AccountReportAdapterItem item = _list.get(position);
+        switch (item.Type) {
+        case AccountReportAdapterItem.HEAD_VIEW:
+            if (null == view) {
+                view = _layoutInflater.inflate(
+                        R.layout.account_report_item_top, null);
+            }
+            fillHeadView(view, item);
+            break;
+        case AccountReportAdapterItem.ITEM_VIEW:
+            if (null == view) {
+                view = _layoutInflater.inflate(
+                        R.layout.account_report_item_center, null);
+            }
+            fillItemView(view, item);
+            break;
+        case AccountReportAdapterItem.HEAD_VIEW_RED:
+            if (null == view) {
+                view = _layoutInflater.inflate(
+                        R.layout.account_report_item_top_red, null);
+            }
+            fillHeadView(view, item);
+            break;
+        case AccountReportAdapterItem.ITEM_VIEW_FOCUS: {
+            if (null == view) {
+                view = _layoutInflater.inflate(
+                        R.layout.account_report_item_center, null);
+                int color = _context.getResources().getColor(
+                        R.color.transparent_orange);
+                view.setBackgroundColor(color);
+            }
+            fillItemView(view, item);
+            break;
+        }
+        }
 
-	/**
-	 * fill item view
-	 * 
-	 * @param view
-	 */
-	private void fillHeadView(View view, AccountReportAdapterItem item) {
+        return view;
+    }
 
-		TextView descp = (TextView) view.findViewById(R.id.descp);
-		descp.setText(item.Descp);
-		TextView value = (TextView) view.findViewById(R.id.amount);
-		value.setText(item.Amount.toString());
-	}
+    /**
+     * fill item view
+     * 
+     * @param view
+     */
+    private void fillItemView(View view, AccountReportAdapterItem item) {
+        TextView descp = (TextView) view.findViewById(R.id.descp);
+        descp.setText(item.Descp);
+        TextView value = (TextView) view.findViewById(R.id.amount);
+        value.setText(item.Amount.toString());
+    }
+
+    /**
+     * fill item view
+     * 
+     * @param view
+     */
+    private void fillHeadView(View view, AccountReportAdapterItem item) {
+
+        TextView descp = (TextView) view.findViewById(R.id.descp);
+        descp.setText(item.Descp);
+        TextView value = (TextView) view.findViewById(R.id.amount);
+        value.setText(item.Amount.toString());
+    }
 
 }
