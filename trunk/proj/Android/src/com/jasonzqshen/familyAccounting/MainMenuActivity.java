@@ -3,12 +3,14 @@ package com.jasonzqshen.familyAccounting;
 import java.util.ArrayList;
 
 import com.jasonzqshen.familyAccounting.data.DataCore;
+import com.jasonzqshen.familyAccounting.entries.CheckBalanceActivity;
 import com.jasonzqshen.familyAccounting.entries.CustomerEntryActivity;
 import com.jasonzqshen.familyAccounting.entries.EntryActivityBase;
 import com.jasonzqshen.familyAccounting.entries.GLEntryActivity;
 import com.jasonzqshen.familyAccounting.entries.VendorEntryActivity;
 import com.jasonzqshen.familyAccounting.reports.DocumentsListActivity;
 import com.jasonzqshen.familyAccounting.reports.GLAccountBalanceReportActivity;
+import com.jasonzqshen.familyAccounting.settings.BankSettingActivity;
 import com.jasonzqshen.familyAccounting.utils.ActivityAction;
 import com.jasonzqshen.familyAccounting.utils.CostDetailsAction;
 import com.jasonzqshen.familyAccounting.widgets.MenuAdapter;
@@ -42,10 +44,9 @@ public class MainMenuActivity extends ListActivity {
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.new_entry,
                     R.string.menu_gl_entry, new ActivityAction(
                             GLEntryActivity.class, this)),
-            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.new_entry,
-                    R.string.menu_investment_entry, null),
-            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.new_entry,
-                    R.string.menu_fixed_asset_entry, null),
+            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.check,
+                    R.string.menu_check_balance, new ActivityAction(
+                            CheckBalanceActivity.class, this)),
             new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0, R.string.menu_report,
                     null),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
@@ -63,6 +64,9 @@ public class MainMenuActivity extends ListActivity {
                             DocumentsListActivity.class, this)),
             new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
                     R.string.menu_settings, null),
+            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
+                    R.string.menu_bank_account, new ActivityAction(
+                            BankSettingActivity.class, this)),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
                     R.string.menu_advanced, null) };
 
@@ -83,7 +87,8 @@ public class MainMenuActivity extends ListActivity {
     /**
      * add template entry
      */
-    public static void addTemplateEntry(ArrayList<MenuAdapterItem> items, Activity activity) {
+    public static void addTemplateEntry(ArrayList<MenuAdapterItem> items,
+            Activity activity) {
         DataCore dataCore = DataCore.getInstance();
         if (dataCore.getCoreDriver().isInitialized() == false) {
             return;
@@ -95,7 +100,8 @@ public class MainMenuActivity extends ListActivity {
             ActivityAction action;
             switch (t.getEntryType()) {
             case EntryTemplate.CUSTOMER_ENTRY_TYPE:
-                action = new ActivityAction(CustomerEntryActivity.class, activity);
+                action = new ActivityAction(CustomerEntryActivity.class,
+                        activity);
                 break;
             case EntryTemplate.VENDOR_ENTRY_TYPE:
                 action = new ActivityAction(VendorEntryActivity.class, activity);

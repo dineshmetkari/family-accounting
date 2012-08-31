@@ -18,5 +18,7 @@
     <string name="menu_bank_account_setting">Bank Account Setting</string>
     <string name="menu_advanced">Advanced</string>
     <string name="menu_main_menu">Main Menu</string>
+    <string name="menu_bank_account">Bank Account Setting</string>
+    <string name="menu_check_balance">Check Accounts Balance</string>
 
 </resources>

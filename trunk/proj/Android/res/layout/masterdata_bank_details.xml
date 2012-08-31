@@ -1,0 +1,83 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/ViewBottomMargin"
+    android:paddingLeft="@dimen/ViewLeftMargin"
+    android:paddingRight="@dimen/ViewRightMargin"
+    android:paddingTop="@dimen/ViewTopMargin" >
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@string/masterdata_bank"
+            android:textAppearance="@style/TextAppearance.Medium" />
+
+        <Spinner
+            android:id="@+id/bankKeySelection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@string/masterdata_bank_num"
+            android:textAppearance="@style/TextAppearance.Medium" />
+
+        <EditText
+            android:id="@+id/number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:ems="10"
+            android:inputType="number" >
+        </EditText>
+    </TableRow>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/masterdata_bank_descp"
+        android:textAppearance="@style/TextAppearance.Medium" />
+
+    <EditText
+        android:id="@+id/descp"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:ems="10"
+        android:gravity="top"
+        android:inputType="textMultiLine" >
+    </EditText>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:paddingLeft="@dimen/ViewLeftMargin"
+            android:paddingRight="@dimen/ViewRightMargin"
+            android:text="@string/masterdata_save" />
+
+    </TableRow>
+
+</TableLayout>

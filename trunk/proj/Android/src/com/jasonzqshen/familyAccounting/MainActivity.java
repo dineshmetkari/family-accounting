@@ -10,9 +10,7 @@ import org.achartengine.renderer.DefaultRenderer;
 import org.achartengine.renderer.SimpleSeriesRenderer;
 
 import com.jasonzqshen.familyAccounting.data.DataCore;
-import com.jasonzqshen.familyAccounting.entries.CustomerEntryActivity;
-import com.jasonzqshen.familyAccounting.entries.GLEntryActivity;
-import com.jasonzqshen.familyAccounting.entries.VendorEntryActivity;
+import com.jasonzqshen.familyAccounting.entries.CheckBalanceActivity;
 import com.jasonzqshen.familyAccounting.exceptions.CoreDriverInitException;
 import com.jasonzqshen.familyAccounting.exceptions.ExternalStorageException;
 import com.jasonzqshen.familyAccounting.reports.DocumentsListNavigation;
@@ -20,8 +18,6 @@ import com.jasonzqshen.familyAccounting.utils.ActivityAction;
 import com.jasonzqshen.familyAccounting.utils.ChartUtil;
 import com.jasonzqshen.familyAccounting.widgets.AccountReportAdapter;
 import com.jasonzqshen.familyAccounting.widgets.AccountReportAdapterItem;
-import com.jasonzqshen.familyAccounting.widgets.MenuAdapter;
-import com.jasonzqshen.familyAccounting.widgets.MenuAdapterItem;
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
@@ -34,12 +30,9 @@ import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 
 import android.os.Bundle;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -87,27 +80,7 @@ public class MainActivity extends ListActivity {
         }
     };
 
-    private final DialogInterface.OnClickListener ENTRY_CLICK = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            MenuAdapterItem menuItem = (MenuAdapterItem) _entryListAdapter
-                    .getItem(which);
-            Log.d(TAG, "menu dialog click on " + which);
-
-            if (menuItem.ItemType == MenuAdapterItem.HEAD_TYPE) {
-                // showDialog(R.id.dialog_entries);
-            } else {
-                if (menuItem.Action != null) {
-                    menuItem.Action.execute();
-                }
-            }
-        }
-
-    };
-
     private AccountReportAdapter _costAccountAdapter;
-
-    private MenuAdapter _entryListAdapter;
 
     private final DataCore _dataCore;
 
@@ -169,8 +142,6 @@ public class MainActivity extends ListActivity {
 
         _reportButton = (ImageButton) this.findViewById(R.id.report_icon);
         _reportButton.setOnClickListener(REPORT_BTN_CLICK);
-
-        contructEntryAdatper();
     }
 
     /**
@@ -211,6 +182,11 @@ public class MainActivity extends ListActivity {
         case R.id.menu_main_menu:
             _handler.navigate2MainMenu();
             break;
+        case R.id.menu_check_balance:
+            ActivityAction action = new ActivityAction(
+                    CheckBalanceActivity.class, this);
+            action.execute();
+            break;
         }
 
         return true;
@@ -220,10 +196,7 @@ public class MainActivity extends ListActivity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
         case R.id.dialog_entries:
-
-            return new AlertDialog.Builder(this)
-                    .setTitle(R.string.main_entries)
-                    .setAdapter(_entryListAdapter, ENTRY_CLICK).create();
+            return EntriesDialogBuilder.BuildEntriesDialog(this);
         }
 
         return null;
@@ -334,31 +307,5 @@ public class MainActivity extends ListActivity {
         MonthIdentity monthId = coreDriver.getCurMonthId();
         DocumentsListNavigation.navigate2DocList(this, monthId,
                 item.Account.getIdentity());
-    }
-
-    /**
-     * construct entry adapter
-     */
-    private void contructEntryAdatper() {
-        // set entries list
-        ArrayList<MenuAdapterItem> list = new ArrayList<MenuAdapterItem>();
-
-        list.add(new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
-                R.string.menu_customizing_entry, null));
-        MainMenuActivity.addTemplateEntry(list, this);
-        
-        list.add(new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
-                R.string.menu_entry, null));
-        list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
-                R.drawable.new_entry, R.string.menu_vendor_entry,
-                new ActivityAction(VendorEntryActivity.class, this)));
-        list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
-                R.drawable.new_entry, R.string.menu_customer_entry,
-                new ActivityAction(CustomerEntryActivity.class, this)));
-        list.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
-                R.drawable.new_entry, R.string.menu_gl_entry,
-                new ActivityAction(GLEntryActivity.class, this)));
-
-        _entryListAdapter = new MenuAdapter(this, list);
     }
 }

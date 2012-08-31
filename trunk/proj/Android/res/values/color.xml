@@ -6,6 +6,7 @@
     <!-- #DDDDDD -->
     <!-- <div style="width:50px; height:50px; background:#DDDDDD" /> -->
     <color name="_3d_gray">#DDDDDD</color>
+    <color name="transparent_orange">#77FFBB33</color>
     <!-- #999999 -->
     <!-- <div style="width:50px; height:50px; background:#999999" /> -->
     <color name="_999_gray">#999999</color>

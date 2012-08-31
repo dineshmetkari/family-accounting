@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
+import com.jasonzqshen.familyAccounting.EntriesDialogBuilder;
 import com.jasonzqshen.familyAccounting.R;
 import com.jasonzqshen.familyAccounting.data.DataCore;
 import com.jasonzqshen.familyAccounting.widgets.DocumentsListAdapter;
@@ -51,6 +52,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 public class DocumentsListActivity extends ListActivity {
@@ -264,6 +266,8 @@ public class DocumentsListActivity extends ListActivity {
         _monthValueSet = transMgmt.getAllMonthIds();
         _monthSpinnerAdapter = new ArrayAdapter<MonthIdentity>(this,
                 android.R.layout.simple_spinner_item, _monthValueSet);
+        _monthSpinnerAdapter
+                .setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
         _monthFilter.setAdapter(_monthSpinnerAdapter);
 
         // group by selection
@@ -280,11 +284,20 @@ public class DocumentsListActivity extends ListActivity {
 
         DocListParam param = (DocListParam) this.getIntent()
                 .getSerializableExtra(DocListParam.PARAM_NAME);
-        ;
         generateValueSet(param);
 
+        // set long click listener
         this.getListView()
                 .setOnItemLongClickListener(_ITEM_LONG_CLICK_LISTENER);
+
+        // set the click listener of the button
+        ImageButton newDocBtn = (ImageButton) this.findViewById(R.id.new_icon);
+        newDocBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(R.id.dialog_entries);
+            }
+        });
     }
 
     @Override
@@ -367,6 +380,8 @@ public class DocumentsListActivity extends ListActivity {
                     .setMessage(R.string.message_doc_reverse_with_failure)
                     .setPositiveButton(R.string.ok, _DIALOG_CLOSE_LISTENER)
                     .create();
+        case R.id.dialog_entries:
+            return EntriesDialogBuilder.BuildEntriesDialog(this);
         }
 
         return null;

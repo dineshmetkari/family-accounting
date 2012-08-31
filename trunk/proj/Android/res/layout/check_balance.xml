@@ -16,12 +16,12 @@
         android:weightSum="1" >
 
         <ImageButton
-            android:id="@+id/new_icon"
+            android:id="@+id/check_icon"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="0.15"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/new_doc" />
+            android:src="@drawable/check" />
 
         <TextView
             android:id="@+id/HomeTextView"
@@ -29,9 +29,16 @@
             android:layout_height="50dp"
             android:layout_weight="0.7"
             android:gravity="center"
-            android:text="@string/balance_report_title"
+            android:text="@string/entry_check_balance"
             android:textAppearance="@style/TextAppearance.ActionBarTitle" />
 
+        <ImageButton
+            android:id="@+id/undo_icon"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.15"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/undo" />
     </LinearLayout>
 
     <LinearLayout
@@ -43,6 +50,33 @@
         android:paddingLeft="@dimen/ViewLeftMargin"
         android:paddingRight="@dimen/ViewRightMargin"
         android:paddingTop="@dimen/ViewTopMargin" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.4"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingLeft="@dimen/TextLeftMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/entry_cost_account"
+                android:textAppearance="@style/TextAppearance.Medium" />
+
+            <Spinner
+                android:id="@+id/costSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6" />
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/medium_gray" />
 
         <ListView
             android:id="@id/android:list"

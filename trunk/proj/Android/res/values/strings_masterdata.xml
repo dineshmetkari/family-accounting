@@ -1,0 +1,12 @@
+<resources>
+    <string name="masterdata_bank_title">Bank Accounts</string>
+    <string name="masterdata_credit_card">Credit Card</string>
+    <string name="masterdata_saving_account">Saving Account</string>
+    <string name="masterdata_bank">Bank:</string>
+    <string name="masterdata_bank_num">Bank Number:</string>
+    <string name="masterdata_bank_descp">Bank Account Description:</string>
+    <string name="masterdata_save">Save</string>
+    <string name="masterdata_new_bank_account">New Bank Account</string>
+    <string name="masterdata_edit_bank_account">Edit Bank Account</string>
+    <string name="masterdata_save_comfirm">Save Confirm</string>
+</resources>
