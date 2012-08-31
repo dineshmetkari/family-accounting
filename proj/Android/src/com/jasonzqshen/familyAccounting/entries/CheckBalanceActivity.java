@@ -17,6 +17,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
@@ -222,7 +223,13 @@ public class CheckBalanceActivity extends BalanceReportActivityBase {
         MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
 
         HeadEntity doc = new HeadEntity(coreDriver, mdMgmt);
-        doc.setPostingDate(Calendar.getInstance().getTime());
+
+        Calendar calendar = Calendar.getInstance();
+        MonthIdentity monthId = coreDriver.getCurMonthId();
+        calendar.set(Calendar.YEAR, monthId._fiscalYear);
+        calendar.set(Calendar.MONTH, monthId._fiscalMonth - 1);
+
+        doc.setPostingDate(calendar.getTime());
         doc.setDocumentType(DocumentType.GL);
         doc.setDocText("check balance");
         CurrencyAmount sum = new CurrencyAmount();

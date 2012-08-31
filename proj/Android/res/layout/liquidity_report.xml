@@ -15,14 +15,51 @@
         android:paddingTop="@dimen/ViewTopMargin"
         android:weightSum="1" >
 
+        <ImageButton
+            android:id="@+id/new_icon"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.15"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/new_doc" />
+
         <TextView
             android:id="@+id/HomeTextView"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="0.7"
             android:gravity="center"
-            android:text="@string/balance_report_title"
+            android:text="@string/liquidity_report_title"
             android:textAppearance="@style/TextAppearance.ActionBarTitle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:paddingBottom="@dimen/TextBottomMargin"
+            android:paddingLeft="@dimen/TextLeftMargin"
+            android:paddingTop="@dimen/TextTopMargin"
+            android:text="@string/liquidity_report_sum"
+            android:textAppearance="@style/TextAppearance.XLarge" />
+
+        <TextView
+            android:id="@+id/sum_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:gravity="right"
+            android:paddingBottom="@dimen/TextBottomMargin"
+            android:paddingRight="@dimen/TextRightMargin"
+            android:paddingTop="@dimen/TextTopMargin"
+            android:text="@string/main_test_amount"
+            android:textAppearance="@style/TextAppearance.Large"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout

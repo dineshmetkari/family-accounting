@@ -10,6 +10,7 @@ import com.jasonzqshen.familyAccounting.entries.GLEntryActivity;
 import com.jasonzqshen.familyAccounting.entries.VendorEntryActivity;
 import com.jasonzqshen.familyAccounting.reports.DocumentsListActivity;
 import com.jasonzqshen.familyAccounting.reports.GLAccountBalanceReportActivity;
+import com.jasonzqshen.familyAccounting.reports.LiquidityReportsActivity;
 import com.jasonzqshen.familyAccounting.settings.BankSettingActivity;
 import com.jasonzqshen.familyAccounting.utils.ActivityAction;
 import com.jasonzqshen.familyAccounting.utils.CostDetailsAction;
@@ -50,7 +51,8 @@ public class MainMenuActivity extends ListActivity {
             new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0, R.string.menu_report,
                     null),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
-                    R.string.menu_liquidity_report, null),
+                    R.string.menu_liquidity_report, new ActivityAction(
+                            LiquidityReportsActivity.class, this)),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
                     R.string.menu_balance_report, new ActivityAction(
                             GLAccountBalanceReportActivity.class, this)),

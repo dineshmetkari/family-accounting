@@ -105,7 +105,7 @@ public abstract class BalanceReportActivityBase extends ListActivity {
             return EntriesDialogBuilder.BuildEntriesDialog(this);
         }
 
-        return null;
+        return super.onCreateDialog(id);
     }
 
     @Override
