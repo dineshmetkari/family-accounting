@@ -1,6 +1,7 @@
 package com.jasonzqshen.familyAccounting;
 
 import com.jasonzqshen.familyAccounting.reports.GLAccountBalanceReportActivity;
+import com.jasonzqshen.familyAccounting.reports.LiquidityReportsActivity;
 
 import android.content.Intent;
 import android.view.View;
@@ -47,7 +48,7 @@ public class MainActivityHandler {
      */
     public void navigate2BalanceReport() {
         Intent assetReportIntent = new Intent(_activity,
-                GLAccountBalanceReportActivity.class);
+                LiquidityReportsActivity.class);
         _activity.startActivity(assetReportIntent);
     }
 
