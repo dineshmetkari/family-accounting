@@ -1,0 +1,4 @@
+start_year=2012
+start_month=7
+cur_year=2012
+cur_month=8
