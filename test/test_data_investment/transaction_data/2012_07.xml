@@ -1,14 +1,18 @@
 <root>
 	<document doc_num="1000000001" fiscal_year="2012" fiscal_month="07" date="2012.07.02" text="start of investment, deposite account in ICBC" doc_type="S" is_reversed="false">
-	<item line_num="0" account_type="S" gl_account="1000100001" amount="1000.00" cd_indicator="C" />
-	<item line_num="1" account_type="S" gl_account="1010100001" amount="1000.00" cd_indicator="D"/>
+		<item line_num="0" account_type="S" gl_account="1000100001" amount="1000.00" cd_indicator="C" />
+		<item line_num="1" account_type="S" gl_account="1010100001" amount="1000.00" cd_indicator="D"/>
 	</document>
 	<document doc_num="1000000002" fiscal_year="2012" fiscal_month="07" date="2012.07.30" text="end of investment, deposite account in ICBC" doc_type="S" is_reversed="false">	
 		<item line_num="0" account_type="S" gl_account="1010100001" amount="1000.00" cd_indicator="C" />
 		<item line_num="1" account_type="S" gl_account="4000100001" amount="30.00" cd_indicator="C" />
 		<item line_num="2" account_type="S" gl_account="1000100001" amount="1030.00" cd_indicator="D" />
 	</document>
-	<document doc_num="1000000003" fiscal_year="2012" fiscal_month="07" date="2012.07.02" text="month_end_closing" doc_type="S" is_reversed="false">
+	<document doc_num="1000000003" fiscal_year="2012" fiscal_month="07" date="2012.07.30" text="start of investment, deposite account in ICBC" doc_type="S" is_reversed="false">
+		<item line_num="0" account_type="S" gl_account="1000100001" amount="1030.00" cd_indicator="C" />
+		<item line_num="1" account_type="S" gl_account="1010100001" amount="1030.00" cd_indicator="D"/>
+	</document>
+	<document doc_num="1000000004" fiscal_year="2012" fiscal_month="07" date="2012.07.02" text="month_end_closing" doc_type="S" is_reversed="false">
 		<item line_num="0" account_type="S" gl_account="4000100001" amount="30.00" cd_indicator="D" />
 		<item line_num="1" account_type="S" gl_account="3010100001" amount="30.00" cd_indicator="C" />
 	</document>
