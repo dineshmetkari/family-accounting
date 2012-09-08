@@ -1,11 +1,14 @@
 package com.jasonzqshen.familyAccounting;
 
-import android.content.DialogInterface;
+
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.jasonzqshen.familyAccounting.widgets.MenuAdapter;
 import com.jasonzqshen.familyAccounting.widgets.MenuAdapterItem;
 
-public class EntryClickListener implements DialogInterface.OnClickListener {
+public class EntryClickListener implements OnItemClickListener {
     private final MenuAdapter _entryListAdapter;
 
     public EntryClickListener(MenuAdapter entryListAdapter) {
@@ -13,9 +16,10 @@ public class EntryClickListener implements DialogInterface.OnClickListener {
     }
 
     @Override
-    public void onClick(DialogInterface dialog, int which) {
+    public void onItemClick(AdapterView<?> adapter, View view, int position,
+            long id) {
         MenuAdapterItem menuItem = (MenuAdapterItem) _entryListAdapter
-                .getItem(which);
+                .getItem(position);
 
         if (menuItem.ItemType == MenuAdapterItem.HEAD_TYPE) {
             // showDialog(R.id.dialog_entries);
@@ -24,6 +28,7 @@ public class EntryClickListener implements DialogInterface.OnClickListener {
                 menuItem.Action.execute();
             }
         }
+
     }
 
 }

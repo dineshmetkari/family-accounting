@@ -109,5 +109,6 @@ public class MenuAdapter extends BaseAdapter {
 
         ImageView image = (ImageView) view.findViewById(R.id.menu_image);
         image.setImageResource(item.ImageID);
+
     }
 }

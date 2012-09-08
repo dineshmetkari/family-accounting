@@ -381,10 +381,22 @@ public class DocumentsListActivity extends ListActivity {
                     .setPositiveButton(R.string.ok, _DIALOG_CLOSE_LISTENER)
                     .create();
         case R.id.dialog_entries:
-            return EntriesDialogBuilder.BuildEntriesDialog(this);
+            return EntriesDialogBuilder.buildEntriesDialog(this);
         }
 
-        return null;
+        return super.onCreateDialog(id);
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        switch (id) {
+        case R.id.dialog_entries:
+            AlertDialog entryDialog = (AlertDialog) dialog;
+            EntriesDialogBuilder.setDataEntriesDialog(entryDialog, this);
+            return;
+        }
+
+        super.onPrepareDialog(id, dialog);
     }
 
     /**

@@ -16,6 +16,7 @@ import com.jasonzqshen.familyaccounting.core.transaction.GLAccountBalanceCollect
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -99,10 +100,22 @@ public abstract class BalanceReportActivityBase extends ListActivity {
     }
 
     @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        switch (id) {
+        case R.id.dialog_entries:
+            AlertDialog entryDialog = (AlertDialog) dialog;
+            EntriesDialogBuilder.setDataEntriesDialog(entryDialog, this);
+            return;
+        }
+
+        super.onPrepareDialog(id, dialog);
+    }
+
+    @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
         case R.id.dialog_entries:
-            return EntriesDialogBuilder.BuildEntriesDialog(this);
+            return EntriesDialogBuilder.buildEntriesDialog(this);
         }
 
         return super.onCreateDialog(id);
@@ -113,6 +126,6 @@ public abstract class BalanceReportActivityBase extends ListActivity {
             long id);
 
     protected abstract GLAccountGroup[] getAccountGroup();
-    
+
     protected abstract int getViewId();
 }
