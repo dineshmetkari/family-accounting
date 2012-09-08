@@ -13,5 +13,6 @@
     <string name="message_save_confirm">Are you sure to save?</string>
     <string name="message_bank_num_error">Errors in bank account number. Bank account number should contain 1~16 numbers</string>
     <string name="message_descp_error">Errors in description. Description cannot be empty.</string>
+    <string name="message_close_confirm">Are you sure to close the ledger?</string>
 
 </resources>

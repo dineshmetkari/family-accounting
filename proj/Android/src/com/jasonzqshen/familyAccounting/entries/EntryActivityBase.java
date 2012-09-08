@@ -152,7 +152,7 @@ public abstract class EntryActivityBase extends Activity {
             if (dataCore.getCoreDriver().isInitialized() == false) {
                 return;
             }
-            setEntryValue();
+            setEntryValue(true);
 
             EntryTemplatesManagement tempMgmt = dataCore
                     .getTemplateManagement();
@@ -182,7 +182,7 @@ public abstract class EntryActivityBase extends Activity {
     private View.OnClickListener _SAVE_CLICK = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            setEntryValue();
+            setEntryValue(false);
 
             try {
                 _docEntry.save(true);
@@ -380,20 +380,19 @@ public abstract class EntryActivityBase extends Activity {
     /**
      * set text and amount value into document entry
      */
-    private void setEntryValue() {
+    private void setEntryValue(boolean isTemplate) {
         // set the amount and text
         String str = _amountEditText.getText().toString();
         CurrencyAmount amount;
         try {
             amount = CurrencyAmount.parse(str);
+            _docEntry.setValue(IDocumentEntry.AMOUNT, amount);
         } catch (CurrencyAmountFormatException e) {
             // show dialog
-            showDialog(R.id.dialog_amount_format_error);
-            return;
-        }
-
-        try {
-            _docEntry.setValue(IDocumentEntry.AMOUNT, amount);
+            if (isTemplate == false) {
+                showDialog(R.id.dialog_amount_format_error);
+                return;
+            }
         } catch (NoFieldNameException e) {
             Log.e(TAG, e.toString());
             throw new SystemException(e);
@@ -428,8 +427,7 @@ public abstract class EntryActivityBase extends Activity {
             }
 
             // set text
-            String text = (String) _docEntry
-                    .getValue(IDocumentEntry.TEXT);
+            String text = (String) _docEntry.getValue(IDocumentEntry.TEXT);
             if (text != null) {
                 _descpEditText.setText(text);
             }

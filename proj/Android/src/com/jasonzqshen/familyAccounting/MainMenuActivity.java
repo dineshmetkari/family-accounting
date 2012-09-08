@@ -100,16 +100,20 @@ public class MainMenuActivity extends ListActivity {
         ArrayList<EntryTemplate> templates = tempMgmt.getEntryTemplates();
         for (EntryTemplate t : templates) {
             ActivityAction action;
+            int imageId;
             switch (t.getEntryType()) {
             case EntryTemplate.CUSTOMER_ENTRY_TYPE:
                 action = new ActivityAction(CustomerEntryActivity.class,
                         activity);
+                imageId = R.drawable.incoming;
                 break;
             case EntryTemplate.VENDOR_ENTRY_TYPE:
                 action = new ActivityAction(VendorEntryActivity.class, activity);
+                imageId = R.drawable.outgoing;
                 break;
             case EntryTemplate.GL_ENTRY_TYPE:
                 action = new ActivityAction(GLEntryActivity.class, activity);
+                imageId = R.drawable.internal;
                 break;
             default:
                 continue;
@@ -119,7 +123,7 @@ public class MainMenuActivity extends ListActivity {
             action.ParamName = EntryActivityBase.PARAM_TEMP_ID;
             action.ParamValue = t.getIdentity();
 
-            items.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE, 0,
+            items.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE, imageId,
                     t.getName(), action));
         }
 

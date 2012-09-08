@@ -26,12 +26,15 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 import com.jasonzqshen.familyaccounting.core.transaction.GLAccountBalanceCollection;
 import com.jasonzqshen.familyaccounting.core.transaction.GLAccountBalanceItem;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
+import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 
 import android.os.Bundle;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -187,16 +190,44 @@ public class MainActivity extends ListActivity {
                     CheckBalanceActivity.class, this);
             action.execute();
             break;
+        case R.id.menu_close_ledger:
+            showDialog(R.id.dialog_close_ledger_confirm);
+            break;
         }
 
         return true;
     }
 
     @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        switch (id) {
+        case R.id.dialog_entries:
+            AlertDialog entryDialog = (AlertDialog) dialog;
+            EntriesDialogBuilder.setDataEntriesDialog(entryDialog, this);
+            return;
+        }
+
+        super.onPrepareDialog(id, dialog);
+    }
+
+    @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
         case R.id.dialog_entries:
-            return EntriesDialogBuilder.BuildEntriesDialog(this);
+            return EntriesDialogBuilder.buildEntriesDialog(this);
+        case R.id.dialog_close_ledger_confirm:
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(this.getString(R.string.message_close_confirm))
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                        int id) {
+                                    closeLedger();
+                                    dialog.dismiss();
+                                }
+                            }).setNegativeButton(R.string.cancel, null);
+            return builder.create();
         }
 
         return null;
@@ -307,5 +338,16 @@ public class MainActivity extends ListActivity {
         MonthIdentity monthId = coreDriver.getCurMonthId();
         DocumentsListNavigation.navigate2DocList(this, monthId,
                 item.Account.getIdentity());
+    }
+
+    /**
+     * close ledger
+     */
+    private void closeLedger() {
+        CoreDriver coreDriver = this._dataCore.getCoreDriver();
+        TransactionDataManagement transMgmt = coreDriver
+                .getTransDataManagement();
+
+        transMgmt.monthEndClose();
     }
 }
