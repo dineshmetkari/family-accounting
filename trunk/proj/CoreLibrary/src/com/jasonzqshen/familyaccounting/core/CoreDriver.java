@@ -238,9 +238,8 @@ public class CoreDriver {
 		String filePath = String.format("%s/%s", _applicationRootPath,
 				META_DATA);
 
-		FileInputStream fstream;
 		try {
-			fstream = new FileInputStream(filePath);
+		    FileInputStream fstream = new FileInputStream(filePath);
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));

@@ -139,9 +139,7 @@ public class TransactionDataManagement extends ManagementBase {
             File file = new File(filePath);
             DocumentBuilderFactory docFactory = DocumentBuilderFactory
                     .newInstance();
-            DocumentBuilder builder;
-
-            builder = docFactory.newDocumentBuilder();
+            DocumentBuilder builder = docFactory.newDocumentBuilder();
             Document doc = builder.parse(file);
 
             // get root element
@@ -591,5 +589,7 @@ public class TransactionDataManagement extends ManagementBase {
                         + ledger.getMonthID().toString(), MessageType.INFO);
 
         _coreDriver.getListenersManagement().closeLedger(_openLedger);
+
+        this.store(_coreDriver.getCurMonthId());
     }
 }
