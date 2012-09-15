@@ -38,6 +38,8 @@ public class TransactionCreationTester extends TesterBase {
         TransactionDataManagement transManagement = coreDriver
                 .getTransDataManagement();
         transManagement.monthEndClose();
+        
+        coreDriver.restart();
 
         date = format.parse("2012.08.02");
         HeadEntity headEntity = DocumentCreater.createVendorDoc(coreDriver,
