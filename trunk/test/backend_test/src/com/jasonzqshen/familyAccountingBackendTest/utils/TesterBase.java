@@ -20,8 +20,6 @@ public abstract class TesterBase {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			saveLogFile(this.getClass().getSimpleName() + ".txt",
-					coreDriver);
 		}
 		
 		check(coreDriver);
@@ -30,21 +28,4 @@ public abstract class TesterBase {
 	protected abstract void doTest(CoreDriver coreDriver) throws Exception;
 	protected abstract void check(CoreDriver coreDriver) throws Exception;
 	
-	protected void saveLogFile(String fileName, CoreDriver coreDriver) {
-		StringBuilder strBuilder = new StringBuilder();
-		for (DebugInformation info : coreDriver.getDebugInfos()) {
-			strBuilder.append(info.toString());
-			strBuilder.append("\n");
-		}
-
-		File file = new File(fileName);
-		FileWriter writer;
-		try {
-			writer = new FileWriter(file);
-			writer.write(strBuilder.toString());
-			writer.close();
-		} catch (IOException e) {
-			throw new SystemException(e);
-		}
-	}
 }
