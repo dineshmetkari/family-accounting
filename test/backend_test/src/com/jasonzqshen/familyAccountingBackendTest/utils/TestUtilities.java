@@ -17,6 +17,8 @@ public class TestUtilities {
 
     public static final String TEST_ROOT_FOLDER = "C:/FamilyAccountingTestData/test_data";
     public static final String TEST_ROOT_FOLDER_INVESTMENT = "C:/FamilyAccountingTestData/test_data_investment";
+    public static final String TEST_ROOT_CREATE_INVESTMENT = "./create_investment";
+    
 
     public static final String TEST_ROOT_MASTER_CREATION = "./master_creation";
 
