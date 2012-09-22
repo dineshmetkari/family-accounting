@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -35,9 +36,12 @@ public class InvestmentManagement extends ManagementBase {
 
     private boolean _isInitialized;
 
+    private final CoreDriver _coreDriver;
+
     public InvestmentManagement(CoreDriver coreDriver) {
         super(coreDriver);
         _list = new Hashtable<MasterDataIdentity_GLAccount, InvestmentAccount>();
+        _coreDriver = coreDriver;
     }
 
     @Override
@@ -73,8 +77,8 @@ public class InvestmentManagement extends ManagementBase {
 
             String line;
             while ((line = br.readLine()) != null) {
-                String filePath = String
-                        .format("%s/%s.xml", metaFolderPath, line);
+                String filePath = String.format("%s/%s.xml", metaFolderPath,
+                        line);
                 File file = new File(filePath);
                 if (file.exists() == false) {
                     String msg = String.format(
@@ -90,8 +94,12 @@ public class InvestmentManagement extends ManagementBase {
                 Document doc = builder.parse(file);
 
                 InvestmentAccount account = InvestmentAccount.parse(
-                        _coreDriver, doc);
-                addInvestmentAccount(account);
+                        _coreDriver, this, doc);
+                boolean ret = addInvestmentAccount(account);
+                if (ret == false) {
+                    throw new InvestmentFileFormatException(
+                            "Duplicated investment account");
+                }
             }
         } catch (FileNotFoundException e) {
             throw new SystemException(e);
@@ -119,7 +127,7 @@ public class InvestmentManagement extends ManagementBase {
     @Override
     public void clear() {
         _list.clear();
-        _isInitialized = true;
+        _isInitialized = false;
     }
 
     @Override
@@ -160,14 +168,82 @@ public class InvestmentManagement extends ManagementBase {
     }
 
     /**
+     * get investment folder
+     * 
+     * @return
+     */
+    public String getInvestFolder() {
+        return String.format("%s/%s", _coreDriver.getRootPath(), INVEST_FOLDER);
+    }
+
+    /**
+     * create investment account
+     * 
+     * @param srcAccount
+     *            source account
+     * @param revAccount
+     *            revenue account
+     * @param descp
+     */
+    public InvestmentAccount createInvestAccount(
+            MasterDataIdentity_GLAccount srcAccount,
+            MasterDataIdentity_GLAccount revAccount, String descp) {
+        InvestmentAccount investAcc = new InvestmentAccount(_coreDriver, this,
+                srcAccount, revAccount, descp);
+
+        boolean ret = this.addInvestmentAccount(investAcc);
+        if (ret == false) {
+            return null;
+        }
+
+        // add the meta-data and the file
+        String folderPath = getInvestFolder();
+        File investFolder = new File(folderPath);
+        if (investFolder.exists() == false) {
+            investFolder.mkdir();
+        }
+        String filePath = String.format("%s/%s", folderPath, METADATA_FILE);
+        File metaFile = new File(filePath);
+        try {
+            FileWriter writer = new FileWriter(metaFile);
+            writer.write(this.getMetaData());
+            writer.close();
+
+            // store
+            investAcc.store();
+        } catch (IOException e) {
+            _coreDriver.logDebugInfo(this.getClass(), 203, e.toString(),
+                    MessageType.ERROR);
+            throw new SystemException(e);
+        }
+
+        return investAcc;
+    }
+
+    /**
+     * get meta-data
+     * 
+     * @return
+     */
+    private String getMetaData() {
+        StringBuilder strBuilder = new StringBuilder();
+        for (MasterDataIdentity_GLAccount id : _list.keySet()) {
+            strBuilder.append(String.format("%s\n", id.toString()));
+        }
+
+        return strBuilder.toString();
+    }
+
+    /**
      * add investment account
      * 
      * @param investAcc
      */
-    private void addInvestmentAccount(InvestmentAccount investAcc) {
+    private boolean addInvestmentAccount(InvestmentAccount investAcc) {
         if (_list.containsKey(investAcc.getAccount())) {
-            return;
+            return false;
         }
         _list.put(investAcc.getAccount(), investAcc);
+        return true;
     }
 }

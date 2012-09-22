@@ -1,7 +1,11 @@
 package com.jasonzqshen.familyaccounting.core.investment;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -12,11 +16,19 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
+import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.format.InvestmentFileFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
+import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
+import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
+import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
+import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
+import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
 public class InvestmentAccount implements Comparable<InvestmentAccount> {
     public static final String XML_ACCOUNT = "account";
@@ -33,6 +45,10 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
 
     private final MasterDataIdentity_GLAccount _account;
 
+    public static final String START_DOC_DESCP = "start of investment, ";
+
+    public static final String END_DOC_DESCP = "end of investment, ";
+
     /**
      * revenue account
      */
@@ -40,11 +56,9 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
 
     private final String _name;
 
-    private final CurrencyAmount _amount;
-
-    private final CurrencyAmount _revAmount;
-
     private final ArrayList<InvestmentItem> _items;
+
+    private final InvestmentManagement _investMgmt;
 
     /**
      * investment account
@@ -53,16 +67,14 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
      * @param revAccount
      * @param name
      */
-    InvestmentAccount(CoreDriver coreDriver,
+    InvestmentAccount(CoreDriver coreDriver, InvestmentManagement investMgmt,
             MasterDataIdentity_GLAccount account,
             MasterDataIdentity_GLAccount revAccount, String name) {
         _coreDriver = coreDriver;
         _account = account;
         _revAccount = revAccount;
         _name = name;
-
-        _amount = new CurrencyAmount();
-        _revAmount = new CurrencyAmount();
+        _investMgmt = investMgmt;
 
         _items = new ArrayList<InvestmentItem>();
     }
@@ -121,7 +133,15 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
      * @return
      */
     public CurrencyAmount getTotalAmount() {
-        return _amount;
+        CurrencyAmount amount = new CurrencyAmount();
+        for (InvestmentItem item : _items) {
+            if (item.isClosed()) {
+                continue;
+            }
+
+            amount.addTo(item.getAmount());
+        }
+        return amount;
     }
 
     /**
@@ -130,12 +150,118 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
      * @return
      */
     public CurrencyAmount getRevAmount() {
-        return _revAmount;
+        CurrencyAmount amount = new CurrencyAmount();
+        for (InvestmentItem item : _items) {
+            if (item.isClosed()) {
+                amount.addTo(item.getRevAmount());
+            }
+        }
+        return amount;
+    }
+
+    /**
+     * 
+     * @param startDate
+     * @param dueDate
+     * @param srcAccount
+     * @param srcAmount
+     * @throws MasterDataIdentityNotDefined
+     */
+    public InvestmentItem createInvestment(Date startDate, Date dueDate,
+            MasterDataIdentity_GLAccount srcAccount, CurrencyAmount srcAmount)
+            throws MasterDataIdentityNotDefined {
+        // check source amount
+        if (srcAmount.isNegative() || srcAmount.isZero()) {
+            return null;
+        }
+
+        // create head entity
+        HeadEntity headEntity = new HeadEntity(_coreDriver,
+                _coreDriver.getMasterDataManagement());
+        headEntity.setPostingDate(startDate);
+        headEntity.setDocText(START_DOC_DESCP + _name);
+        headEntity.setDocumentType(DocumentType.GL);
+        try {
+            // create the source item
+            ItemEntity srcItem = headEntity.createEntity();
+            srcItem.setAmount(CreditDebitIndicator.CREDIT, srcAmount);
+            srcItem.setGLAccount(srcAccount);
+
+            ItemEntity dstItem = headEntity.createEntity();
+            dstItem.setAmount(CreditDebitIndicator.DEBIT, srcAmount);
+            dstItem.setGLAccount(_account);
+        } catch (NullValueNotAcceptable e) {
+            _coreDriver.logDebugInfo(this.getClass(), 164, e.toString(),
+                    MessageType.ERROR);
+            throw new SystemException(e);
+        }
+
+        boolean ret = headEntity.save(true);
+        if (ret == false) {
+            return null;
+        }
+
+        // create investment item
+        InvestmentItem investItem = new InvestmentItem(_coreDriver, this,
+                startDate, dueDate, headEntity.getDocIdentity());
+        this.addItem(investItem);
+        
+        this.store();
+
+        return investItem;
     }
 
     @Override
     public int compareTo(InvestmentAccount another) {
         return _account.compareTo(another._account);
+    }
+
+    /**
+     * parse investment account to XML
+     * 
+     * @return
+     */
+    public String toXML() {
+        StringBuilder strBuilder = new StringBuilder();
+        // append root
+        strBuilder.append(String.format("%s%s ", XMLTransfer.BEGIN_TAG_LEFT,
+                XML_ROOT));
+        strBuilder.append(String.format("%s=\"%s\" %s=\"%s\" %s=\"%s\" ",
+                XML_ACCOUNT, _account, XML_REV_ACCOUNT, _revAccount, XML_NAME,
+                _name));
+        strBuilder.append(String.format("%s", XMLTransfer.BEGIN_TAG_RIGHT));
+        // append items
+        for (InvestmentItem item : _items) {
+            strBuilder.append(item.toXML());
+        }
+
+        // append the end tag
+        strBuilder.append(String.format("%s%s %s", XMLTransfer.END_TAG_LEFT,
+                XML_ROOT, XMLTransfer.END_TAG_RIGHT));
+        return strBuilder.toString();
+    }
+
+    /**
+     * store investment information
+     * 
+     * @return
+     */
+    public boolean store() {
+        String folderPath = _investMgmt.getInvestFolder();
+        String filePath = String.format("%s/%s.xml", folderPath,
+                _account.toString());
+
+        File file = new File(filePath);
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write(this.toXML());
+            writer.close();
+        } catch (IOException e) {
+            _coreDriver.logDebugInfo(this.getClass(), 258, e.toString(),
+                    MessageType.ERROR);
+            throw new SystemException(e);
+        }
+        return true;
     }
 
     /**
@@ -145,11 +271,6 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
      */
     void addItem(InvestmentItem item) {
         _items.add(item);
-        if (item.isClosed()) {
-            _revAmount.addTo(item.getRevAmount());
-        } else {
-            _amount.addTo(item.getAmount());
-        }
     }
 
     /**
@@ -159,7 +280,8 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
      * @return
      * @throws InvestmentFileFormatException
      */
-    public static InvestmentAccount parse(CoreDriver coreDriver, Document doc)
+    public static InvestmentAccount parse(CoreDriver coreDriver,
+            InvestmentManagement investMgmt, Document doc)
             throws InvestmentFileFormatException {
         // get root element
         NodeList nodeList = doc.getChildNodes();
@@ -204,7 +326,7 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
             }
 
             InvestmentAccount investAccount = new InvestmentAccount(coreDriver,
-                    acc, revAcc, name);
+                    investMgmt, acc, revAcc, name);
 
             nodeList = rootElem.getChildNodes();
             for (int i = 0; i < nodeList.getLength(); ++i) {
