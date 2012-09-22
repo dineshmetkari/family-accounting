@@ -8,15 +8,21 @@ import java.util.Date;
 import org.w3c.dom.Element;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
+import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.format.DocumentIdentityFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.InvestmentFileFormatException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
+import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
+import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
 public class InvestmentItem implements Comparable<InvestmentItem> {
     public static final String XML_START_DATE = "start_date";
@@ -158,9 +164,77 @@ public class InvestmentItem implements Comparable<InvestmentItem> {
                 }
             }
         }
-        
-        sum.negate();        
+
+        sum.negate();
         return sum;
+    }
+
+    /**
+     * commit the investment
+     * 
+     * @param endDate
+     * @param dstAccount
+     * @param amount
+     */
+    public boolean commit(Date endDate,
+            MasterDataIdentity_GLAccount dstAccount, CurrencyAmount totalAmount) {
+        // check amount
+        if (totalAmount.isNegative() || totalAmount.isZero()) {
+            return false;
+        }
+
+        HeadEntity headEntity = new HeadEntity(_coreDriver,
+                _coreDriver.getMasterDataManagement());
+        headEntity.setPostingDate(endDate);
+        headEntity.setDocText(InvestmentAccount.END_DOC_DESCP
+                + _investAcc.getName());
+        headEntity.setDocumentType(DocumentType.GL);
+
+        CurrencyAmount srcAmount = this.getAmount();
+        CurrencyAmount revAmount = CurrencyAmount.minus(totalAmount, srcAmount);
+        try {
+            // investment item
+            ItemEntity investItem = headEntity.createEntity();
+            investItem.setAmount(CreditDebitIndicator.CREDIT, srcAmount);
+            investItem.setGLAccount(_investAcc.getAccount());
+
+            // revenue item
+            ItemEntity revItem = headEntity.createEntity();
+            CreditDebitIndicator cdIndicator = CreditDebitIndicator.CREDIT;
+            if (revAmount.isZero() == false) {
+                if (revAmount.isNegative()) {
+                    cdIndicator = CreditDebitIndicator.DEBIT;
+                    revAmount.negate();
+                }
+
+                revItem.setAmount(cdIndicator, revAmount);
+                revItem.setGLAccount(_investAcc.getRevAccount());
+            }
+
+            // destination item
+            ItemEntity dstItem = headEntity.createEntity();
+            dstItem.setAmount(CreditDebitIndicator.DEBIT, totalAmount);
+            dstItem.setGLAccount(dstAccount);
+        } catch (NullValueNotAcceptable e) {
+            _coreDriver.logDebugInfo(this.getClass(), 164, e.toString(),
+                    MessageType.ERROR);
+            throw new SystemException(e);
+        } catch (MasterDataIdentityNotDefined e) {
+            _coreDriver.logDebugInfo(this.getClass(), 208, e.toString(),
+                    MessageType.ERROR);
+            return false;
+        }
+
+        boolean ret = headEntity.save(true);
+        if (ret == false) {
+            return false;
+        }
+
+        _isClosed = true;
+        _endDate = endDate;
+        _endDoc = headEntity.getDocIdentity();
+
+        return true;
     }
 
     /**
@@ -188,6 +262,33 @@ public class InvestmentItem implements Comparable<InvestmentItem> {
         Calendar calendar2 = Calendar.getInstance();
         calendar2.setTime(another._startDate);
         return calendar1.compareTo(calendar2);
+    }
+
+    /**
+     * to XML
+     * 
+     * @return
+     */
+    public String toXML() {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append(String.format("%s%s ", XMLTransfer.SINGLE_TAG_LEFT,
+                InvestmentAccount.XML_ITEM));
+        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+        strBuilder.append(String.format("%s=\"%s\" %s=\"%s\" %s=\"%s\" ",
+                XML_START_DATE, format.format(_startDate), XML_DUE_DATE,
+                format.format(_dueDate), XML_START_DOC, _startDoc.toString()));
+
+        if (_isClosed) {
+            strBuilder.append(String.format("%s=\"true\" %s=\"%s\" %s=\"%s\" ",
+                    XML_IS_CLOSED, XML_END_DATE, format.format(_endDate),
+                    XML_END_DOC, _endDoc.toString()));
+        } else {
+            strBuilder.append(String.format("%s=\"false\" ", XML_IS_CLOSED));
+        }
+
+        strBuilder.append(XMLTransfer.SINGLE_TAG_RIGHT);
+
+        return strBuilder.toString();
     }
 
     /**
