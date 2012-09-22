@@ -70,6 +70,8 @@ public class InvestmentCreationTester extends TesterBase {
 
         // reload
         coreDriver.restart();
+        _investMgmt.clear();
+        _investMgmt.initialize();
         InvesetmentLoadingTester.checkInvestment(coreDriver, _investMgmt);
     }
 
