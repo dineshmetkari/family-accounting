@@ -1,14 +1,9 @@
 package com.jasonzqshen.familyAccountingBackendTest.utils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import org.junit.Test;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
-import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
-import com.jasonzqshen.familyaccounting.core.utils.DebugInformation;
 
 public abstract class TesterBase {
 	@Test
