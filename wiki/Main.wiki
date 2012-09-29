@@ -6,4 +6,6 @@
 Both JDK 6.0 and 7.0 is OK.
 
 ==Step 2 Install Android SDK API 4(Android 1.6)==
-You can follow [http://developer.android.com/sdk/index.html]Android SDK
+You can follow the installation guides in site [http://developer.android.com/sdk/index.html].
+
+==Step 3 Sync project code from the SVN==
