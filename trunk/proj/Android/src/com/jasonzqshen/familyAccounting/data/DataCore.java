@@ -9,7 +9,9 @@ import com.jasonzqshen.familyAccounting.exceptions.CoreDriverInitException;
 import com.jasonzqshen.familyAccounting.exceptions.ExternalStorageException;
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.document_entries.EntryTemplatesManagement;
+import com.jasonzqshen.familyaccounting.core.exception.format.FormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.TemplateFormatException;
+import com.jasonzqshen.familyaccounting.core.investment.InvestmentManagement;
 import com.jasonzqshen.familyaccounting.core.reports.ReportsManagement;
 
 /**
@@ -38,6 +40,8 @@ public class DataCore {
 
     private EntryTemplatesManagement _tmpMgmt;
 
+    private InvestmentManagement _investMgmt;
+
     private String _rootFolder;
 
     /**
@@ -47,6 +51,7 @@ public class DataCore {
         _coreDriver = new CoreDriver();
         _reportsManagement = new ReportsManagement(_coreDriver);
         _tmpMgmt = new EntryTemplatesManagement(_coreDriver);
+        _investMgmt = new InvestmentManagement(_coreDriver);
     }
 
     /**
@@ -73,17 +78,26 @@ public class DataCore {
         _rootFolder = String.format("%s/%s", rootDir.getAbsolutePath(),
                 _PACKAGE);
 
+        // initialize the core driver
         Log.i(TAG, "Root folder: " + _rootFolder);
         _coreDriver.setRootPath(_rootFolder);
-
         if (_coreDriver.isInitialized() == false) {
             throw new CoreDriverInitException(
                     "CoreDriver initialize with failure");
         }
 
+        // initialize the template management
         try {
             _tmpMgmt.initialize();
         } catch (TemplateFormatException e) {
+            throw new CoreDriverInitException(
+                    "CoreDriver initialize with failure");
+        }
+
+        // initialize the investment management
+        try {
+            _investMgmt.initialize();
+        } catch (FormatException e) {
             throw new CoreDriverInitException(
                     "CoreDriver initialize with failure");
         }
@@ -114,6 +128,15 @@ public class DataCore {
      */
     public EntryTemplatesManagement getTemplateManagement() {
         return _tmpMgmt;
+    }
+
+    /**
+     * get investment template
+     * 
+     * @return
+     */
+    public InvestmentManagement getInvestMgmt() {
+        return _investMgmt;
     }
 
 }

@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="investment_title">Investment</string>
+    <string name="investment_account">Investment Account:</string>
+    <string name="investment_rev_account">Revenue Account:</string>
+    <string name="investment_amount">Amount:</string>
+    <string name="investment_rev_amount">Revenue Amount:</string>
+    <string name="investment_due_date">Due Date:</string>
+
+</resources>

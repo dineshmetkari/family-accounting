@@ -6,6 +6,10 @@
         android:orderInCategory="100"
         android:title="@string/menu_check_balance"/>
     <item
+        android:id="@+id/menu_investment"
+        android:orderInCategory="100"
+        android:title="@string/menu_investment"/>
+    <item
         android:id="@+id/menu_close_ledger"
         android:icon="@drawable/close"
         android:orderInCategory="100"
