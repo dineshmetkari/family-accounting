@@ -2,6 +2,8 @@
 
 = Get Started with development =
 
-Step 1 Install JDK and eclipse
+==Step 1 Install JDK and eclipse==
+Both JDK 6.0 and 7.0 is OK.
 
-Step 2 Install Android SDK API 4(Android 1.6)
+==Step 2 Install Android SDK API 4(Android 1.6)==
+You can follow [http://developer.android.com/sdk/index.html]Android SDK
