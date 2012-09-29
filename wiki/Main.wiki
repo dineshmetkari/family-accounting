@@ -11,6 +11,6 @@ You can follow the installation guides in site [http://developer.android.com/sdk
 ==Step 3 Sync project code from SVN==
 1. Create a work space for development *%workspace%*. 
 
-2. Sync *Core* code with SVN path [https://family-accounting.googlecode.com/svn/trunk/proj/CoreLibrary/] into local work space *%workspace%/CoreLibrary*.
+2. Sync *Core* code with SVN path [https://family-accounting.googlecode.com/svn/trunk/proj/CoreLibrary/] into local work space *%workspace%/CoreLibrary* .
 
 3. Sync *Android* code with SVN path [https://family-accounting.googlecode.com/svn/trunk/proj/Android/] into local work space '%workspace%/Android'
