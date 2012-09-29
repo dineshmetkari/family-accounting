@@ -15,4 +15,6 @@ You can follow the installation guides in site [http://developer.android.com/sdk
 
 3. Sync *Android* code with SVN path [https://family-accounting.googlecode.com/svn/trunk/proj/Android/] into local work space `%workspace%/Android`;
 
-4. Sync *Back-end Test* code with SVN path [https://family-accounting.googlecode.com/svn/trunk/test/backend_test/] into local work space `%workspace%/backend_test`
+4. Sync *Back-end Test* code with SVN path [https://family-accounting.googlecode.com/svn/trunk/test/backend_test/] into local work space `%workspace%/backend_test`;
+
+5. Import above three projects into eclipse;
