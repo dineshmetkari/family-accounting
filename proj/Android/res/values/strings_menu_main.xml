@@ -21,5 +21,6 @@
     <string name="menu_bank_account">Bank Account Setting</string>
     <string name="menu_check_balance">Check Accounts Balance</string>
     <string name="menu_close_ledger">Close Ledger</string>
+    <string name="menu_investment">Investment</string>
 
 </resources>

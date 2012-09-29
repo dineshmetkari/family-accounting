@@ -13,6 +13,7 @@ import com.jasonzqshen.familyAccounting.data.DataCore;
 import com.jasonzqshen.familyAccounting.entries.CheckBalanceActivity;
 import com.jasonzqshen.familyAccounting.exceptions.CoreDriverInitException;
 import com.jasonzqshen.familyAccounting.exceptions.ExternalStorageException;
+import com.jasonzqshen.familyAccounting.investment.InvestmentMainActivity;
 import com.jasonzqshen.familyAccounting.reports.DocumentsListNavigation;
 import com.jasonzqshen.familyAccounting.utils.ActivityAction;
 import com.jasonzqshen.familyAccounting.utils.ChartUtil;
@@ -192,6 +193,11 @@ public class MainActivity extends ListActivity {
             break;
         case R.id.menu_close_ledger:
             showDialog(R.id.dialog_close_ledger_confirm);
+            break;
+        case R.id.menu_investment:
+            ActivityAction actionInvest = new ActivityAction(
+                    InvestmentMainActivity.class, this);
+            actionInvest.execute();
             break;
         }
 
