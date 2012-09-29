@@ -127,7 +127,7 @@ public class CoreDriver {
             if (file.exists() == false) {
                 file.createNewFile();
             }
-
+            
             FileWriter writer = new FileWriter(file, true);
             writer.write(debugInfo.toString() + "\n");
             writer.close();
