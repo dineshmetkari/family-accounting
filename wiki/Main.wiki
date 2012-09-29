@@ -9,5 +9,6 @@ Both JDK 6.0 and 7.0 is OK.
 You can follow the installation guides in site [http://developer.android.com/sdk/index.html].
 
 ==Step 3 Sync project code from SVN==
-* Create a work space for development %workspace%. 
-* Sync *Core* code with SVN path [https://family-accounting.googlecode.com/svn/trunk/proj/CoreLibrary/]
+:
+# Create a work space for development %workspace%. 
+# Sync *Core* code with SVN path [https://family-accounting.googlecode.com/svn/trunk/proj/CoreLibrary/]
