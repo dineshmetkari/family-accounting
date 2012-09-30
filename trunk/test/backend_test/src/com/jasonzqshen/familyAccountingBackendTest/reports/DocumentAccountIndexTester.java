@@ -22,7 +22,7 @@ public class DocumentAccountIndexTester extends TesterBase {
         _reportsManagement = new ReportsManagement(coreDriver);
 
         // set root path
-        coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER);
+        coreDriver.setRootPath(TestUtilities.TEST_ACC_INDEX);
     }
 
     @Override

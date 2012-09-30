@@ -8,8 +8,7 @@ public class InitializeWithDataTester extends TesterBase {
 	@Override
 	protected void doTest(CoreDriver coreDriver) throws Exception {
 		// set root path
-		coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER);
-
+		coreDriver.setRootPath(TestUtilities.TEST_INIT);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class DocumentBusinessIndexTester extends TesterBase {
         _reportsManagement = new ReportsManagement(coreDriver);
 
         // set root path
-        coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER);
+        coreDriver.setRootPath(TestUtilities.TEST_BUSI_INDEX);
     }
 
     @Override
