@@ -21,3 +21,10 @@ You can follow the installation guides in site [http://developer.android.com/sdk
 5. Import above three projects into eclipse;
 
 After all steps above, you've established the eclipse work-space for development.
+
+==Step 4 Set up test environment==
+There are lots of test suites in the back-end test project. The exchange data with file system is necessary in some test suites. So we need to establish the test environment on file system for some test suites.
+
+1. Create a test environment on file system with directory `%test_workspace%`. And then set the test run configuration in eclipse, set the *Working Directory* as `%test_workspace%`;
+
+2. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/balance_report`;
