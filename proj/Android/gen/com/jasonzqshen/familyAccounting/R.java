@@ -226,7 +226,7 @@ public final class R {
         public static final int dialog_template_saved=0x7f070014;
         public static final int dialog_text_empty_warning=0x7f070013;
         public static final int dialog_vendor_selection=0x7f070007;
-        public static final int displayOnlyLiquidity=0x7f070054;
+        public static final int displayOnlyLiquidity=0x7f070053;
         public static final int dstAccount=0x7f070035;
         public static final int dstRow=0x7f07004f;
         public static final int dstValue=0x7f070050;
@@ -264,7 +264,7 @@ public final class R {
         public static final int startMonthSpinner=0x7f07003f;
         public static final int sumLabel=0x7f070029;
         public static final int sumValue=0x7f07002a;
-        public static final int sum_value=0x7f070053;
+        public static final int sum_value=0x7f070054;
         public static final int tableRow1=0x7f070022;
         public static final int tableRow2=0x7f070026;
         public static final int tableRow3=0x7f07003a;

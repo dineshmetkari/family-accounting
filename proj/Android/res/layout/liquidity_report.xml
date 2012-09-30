@@ -33,6 +33,14 @@
             android:textAppearance="@style/TextAppearance.ActionBarTitle" />
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/displayOnlyLiquidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/TextBottomMargin"
+        android:layout_marginTop="@dimen/TextLeftMargin"
+        android:text="@string/display_only_liquidity" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -44,7 +52,6 @@
             android:layout_weight="0.4"
             android:paddingBottom="@dimen/TextBottomMargin"
             android:paddingLeft="@dimen/TextLeftMargin"
-            android:paddingTop="@dimen/TextTopMargin"
             android:text="@string/liquidity_report_sum"
             android:textAppearance="@style/TextAppearance.XLarge" />
 
@@ -56,7 +63,6 @@
             android:gravity="right"
             android:paddingBottom="@dimen/TextBottomMargin"
             android:paddingRight="@dimen/TextRightMargin"
-            android:paddingTop="@dimen/TextTopMargin"
             android:text="@string/main_test_amount"
             android:textAppearance="@style/TextAppearance.Large"
             android:textStyle="bold" />
@@ -71,12 +77,6 @@
         android:paddingLeft="@dimen/ViewLeftMargin"
         android:paddingRight="@dimen/ViewRightMargin"
         android:paddingTop="@dimen/ViewTopMargin" >
-
-        <CheckBox
-            android:id="@+id/displayOnlyLiquidity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/display_only_liquidity" />
 
         <ListView
             android:id="@id/android:list"
