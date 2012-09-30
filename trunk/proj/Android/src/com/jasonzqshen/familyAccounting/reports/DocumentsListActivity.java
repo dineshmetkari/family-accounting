@@ -147,6 +147,7 @@ public class DocumentsListActivity extends ListActivity {
         @Override
         public void onItemSelected(AdapterView<?> arg0, View view,
                 int position, long id) {
+        	setDocListData();
         }
 
         @Override
