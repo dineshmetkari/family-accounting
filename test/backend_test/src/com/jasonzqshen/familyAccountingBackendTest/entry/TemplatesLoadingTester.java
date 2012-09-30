@@ -20,7 +20,7 @@ public class TemplatesLoadingTester extends TesterBase {
     @Override
     protected void doTest(CoreDriver coreDriver) throws Exception {
         tempMgmt = new EntryTemplatesManagement(coreDriver);
-        coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER);
+        coreDriver.setRootPath(TestUtilities.TEST_LOAD_TEMPLATE);
         tempMgmt.initialize();
     }
 

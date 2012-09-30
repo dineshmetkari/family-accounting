@@ -15,11 +15,39 @@ public class TestUtilities {
     private TestUtilities() {
     }
 
-    public static final String TEST_ROOT_FOLDER = "C:/FamilyAccountingTestData/test_data";
-    public static final String TEST_ROOT_FOLDER_INVESTMENT = "C:/FamilyAccountingTestData/test_data_investment";
+    //public static final String TEST_ROOT_FOLDER = "C:/FamilyAccountingTestData/test_data";
+    //public static final String TEST_ROOT_FOLDER_INVESTMENT = "C:/FamilyAccountingTestData/test_data_investment";
+    
+    /**
+     * test environment for account index
+     */
+    public static final String TEST_ACC_INDEX = "acc_index";
+    /**
+     * test environment for business index
+     */
+    public static final String TEST_BUSI_INDEX = "busi_index";
+    /**
+     * test environment for balance report
+     */
+    public static final String TEST_ACC_BALANCE_REPORT = "./balance_report";
+    
+    /**
+     * test environment for initialize core with data on file system
+     */
+    public static final String TEST_INIT = "./init_data";
+    /**
+     * test environment for loading template
+     */
+    public static final String TEST_LOAD_TEMPLATE = "./load_template";
+    /**
+     * test environment for loading investment data
+     */
+    public static final String TEST_LOAD_INVEST_DATA = "./load_invest_data";
+    /**
+     * test environment for investment creation
+     */
     public static final String TEST_ROOT_CREATE_INVESTMENT = "./create_investment";
     
-
     public static final String TEST_ROOT_MASTER_CREATION = "./master_creation";
 
     public static final String TEST_ROOT_TRAN_CREATION = "./tran_creation";

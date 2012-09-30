@@ -28,7 +28,7 @@ public class InvesetmentLoadingTester extends TesterBase {
     @Override
     protected void doTest(CoreDriver coreDriver) throws Exception {
         _investMgmt = new InvestmentManagement(coreDriver);
-        coreDriver.setRootPath(TestUtilities.TEST_ROOT_FOLDER_INVESTMENT);
+        coreDriver.setRootPath(TestUtilities.TEST_LOAD_INVEST_DATA);
         _investMgmt.initialize();
     }
 
