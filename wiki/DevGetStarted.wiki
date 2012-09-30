@@ -29,4 +29,6 @@ There are lots of test suites in the back-end test project. The exchange data wi
 
 2. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/balance_report`;
 
-3. Sync SVN path `%SVN_branch%/test/init_data/` into local work space `%test_workspace%/init_data`;
+3. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/init_data`;
+
+4. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/load_template`;
