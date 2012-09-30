@@ -72,12 +72,19 @@
         android:paddingRight="@dimen/ViewRightMargin"
         android:paddingTop="@dimen/ViewTopMargin" >
 
+        <CheckBox
+            android:id="@+id/displayOnlyLiquidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/display_only_liquidity" />
+
         <ListView
             android:id="@id/android:list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@android:color/transparent"
             android:listSelector="@android:color/transparent" />
+
     </LinearLayout>
 
 </LinearLayout>

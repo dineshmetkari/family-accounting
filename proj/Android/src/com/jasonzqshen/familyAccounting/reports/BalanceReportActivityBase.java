@@ -28,8 +28,7 @@ public abstract class BalanceReportActivityBase extends ListActivity {
 
     protected AccountReportAdapter _adapter = null;
 
-    private GLAccountGroup[] _groupSet = getAccountGroup();
-
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,9 +58,10 @@ public abstract class BalanceReportActivityBase extends ListActivity {
                 .getMasterDataManagement();
         GLAccountBalanceCollection balCol = coreDriver.getTransDataManagement()
                 .getAccBalCol();
-
-        for (int i = 0; i < _groupSet.length; ++i) {
-            GLAccountGroup group = _groupSet[i];
+        
+        GLAccountGroup[] groupSet = getAccountGroup();
+        for (int i = 0; i < groupSet.length; ++i) {
+            GLAccountGroup group = groupSet[i];
 
             CurrencyAmount groupAmount = balCol.getGroupBalance(group);
 
