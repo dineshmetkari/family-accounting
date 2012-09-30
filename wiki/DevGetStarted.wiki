@@ -38,3 +38,5 @@ There are lots of test suites in the back-end test project. The exchange data wi
 6. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/busi_index`;
 
 *ALERT*: Read-only SVN path MUST be used in test environment. The reason is that the running test will probably modify the data in test environment. Such modification MUST NOT be synced to the SVN.
+
+After all above is done, run the test suites with JUNIT 4. All the test suites should be passed. 
