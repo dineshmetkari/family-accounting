@@ -28,3 +28,5 @@ There are lots of test suites in the back-end test project. The exchange data wi
 1. Create a test environment on file system with directory `%test_workspace%`. And then set the test run configuration in eclipse, set the *Working Directory* as `%test_workspace%`;
 
 2. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/balance_report`;
+
+3. Sync SVN path `%SVN_branch%/test/init_data/` into local work space `%test_workspace%/init_data`;
