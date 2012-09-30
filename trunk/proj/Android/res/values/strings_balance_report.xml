@@ -4,7 +4,8 @@
     <string name="balance_report_start_month">Start Month:</string>
     <string name="balance_report_end_month">End Month:</string>
     <string name="balance_report_title">Balance Report</string>
-    <string name="liquidity_report_title">Liquidity Report</string>
+    <string name="liquidity_report_title">Liquidity</string>
+    <string name="display_only_liquidity">Only cash and bank account</string>
     <string name="liquidity_report_sum">Balance:</string>
     <string name="liquidity_include_prepaid">Include prepaid</string>
 
