@@ -65,8 +65,13 @@ public class CurrencyAmount implements Comparable<CurrencyAmount>, Serializable 
 		_value = amount._value;
 	}
 
+	/**
+	 * set value
+	 * @param value
+	 */
 	public void set(double value) {
-		_value = (int) (value * 100);
+		double v = value * 100;
+		_value = (int) (v + 0.5);
 	}
 
 	@Override
