@@ -9,6 +9,9 @@ public class TestData {
     public static final String TEXT_VENDOR_DOC = "Traffic expense on work";
     public static final String TEXT_GL_DOC = "Get money from bank account";
     public static final String TEXT_CUSTOMER_DOC = "Salary";
+    public static final String TEXT_VENDOR_DOC_CN = "工作交通花费";
+    public static final String TEXT_GL_DOC_CN = "从银行取钱";
+    public static final String TEXT_CUSTOMER_DOC_CN = "工资";
     
     // date & month
     public static final String DATE_2012_07 = "2012.07.02";
@@ -37,8 +40,12 @@ public class TestData {
     
     public static final String VENDOR_BUS_DESCP = "Bus";
     public static final String VENDOR_SUBWAY_DESCP = "Subway";
+    public static final String VENDOR_BUS_DESCP_CN = "公交车";
+    public static final String VENDOR_SUBWAY_DESCP_CN = "地铁";
     public static final String CUSTOMER1_DESCP = "Customer 1";
     public static final String CUSTOMER2_DESCP = "Customer 2";
+    public static final String CUSTOMER1_DESCP_CN = "客户 1";
+    public static final String CUSTOMER2_DESCP_CN = "客户 2";
     
     public static final String GL_ACCOUNT_CASH = "1000100001";
     public static final String GL_ACCOUNT_COST = "5000100001";
@@ -51,6 +58,11 @@ public class TestData {
     public static final String GL_ACCOUNT_REV_DESCP = "salary incoming 1";
     public static final String GL_ACCOUNT_BANK_DESCP = "bank account 6235";
     public static final String GL_ACCOUNT_EQUITY_DESCP = "Equity";
+    public static final String GL_ACCOUNT_CASH_DESCP_CN = "手头现金";
+    public static final String GL_ACCOUNT_COST_DESCP_CN = "交通花费";
+    public static final String GL_ACCOUNT_REV_DESCP_CN = "工资收入";
+    public static final String GL_ACCOUNT_BANK_DESCP_CN = "银行账户6235";
+    public static final String GL_ACCOUNT_EQUITY_DESCP_CN = "所有者权益";
     
     public static final String BUSINESS_AREA_WORK = "000000WORK";
     public static final String BUSINESS_AREA_ENTERTAIN = "0ENTERTAIN";
@@ -59,9 +71,13 @@ public class TestData {
     public static final String BUSINESS_AREA_WORK_DESCP = "Work";
     public static final String BUSINESS_AREA_ENTERTAIN_DESCP = "Entertainment(or with Yanyan), like dinner, movie...";
     public static final String BUSINESS_AREA_SNACKS_DESCP = "Expense on snack";
+    public static final String BUSINESS_AREA_WORK_DESCP_CN = "工作";
+    public static final String BUSINESS_AREA_ENTERTAIN_DESCP_CN = "娱乐";
+    public static final String BUSINESS_AREA_SNACKS_DESCP_CN = "零食";
     
     public static final String BANK_KEY = "0000000CMB";
     public static final String BANK_KEY_DESCP = "China Merchants Bank";
+    public static final String BANK_KEY_DESCP_CN = "招商银行";
     
     public static final String BANK_ACCOUNT_CMB_6620 = "00CMB_6620";
     public static final String BANK_ACCOUNT_CMB_6235 = "00CMB_6235";
