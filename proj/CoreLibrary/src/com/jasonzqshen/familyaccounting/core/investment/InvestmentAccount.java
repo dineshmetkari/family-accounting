@@ -26,6 +26,7 @@ import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.DocumentType;
+import com.jasonzqshen.familyaccounting.core.utils.Language;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
@@ -254,6 +255,14 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
         File file = new File(filePath);
         try {
             FileWriter writer = new FileWriter(file);
+            String header = null;
+			Language lang = _coreDriver.getLanguage();
+			if (lang == Language.Engilish) {
+				header = Language.ENGLISH_XML_HEADER;
+			} else if (lang == Language.SimpleChinese) {
+				header = Language.SIMPLE_CHINESE_XML_HEADER;
+			}
+			writer.write(header, 0, header.length());
             writer.write(this.toXML());
             writer.close();
         } catch (IOException e) {

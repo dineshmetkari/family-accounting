@@ -28,6 +28,7 @@ import com.jasonzqshen.familyaccounting.core.exception.format.MasterDataFileForm
 import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
+import com.jasonzqshen.familyaccounting.core.utils.Language;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
 /**
@@ -347,6 +348,14 @@ public class MasterDataManagement extends ManagementBase {
 		FileWriter writer;
 		try {
 			writer = new FileWriter(file);
+			String header = null;
+			Language lang = _coreDriver.getLanguage();
+			if (lang == Language.Engilish) {
+				header = Language.ENGLISH_XML_HEADER;
+			} else if (lang == Language.SimpleChinese) {
+				header = Language.SIMPLE_CHINESE_XML_HEADER;
+			}
+			writer.write(header, 0, header.length());
 			writer.write(xdoc, 0, xdoc.length());
 			writer.close();
 		} catch (IOException e) {
