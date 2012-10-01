@@ -26,6 +26,7 @@ import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthLedger;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.DebugInformation;
+import com.jasonzqshen.familyaccounting.core.utils.Language;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 
 /**
@@ -55,6 +56,8 @@ public class CoreDriver {
 
 	public static final String TRANDATA = "TD";
 
+	private boolean _flushLog2FileSystem = false;
+
 	private LedgerCloseListener _closeLedgerListener = new LedgerCloseListener() {
 		@Override
 		public void onLedgerCloseListener(MonthLedger ledger) {
@@ -83,6 +86,8 @@ public class CoreDriver {
 
 	private ArrayList<DebugInformation> _infos;
 
+	private Language _language;
+
 	/**
 	 * singleton
 	 */
@@ -103,6 +108,34 @@ public class CoreDriver {
 
 		_applicationRootPath = null;
 		_isInitialized = false;
+		_language = Language.Engilish;
+	}
+
+	/**
+	 * set language
+	 * 
+	 * @param language
+	 */
+	public void setLanguage(Language language) {
+		_language = language;
+	}
+
+	/**
+	 * get language
+	 *
+	 * @return
+	 */
+	public Language getLanguage() {
+		return this._language;
+	}
+
+	/**
+	 * set the flag whether the log will flush to file system
+	 * 
+	 * @param flag
+	 */
+	public void setFlushLog(boolean flag) {
+		this._flushLog2FileSystem = flag;
 	}
 
 	/**
@@ -117,6 +150,10 @@ public class CoreDriver {
 		DebugInformation debugInfo = new DebugInformation(cl, lineNum, msg,
 				type);
 		_infos.add(debugInfo);
+
+		if (_flushLog2FileSystem == false) {
+			return;
+		}
 
 		// append to log file
 		String filePath = String

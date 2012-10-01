@@ -26,6 +26,7 @@ import com.jasonzqshen.familyaccounting.core.exception.format.DuplicatedTemplate
 import com.jasonzqshen.familyaccounting.core.exception.format.TemplateFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
+import com.jasonzqshen.familyaccounting.core.utils.Language;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
@@ -249,6 +250,14 @@ public class EntryTemplatesManagement extends ManagementBase {
         try {
             String xdoc = this.toXMLDoc();
             writer = new FileWriter(file);
+            String header = null;
+			Language lang = _coreDriver.getLanguage();
+			if (lang == Language.Engilish) {
+				header = Language.ENGLISH_XML_HEADER;
+			} else if (lang == Language.SimpleChinese) {
+				header = Language.SIMPLE_CHINESE_XML_HEADER;
+			}
+			writer.write(header, 0, header.length());
             writer.write(xdoc, 0, xdoc.length());
             writer.close();
         } catch (IOException e) {
