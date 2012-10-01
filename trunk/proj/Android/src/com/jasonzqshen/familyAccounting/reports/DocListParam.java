@@ -12,7 +12,6 @@ public class DocListParam implements Serializable {
 	private static final long serialVersionUID = 6346189251553653419L;
 
 	public static final int ACCOUNT_CATEGORY = 0;
-	public static final int DATE_CATEGORY = 2;
 	public static final int BUSINESS_CATEGORY = 1;
 
 	public static final String PARAM_NAME = "DocumentListParameter";
