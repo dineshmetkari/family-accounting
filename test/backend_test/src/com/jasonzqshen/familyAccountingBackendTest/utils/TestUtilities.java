@@ -55,6 +55,7 @@ public class TestUtilities {
     public static final String TEST_ROOT_EMPTY_INIT = "./empty_init";
 
     public static final String TEST_ROOT_LEDGER_CLOSING = "./ledger_closing";
+    public static final String TEST_ROOT_LEDGER_CLOSING_CN = "./ledger_closing_cn";
 
     public static final String TEST_ROOT_CREATE_WITH_TEMPLATE = "./create_with_template";
 

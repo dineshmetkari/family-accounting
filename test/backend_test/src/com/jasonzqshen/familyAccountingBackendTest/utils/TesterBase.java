@@ -9,6 +9,7 @@ public abstract class TesterBase {
 	@Test
 	public void launchTest() throws Exception {
 		CoreDriver coreDriver = new CoreDriver();
+		coreDriver.setFlushLog(true);
 		try {
 			doTest(coreDriver);
 		} catch (Exception e) {
