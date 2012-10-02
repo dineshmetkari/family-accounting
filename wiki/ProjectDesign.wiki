@@ -1,7 +1,7 @@
 #summary Project design document.
 
 = Project Design =
-[http://family-accounting.googlecode.com/svn/trunk/doc/imgs/sys_ledge.png]
+[http://family-accounting.googlecode.com/svn/trunk/doc/imgs/sys_overview.png]
 
 1. Master Data
 
