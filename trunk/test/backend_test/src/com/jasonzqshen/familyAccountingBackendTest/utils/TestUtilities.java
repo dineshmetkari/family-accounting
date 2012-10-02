@@ -49,6 +49,7 @@ public class TestUtilities {
     public static final String TEST_ROOT_CREATE_INVESTMENT = "./create_investment";
     
     public static final String TEST_ROOT_MASTER_CREATION = "./master_creation";
+    public static final String TEST_SPECIAL_SYMBOL = "./special_symbol";
 
     public static final String TEST_ROOT_TRAN_CREATION = "./tran_creation";
 
