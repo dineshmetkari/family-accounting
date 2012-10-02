@@ -1,6 +1,7 @@
 #summary Project design document.
 
 = Project Design =
+[http://family-accounting.googlecode.com/svn/trunk/doc/imgs/sys_ledge.png]
 
 1. Master Data
 
@@ -11,4 +12,3 @@
 4. Investment
 
 5. Reports
-
