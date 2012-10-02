@@ -2,12 +2,13 @@
 
 = Project Design =
 
-Add your content here.
+1. Master Data
 
+2. Transaction Data
 
-= Details =
+3. Entry Template
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+4. Investment
+
+5. Reports
+
