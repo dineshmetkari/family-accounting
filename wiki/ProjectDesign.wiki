@@ -3,7 +3,7 @@
 = Project Design =
 [http://family-accounting.googlecode.com/svn/trunk/doc/imgs/sys_overview.png]
 
-1. Master Data
+1. Master Data, MasterData
 
 2. Transaction Data
 
