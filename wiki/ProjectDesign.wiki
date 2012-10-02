@@ -1,6 +1,6 @@
 #summary Project design document.
 
-= Document Design =
+= Project Design =
 
 Add your content here.
 
