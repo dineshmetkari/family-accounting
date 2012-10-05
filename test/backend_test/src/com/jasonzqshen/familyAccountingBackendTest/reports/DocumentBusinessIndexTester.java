@@ -16,11 +16,9 @@ import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 
 public class DocumentBusinessIndexTester extends TesterBase {
-    private ReportsManagement _reportsManagement;
 
     @Override
     protected void doTest(CoreDriver coreDriver) throws Exception {
-        _reportsManagement = new ReportsManagement(coreDriver);
 
         // set root path
         coreDriver.setRootPath(TestUtilities.TEST_BUSI_INDEX);
@@ -28,7 +26,8 @@ public class DocumentBusinessIndexTester extends TesterBase {
 
     @Override
     protected void check(CoreDriver coreDriver) throws Exception {
-        DocumentBusinessIndex index = (DocumentBusinessIndex) _reportsManagement
+        ReportsManagement rpMgmt = coreDriver.getReportsManagement();
+        DocumentBusinessIndex index = (DocumentBusinessIndex) rpMgmt
                 .getDocumentIndex(DocumentIndex.BUSINESS_INDEX);
         assertEquals(1, index.getKeys().size());
         MasterDataIdentity id = new MasterDataIdentity(
