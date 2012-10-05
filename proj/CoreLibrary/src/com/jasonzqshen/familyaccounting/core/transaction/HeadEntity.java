@@ -57,6 +57,8 @@ public class HeadEntity implements Comparable<HeadEntity> {
 
     private boolean _isSaved;
 
+    boolean _isClose;
+
     public HeadEntity(CoreDriver coreDriver, MasterDataManagement management) {
         _coreDriver = coreDriver;
         _management = management;
@@ -68,6 +70,7 @@ public class HeadEntity implements Comparable<HeadEntity> {
 
         _isReversed = false;
         _isSaved = false;
+        _isClose = false;
     }
 
     /**
@@ -242,6 +245,14 @@ public class HeadEntity implements Comparable<HeadEntity> {
      */
     public boolean isSaved() {
         return _isSaved;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public boolean isClose() {
+        return _isClose;
     }
 
     /**
