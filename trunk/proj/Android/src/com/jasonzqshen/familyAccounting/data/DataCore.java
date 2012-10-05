@@ -36,8 +36,6 @@ public class DataCore {
 
     private CoreDriver _coreDriver;
 
-    private ReportsManagement _reportsManagement;
-
     private EntryTemplatesManagement _tmpMgmt;
 
     private InvestmentManagement _investMgmt;
@@ -49,7 +47,6 @@ public class DataCore {
      */
     private DataCore() {
         _coreDriver = new CoreDriver();
-        _reportsManagement = new ReportsManagement(_coreDriver);
         _tmpMgmt = new EntryTemplatesManagement(_coreDriver);
         _investMgmt = new InvestmentManagement(_coreDriver);
     }
@@ -118,7 +115,7 @@ public class DataCore {
      * @return
      */
     public ReportsManagement getReportsManagement() {
-        return _reportsManagement;
+        return _coreDriver.getReportsManagement();
     }
 
     /**

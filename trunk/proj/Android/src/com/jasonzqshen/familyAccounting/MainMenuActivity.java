@@ -8,6 +8,7 @@ import com.jasonzqshen.familyAccounting.entries.CustomerEntryActivity;
 import com.jasonzqshen.familyAccounting.entries.EntryActivityBase;
 import com.jasonzqshen.familyAccounting.entries.GLEntryActivity;
 import com.jasonzqshen.familyAccounting.entries.VendorEntryActivity;
+import com.jasonzqshen.familyAccounting.reports.CostDetailReport;
 import com.jasonzqshen.familyAccounting.reports.DocumentsListActivity;
 import com.jasonzqshen.familyAccounting.reports.GLAccountBalanceReportActivity;
 import com.jasonzqshen.familyAccounting.reports.LiquidityReportsActivity;
@@ -58,6 +59,9 @@ public class MainMenuActivity extends ListActivity {
                             GLAccountBalanceReportActivity.class, this)),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
                     R.string.menu_profit_loss_report, null),
+            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
+                    R.string.menu_cost_details, new ActivityAction(
+                            CostDetailReport.class, this)),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
                     R.string.menu_month_outgoing_report, new CostDetailsAction(
                             this)),
@@ -123,8 +127,8 @@ public class MainMenuActivity extends ListActivity {
             action.ParamName = EntryActivityBase.PARAM_TEMP_ID;
             action.ParamValue = t.getIdentity();
 
-            items.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE, imageId,
-                    t.getName(), action));
+            items.add(new MenuAdapterItem(MenuAdapter.ITEM_TYPE, imageId, t
+                    .getName(), action));
         }
 
     }

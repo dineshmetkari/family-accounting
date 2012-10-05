@@ -1,6 +1,6 @@
 package com.jasonzqshen.familyAccounting.widgets;
 
-import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 
 public class AccountReportAdapterItem implements
@@ -21,10 +21,10 @@ public class AccountReportAdapterItem implements
 
     public final int Type;
 
-    public final GLAccountMasterData Account;
+    public final MasterDataBase Account;
 
     public AccountReportAdapterItem(String descp, CurrencyAmount amount,
-            int type, GLAccountMasterData account) {
+            int type, MasterDataBase account) {
         Descp = descp;
         Amount = amount;
         Type = type;
