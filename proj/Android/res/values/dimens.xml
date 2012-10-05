@@ -91,6 +91,7 @@
     <dimen name="TextSizeMedium">18sp</dimen>
     <dimen name="TextSizeLarge">22sp</dimen>
     <dimen name="TextSizeXLarge">24sp</dimen>
+    <dimen name="TextSizeXXLarge">28sp</dimen>
     <dimen name="TextSizeActionBarTitle">32sp</dimen>
     <dimen name="ViewLeftMargin">7dip</dimen>
     <dimen name="ViewRightMargin">7dip</dimen>
@@ -99,8 +100,8 @@
     <dimen name="DividerLeftMargin">5dip</dimen>
     <dimen name="DividerRightMargin">5dip</dimen>
     <dimen name="TextLeftMargin">5dip</dimen>
-    <dimen name="TextRightMargin">2dip</dimen>
-    <dimen name="TextTopMargin">2dip</dimen>
-    <dimen name="TextBottomMargin">2dip</dimen>
+    <dimen name="TextRightMargin">5dip</dimen>
+    <dimen name="TextTopMargin">5dip</dimen>
+    <dimen name="TextBottomMargin">5dip</dimen>
 
 </resources>

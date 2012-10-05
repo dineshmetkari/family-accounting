@@ -14,6 +14,7 @@ import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
 import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
@@ -45,7 +46,7 @@ public class CheckBalanceActivity extends BalanceReportActivityBase {
 
     private AccountReportAdapterItem _selectedItem;
 
-    private Hashtable<GLAccountMasterData, AmountPair> _newValueList;
+    private Hashtable<MasterDataBase, AmountPair> _newValueList;
 
     private Spinner _costSpinner;
 
@@ -61,11 +62,11 @@ public class CheckBalanceActivity extends BalanceReportActivityBase {
                     AmountPair amountPair = _newValueList
                             .get(_selectedItem.Account);
                     AmountPair newAmountPair = new AmountPair(
-                            _selectedItem.Account, amountPair.OrgAmount, amount);
+                            (GLAccountMasterData)_selectedItem.Account, amountPair.OrgAmount, amount);
                     _newValueList.put(_selectedItem.Account, newAmountPair);
                 } else {
                     AmountPair newAmountPair = new AmountPair(
-                            _selectedItem.Account, _selectedItem.Amount, amount);
+                            (GLAccountMasterData)_selectedItem.Account, _selectedItem.Amount, amount);
                     _newValueList.put(_selectedItem.Account, newAmountPair);
                 }
 
@@ -94,7 +95,7 @@ public class CheckBalanceActivity extends BalanceReportActivityBase {
         _newAmountField.setGravity(Gravity.RIGHT);
 
         // construct new value list
-        _newValueList = new Hashtable<GLAccountMasterData, AmountPair>();
+        _newValueList = new Hashtable<MasterDataBase, AmountPair>();
 
         // set the cost accounts selection
         _costAccounts = coreDriver.getMasterDataManagement().getCostAccounts();

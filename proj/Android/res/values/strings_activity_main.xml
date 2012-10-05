@@ -15,5 +15,8 @@
     <string name="main_accounts">Accounts</string>
     <string name="main_business_area">Business Area</string>
     <string name="main_entries">Entries</string>
+    <string name="main_month">Current Month</string>
+    <string name="main_group_by">Group by: </string>
+    <string name="main_cost_details">Outgoing Details</string>
 
 </resources>

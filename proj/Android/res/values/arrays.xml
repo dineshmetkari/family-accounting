@@ -7,7 +7,10 @@
     </string-array>
     <string-array name="doc_menus">
         <item>Reverse</item>
-
+    </string-array>
+    <string-array name="display_groupby">
+        <item>Group by G/L account</item>
+        <item>Group by Business Area</item>
     </string-array>
 
 </resources>

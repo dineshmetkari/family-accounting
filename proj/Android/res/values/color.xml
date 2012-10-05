@@ -42,5 +42,7 @@
     <color name="red_ffd9">#FFD9AAA9</color>
     <color name="green_ffc6">#FFC6D6AC</color>
     <color name="purple_ffba">#FFBAB0C9</color>
+    <color name="outgoing_color">#FFC40110</color>
+    <color name="incoming_color">#FF4A8D38</color>
 
 </resources>
