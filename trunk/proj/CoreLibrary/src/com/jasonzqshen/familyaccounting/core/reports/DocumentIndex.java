@@ -9,6 +9,7 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.listeners.LoadDocumentListener;
 import com.jasonzqshen.familyaccounting.core.listeners.SaveDocumentListener;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 
 public abstract class DocumentIndex {
@@ -32,6 +33,8 @@ public abstract class DocumentIndex {
 
     protected final CoreDriver _coreDriver;
 
+    protected final MasterDataManagement _mdMgmt;
+
     // load document listener
     private final LoadDocumentListener _loadDocumentListener = new LoadDocumentListener() {
         public void onLoadDocumentListener(Object source, HeadEntity document) {
@@ -51,8 +54,10 @@ public abstract class DocumentIndex {
      * 
      * @param coreDriver
      */
-    protected DocumentIndex(CoreDriver coreDriver) {
+    protected DocumentIndex(CoreDriver coreDriver, MasterDataManagement mdMgmt) {
         _coreDriver = coreDriver;
+        _mdMgmt = mdMgmt;
+
         _list = new Hashtable<MasterDataIdentity, DocumentIndexItem>();
 
         _coreDriver.getListenersManagement().addSaveDocListener(
@@ -81,6 +86,13 @@ public abstract class DocumentIndex {
      */
     public DocumentIndexItem getIndexItem(MasterDataIdentity key) {
         return _list.get(key);
+    }
+
+    /**
+     * clear
+     */
+    public void clear() {
+        _list.clear();
     }
 
     /**

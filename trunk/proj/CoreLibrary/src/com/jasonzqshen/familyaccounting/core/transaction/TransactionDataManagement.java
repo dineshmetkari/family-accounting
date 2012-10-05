@@ -50,7 +50,8 @@ public class TransactionDataManagement extends ManagementBase {
         _masterDataMgmt = masterDataMgmt;
         _list = new Hashtable<MonthIdentity, MonthLedger>();
 
-        _glAccBalCol = new GLAccountBalanceCollection(_coreDriver);
+        _glAccBalCol = new GLAccountBalanceCollection(_coreDriver,
+                _masterDataMgmt);
         _clsMgmt = new ClosingManagement(_coreDriver, this);
     }
 
@@ -185,6 +186,7 @@ public class TransactionDataManagement extends ManagementBase {
 
                         if (head.getDocText().equals(
                                 MonthLedger.CLOSING_DOC_TAG)) {
+                            head._isClose = true;
                             colletion.setClosingDoc(head);
                         }
 
@@ -348,13 +350,13 @@ public class TransactionDataManagement extends ManagementBase {
         try {
             writer = new FileWriter(file);
             String header = null;
-			Language lang = _coreDriver.getLanguage();
-			if (lang == Language.Engilish) {
-				header = Language.ENGLISH_XML_HEADER;
-			} else if (lang == Language.SimpleChinese) {
-				header = Language.SIMPLE_CHINESE_XML_HEADER;
-			}
-			writer.write(header, 0, header.length());
+            Language lang = _coreDriver.getLanguage();
+            if (lang == Language.Engilish) {
+                header = Language.ENGLISH_XML_HEADER;
+            } else if (lang == Language.SimpleChinese) {
+                header = Language.SIMPLE_CHINESE_XML_HEADER;
+            }
+            writer.write(header, 0, header.length());
             writer.write(xdoc, 0, xdoc.length());
             writer.close();
         } catch (IOException e) {
