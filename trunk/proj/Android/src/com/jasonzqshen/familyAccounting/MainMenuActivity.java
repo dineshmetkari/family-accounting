@@ -12,7 +12,12 @@ import com.jasonzqshen.familyAccounting.reports.CostDetailReport;
 import com.jasonzqshen.familyAccounting.reports.DocumentsListActivity;
 import com.jasonzqshen.familyAccounting.reports.GLAccountBalanceReportActivity;
 import com.jasonzqshen.familyAccounting.reports.LiquidityReportsActivity;
-import com.jasonzqshen.familyAccounting.settings.BankSettingActivity;
+import com.jasonzqshen.familyAccounting.settings.AccountsSettingActivity;
+import com.jasonzqshen.familyAccounting.settings.BusinessAreaSettingActivity;
+import com.jasonzqshen.familyAccounting.settings.CostAccountsSettingActivity;
+import com.jasonzqshen.familyAccounting.settings.CustomerSettingActivity;
+import com.jasonzqshen.familyAccounting.settings.RevAccountsSettingActivity;
+import com.jasonzqshen.familyAccounting.settings.VendorSettingActivity;
 import com.jasonzqshen.familyAccounting.utils.ActivityAction;
 import com.jasonzqshen.familyAccounting.utils.CostDetailsAction;
 import com.jasonzqshen.familyAccounting.widgets.MenuAdapter;
@@ -71,8 +76,23 @@ public class MainMenuActivity extends ListActivity {
             new MenuAdapterItem(MenuAdapter.HEAD_TYPE, 0,
                     R.string.menu_settings, null),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
-                    R.string.menu_bank_account, new ActivityAction(
-                            BankSettingActivity.class, this)),
+                    R.string.menu_accounts_setting, new ActivityAction(
+                            AccountsSettingActivity.class, this)),
+            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
+                    R.string.menu_cost_accounts_setting, new ActivityAction(
+                            CostAccountsSettingActivity.class, this)),
+            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
+                    R.string.menu_rev_accounts_setting, new ActivityAction(
+                            RevAccountsSettingActivity.class, this)),
+            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
+                    R.string.menu_vendor_setting, new ActivityAction(
+                            VendorSettingActivity.class, this)),
+            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
+                    R.string.menu_customer_setting, new ActivityAction(
+                            CustomerSettingActivity.class, this)),
+            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
+                    R.string.menu_area_setting, new ActivityAction(
+                            BusinessAreaSettingActivity.class, this)),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
                     R.string.menu_advanced, null) };
 

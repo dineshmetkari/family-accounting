@@ -29,6 +29,8 @@
     <item name="dialog_save_comfirm" type="id"/>
     <item name="dialog_bank_number_error" type="id"/>
     <item name="dialog_descp_error" type="id"/>
+    <item name="dialog_mdid_error" type="id"/>
+    <item name="dialog_duplicated_mdid_error" type="id"/>
     <item name="dialog_check_balance" type="id"/>
     <item name="dialog_close_ledger_confirm" type="id"/>
     <item name="dialog_cost_details" type="id"/>
