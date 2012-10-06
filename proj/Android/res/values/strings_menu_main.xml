@@ -18,7 +18,12 @@
     <string name="menu_bank_account_setting">Bank Account Setting</string>
     <string name="menu_advanced">Advanced</string>
     <string name="menu_main_menu">Main Menu</string>
-    <string name="menu_bank_account">Bank Account Setting</string>
+    <string name="menu_accounts_setting">Accounts Setting</string>
+    <string name="menu_cost_accounts_setting">Cost Accounts Setting</string>
+    <string name="menu_rev_accounts_setting">Revenue Accounts Setting</string>
+    <string name="menu_area_setting">Area Setting</string>
+    <string name="menu_vendor_setting">Vendor Setting</string>
+    <string name="menu_customer_setting">Customer Setting</string>
     <string name="menu_check_balance">Check Accounts Balance</string>
     <string name="menu_close_ledger">Close Ledger</string>
     <string name="menu_investment">Investment</string>

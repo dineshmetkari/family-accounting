@@ -65,12 +65,103 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".settings.BankSettingActivity"
+            android:name=".settings.AccountsSettingActivity"
             android:label="@string/asset_report_title"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".settings.BankAccountDetailsActivity"
+            android:name=".settings.AccountNewActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.AccountEditActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.CostAccountsSettingActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".settings.CostAccountNewActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.CostAccountEditActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.RevAccountsSettingActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".settings.RevAccountNewActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.RevAccountEditActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.BusinessAreaSettingActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".settings.BusinessAreaNewActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.BusinessAreaEditActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.VendorSettingActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".settings.VendorNewActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.VendorEditActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.CustomerSettingActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".settings.CustomerNewActivity"
+            android:label="@string/asset_report_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithTitle" >
+        </activity>
+        <activity
+            android:name=".settings.CustomerEditActivity"
             android:label="@string/asset_report_title"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeWithTitle" >
