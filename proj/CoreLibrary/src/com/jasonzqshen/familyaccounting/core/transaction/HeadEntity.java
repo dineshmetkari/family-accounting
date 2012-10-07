@@ -583,7 +583,7 @@ public class HeadEntity implements Comparable<HeadEntity> {
         strBuilder.append(String.format("%s=\"%s\" ", TransDataUtils.XML_DATE,
                 format.format(_postingDate)));
         // text
-        strBuilder.append(String.format("%s=\"%s\" ", TransDataUtils.XML_TEXT,
+        strBuilder.append(String.format("%s=\"%s\" ", XMLTransfer.toSafeString(TransDataUtils.XML_TEXT),
                 _docText));
         // document type
         strBuilder.append(String.format("%s=\"%s\" ",
