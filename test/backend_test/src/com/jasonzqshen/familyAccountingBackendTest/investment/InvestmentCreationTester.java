@@ -50,7 +50,7 @@ public class InvestmentCreationTester extends TesterBase {
                 dueDate, srcAccount, new CurrencyAmount(1000.0));
 
         // commit
-        investItem.commit(dueDate, srcAccount, new CurrencyAmount(1030.0));
+        investItem.commit(new CurrencyAmount(1030.0));
 
         startDate = dueDate;
         calendar.set(Calendar.MONTH, 7);
