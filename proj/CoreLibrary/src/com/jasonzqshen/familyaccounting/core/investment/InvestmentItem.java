@@ -17,6 +17,7 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAcc
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
@@ -25,333 +26,352 @@ import com.jasonzqshen.familyaccounting.core.utils.MessageType;
 import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
 public class InvestmentItem implements Comparable<InvestmentItem> {
-    public static final String XML_START_DATE = "start_date";
+	public static final String XML_START_DATE = "start_date";
 
-    public static final String XML_DUE_DATE = "due_date";
+	public static final String XML_DUE_DATE = "due_date";
 
-    public static final String XML_END_DATE = "end_date";
+	public static final String XML_END_DATE = "end_date";
 
-    public static final String XML_IS_CLOSED = "is_closed";
+	public static final String XML_IS_CLOSED = "is_closed";
 
-    public static final String XML_START_DOC = "start_doc";
+	public static final String XML_START_DOC = "start_doc";
 
-    public static final String XML_END_DOC = "end_doc";
+	public static final String XML_END_DOC = "end_doc";
 
-    private final CoreDriver _coreDriver;
+	private final CoreDriver _coreDriver;
 
-    private final InvestmentAccount _investAcc;
+	private final InvestmentAccount _investAcc;
 
-    private final Date _startDate;
+	private final Date _startDate;
 
-    private final Date _dueDate;
+	private final Date _dueDate;
 
-    private Date _endDate;
+	private Date _endDate;
 
-    private boolean _isClosed;
+	private boolean _isClosed;
 
-    private final DocumentIdentity _startDoc;
+	private final DocumentIdentity _startDoc;
 
-    private DocumentIdentity _endDoc;
+	private DocumentIdentity _endDoc;
 
-    /**
-     * investment item
-     * 
-     * @param startDate
-     */
-    InvestmentItem(CoreDriver coreDriver, InvestmentAccount account,
-            Date startDate, Date dueDate, DocumentIdentity startDoc) {
-        _coreDriver = coreDriver;
-        _investAcc = account;
-        _startDate = startDate;
-        _dueDate = dueDate;
-        _startDoc = startDoc;
+	/**
+	 * investment item
+	 * 
+	 * @param startDate
+	 */
+	InvestmentItem(CoreDriver coreDriver, InvestmentAccount account,
+			Date startDate, Date dueDate, DocumentIdentity startDoc) {
+		_coreDriver = coreDriver;
+		_investAcc = account;
+		_startDate = startDate;
+		_dueDate = dueDate;
+		_startDoc = startDoc;
 
-        _isClosed = false;
-    }
+		_isClosed = false;
+	}
 
-    /**
-     * get start date
-     * 
-     * @return
-     */
-    public Date getStartDate() {
-        return _startDate;
-    }
+	/**
+	 * get start date
+	 * 
+	 * @return
+	 */
+	public Date getStartDate() {
+		return _startDate;
+	}
 
-    /**
-     * get due date
-     * 
-     * @return
-     */
-    public Date getDueDate() {
-        return _dueDate;
-    }
+	/**
+	 * get due date
+	 * 
+	 * @return
+	 */
+	public Date getDueDate() {
+		return _dueDate;
+	}
 
-    /**
-     * get end date
-     * 
-     * @return
-     */
-    public Date getEndDate() {
-        return _endDate;
-    }
+	/**
+	 * get end date
+	 * 
+	 * @return
+	 */
+	public Date getEndDate() {
+		return _endDate;
+	}
 
-    /**
-     * get start document
-     * 
-     * @return
-     */
-    public HeadEntity getStartDoc() {
-        TransactionDataManagement transMgmt = _coreDriver
-                .getTransDataManagement();
-        return transMgmt.getEntity(_startDoc);
-    }
+	/**
+	 * get start document
+	 * 
+	 * @return
+	 */
+	public HeadEntity getStartDoc() {
+		TransactionDataManagement transMgmt = _coreDriver
+				.getTransDataManagement();
+		return transMgmt.getEntity(_startDoc);
+	}
 
-    /**
-     * get end document
-     * 
-     * @return
-     */
-    public HeadEntity getEndDoc() {
-        TransactionDataManagement transMgmt = _coreDriver
-                .getTransDataManagement();
-        return transMgmt.getEntity(_endDoc);
-    }
+	/**
+	 * get end document
+	 * 
+	 * @return
+	 */
+	public HeadEntity getEndDoc() {
+		TransactionDataManagement transMgmt = _coreDriver
+				.getTransDataManagement();
+		return transMgmt.getEntity(_endDoc);
+	}
 
-    /**
-     * get amount
-     * 
-     * @return
-     */
-    public CurrencyAmount getAmount() {
-        TransactionDataManagement transMgmt = _coreDriver
-                .getTransDataManagement();
-        HeadEntity head = transMgmt.getEntity(_startDoc);
-        ItemEntity[] items = head.getItems();
-        CurrencyAmount sum = new CurrencyAmount();
-        for (ItemEntity item : items) {
-            if (item.getGLAccount().equals(_investAcc.getAccount())) {
-                if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
-                    sum.addTo(item.getAmount());
-                } else {
-                    sum.minusTo(item.getAmount());
-                }
-            }
-        }
-        return sum;
-    }
+	/**
+	 * get amount
+	 * 
+	 * @return
+	 */
+	public CurrencyAmount getAmount() {
+		TransactionDataManagement transMgmt = _coreDriver
+				.getTransDataManagement();
+		HeadEntity head = transMgmt.getEntity(_startDoc);
+		ItemEntity[] items = head.getItems();
+		CurrencyAmount sum = new CurrencyAmount();
+		for (ItemEntity item : items) {
+			if (item.getGLAccount().equals(_investAcc.getAccount())) {
+				if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+					sum.addTo(item.getAmount());
+				} else {
+					sum.minusTo(item.getAmount());
+				}
+			}
+		}
+		return sum;
+	}
 
-    /**
-     * get revenue amount
-     * 
-     * @return
-     */
-    public CurrencyAmount getRevAmount() {
-        if (_isClosed == false) {
-            return new CurrencyAmount();
-        }
-        TransactionDataManagement transMgmt = _coreDriver
-                .getTransDataManagement();
-        HeadEntity head = transMgmt.getEntity(_endDoc);
-        ItemEntity[] items = head.getItems();
-        CurrencyAmount sum = new CurrencyAmount();
-        for (ItemEntity item : items) {
-            if (item.getGLAccount().equals(_investAcc.getRevAccount())) {
-                if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
-                    sum.addTo(item.getAmount());
-                } else {
-                    sum.minusTo(item.getAmount());
-                }
-            }
-        }
+	/**
+	 * get revenue amount
+	 * 
+	 * @return
+	 */
+	public CurrencyAmount getRevAmount() {
+		if (_isClosed == false) {
+			return new CurrencyAmount();
+		}
+		TransactionDataManagement transMgmt = _coreDriver
+				.getTransDataManagement();
+		HeadEntity head = transMgmt.getEntity(_endDoc);
+		ItemEntity[] items = head.getItems();
+		CurrencyAmount sum = new CurrencyAmount();
+		for (ItemEntity item : items) {
+			if (item.getGLAccount().equals(_investAcc.getRevAccount())) {
+				if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+					sum.addTo(item.getAmount());
+				} else {
+					sum.minusTo(item.getAmount());
+				}
+			}
+		}
 
-        sum.negate();
-        return sum;
-    }
+		sum.negate();
+		return sum;
+	}
 
-    /**
-     * commit the investment
-     * 
-     * @param endDate
-     * @param dstAccount
-     * @param amount
-     */
-    public boolean commit(Date endDate,
-            MasterDataIdentity_GLAccount dstAccount, CurrencyAmount totalAmount) {
-        // check amount
-        if (totalAmount.isNegative() || totalAmount.isZero()) {
-            return false;
-        }
+	/**
+	 * commit the investment
+	 * 
+	 * @param endDate
+	 * @param dstAccount
+	 * @param amount
+	 */
+	public boolean commit(CurrencyAmount totalAmount) {
+		// check amount
+		if (totalAmount.isNegative() || totalAmount.isZero()) {
+			return false;
+		}
 
-        HeadEntity headEntity = new HeadEntity(_coreDriver,
-                _coreDriver.getMasterDataManagement());
-        headEntity.setPostingDate(endDate);
-        headEntity.setDocText(InvestmentAccount.END_DOC_DESCP
-                + _investAcc.getName());
-        headEntity.setDocumentType(DocumentType.GL);
+		HeadEntity headEntity = new HeadEntity(_coreDriver,
+				_coreDriver.getMasterDataManagement());
 
-        CurrencyAmount srcAmount = this.getAmount();
-        CurrencyAmount revAmount = CurrencyAmount.minus(totalAmount, srcAmount);
-        try {
-            // investment item
-            ItemEntity investItem = headEntity.createEntity();
-            investItem.setAmount(CreditDebitIndicator.CREDIT, srcAmount);
-            investItem.setGLAccount(_investAcc.getAccount());
+		// get due date
+		Date endDate = _dueDate;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(endDate);
+		MonthIdentity curMonthId = _coreDriver.getCurMonthId();
+		if (curMonthId._fiscalMonth != calendar.get(Calendar.MONTH) - 1
+				|| curMonthId._fiscalYear != calendar.get(Calendar.YEAR)) {
+			calendar.set(Calendar.YEAR, curMonthId._fiscalYear);
+			calendar.set(Calendar.MONTH, curMonthId._fiscalMonth - 1);
+			endDate = calendar.getTime();
+		}
 
-            // revenue item
-            ItemEntity revItem = headEntity.createEntity();
-            CreditDebitIndicator cdIndicator = CreditDebitIndicator.CREDIT;
-            if (revAmount.isZero() == false) {
-                if (revAmount.isNegative()) {
-                    cdIndicator = CreditDebitIndicator.DEBIT;
-                    revAmount.negate();
-                }
+		// get the destination account
+		TransactionDataManagement transMgmt = _coreDriver
+				.getTransDataManagement();
+		HeadEntity entity = transMgmt.getEntity(_startDoc);
+		MasterDataIdentity_GLAccount dstAccount = entity.getItems()[0]
+				.getGLAccount();
 
-                revItem.setAmount(cdIndicator, revAmount);
-                revItem.setGLAccount(_investAcc.getRevAccount());
-            }
+		headEntity.setPostingDate(endDate);
+		headEntity.setDocText(InvestmentAccount.END_DOC_DESCP
+				+ _investAcc.getName());
+		headEntity.setDocumentType(DocumentType.GL);
 
-            // destination item
-            ItemEntity dstItem = headEntity.createEntity();
-            dstItem.setAmount(CreditDebitIndicator.DEBIT, totalAmount);
-            dstItem.setGLAccount(dstAccount);
-        } catch (NullValueNotAcceptable e) {
-            _coreDriver.logDebugInfo(this.getClass(), 164, e.toString(),
-                    MessageType.ERROR);
-            throw new SystemException(e);
-        } catch (MasterDataIdentityNotDefined e) {
-            _coreDriver.logDebugInfo(this.getClass(), 208, e.toString(),
-                    MessageType.ERROR);
-            return false;
-        }
+		CurrencyAmount srcAmount = this.getAmount();
+		CurrencyAmount revAmount = CurrencyAmount.minus(totalAmount, srcAmount);
+		try {
+			// investment item
+			ItemEntity investItem = headEntity.createEntity();
+			investItem.setAmount(CreditDebitIndicator.CREDIT, srcAmount);
+			investItem.setGLAccount(_investAcc.getAccount());
 
-        boolean ret = headEntity.save(true);
-        if (ret == false) {
-            return false;
-        }
+			// revenue item
+			ItemEntity revItem = headEntity.createEntity();
+			CreditDebitIndicator cdIndicator = CreditDebitIndicator.CREDIT;
+			if (revAmount.isZero() == false) {
+				if (revAmount.isNegative()) {
+					cdIndicator = CreditDebitIndicator.DEBIT;
+					revAmount.negate();
+				}
 
-        _isClosed = true;
-        _endDate = endDate;
-        _endDoc = headEntity.getDocIdentity();
+				revItem.setAmount(cdIndicator, revAmount);
+				revItem.setGLAccount(_investAcc.getRevAccount());
+			}
 
-        return true;
-    }
+			// destination item
+			ItemEntity dstItem = headEntity.createEntity();
+			dstItem.setAmount(CreditDebitIndicator.DEBIT, totalAmount);
+			dstItem.setGLAccount(dstAccount);
+		} catch (NullValueNotAcceptable e) {
+			_coreDriver.logDebugInfo(this.getClass(), 164, e.toString(),
+					MessageType.ERROR);
+			throw new SystemException(e);
+		} catch (MasterDataIdentityNotDefined e) {
+			_coreDriver.logDebugInfo(this.getClass(), 208, e.toString(),
+					MessageType.ERROR);
+			return false;
+		}
 
-    /**
-     * is closed
-     * 
-     * @return
-     */
-    public boolean isClosed() {
-        return _isClosed;
-    }
+		boolean ret = headEntity.save(true);
+		if (ret == false) {
+			return false;
+		}
 
-    /**
-     * close the investment item
-     */
-    public void close(Date endDate, CurrencyAmount amount) {
-        _endDate = endDate;
+		_isClosed = true;
+		_endDate = endDate;
+		_endDoc = headEntity.getDocIdentity();
 
-    }
+		return true;
+	}
 
-    @Override
-    public int compareTo(InvestmentItem another) {
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(_startDate);
+	/**
+	 * is closed
+	 * 
+	 * @return
+	 */
+	public boolean isClosed() {
+		return _isClosed;
+	}
 
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.setTime(another._startDate);
-        return calendar1.compareTo(calendar2);
-    }
+	/**
+	 * close the investment item
+	 */
+	public void close(Date endDate, CurrencyAmount amount) {
+		_endDate = endDate;
 
-    /**
-     * to XML
-     * 
-     * @return
-     */
-    public String toXML() {
-        StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append(String.format("%s%s ", XMLTransfer.SINGLE_TAG_LEFT,
-                InvestmentAccount.XML_ITEM));
-        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-        strBuilder.append(String.format("%s=\"%s\" %s=\"%s\" %s=\"%s\" ",
-                XML_START_DATE, format.format(_startDate), XML_DUE_DATE,
-                format.format(_dueDate), XML_START_DOC, _startDoc.toString()));
+	}
 
-        if (_isClosed) {
-            strBuilder.append(String.format("%s=\"true\" %s=\"%s\" %s=\"%s\" ",
-                    XML_IS_CLOSED, XML_END_DATE, format.format(_endDate),
-                    XML_END_DOC, _endDoc.toString()));
-        } else {
-            strBuilder.append(String.format("%s=\"false\" ", XML_IS_CLOSED));
-        }
+	@Override
+	public int compareTo(InvestmentItem another) {
+		Calendar calendar1 = Calendar.getInstance();
+		calendar1.setTime(_startDate);
 
-        strBuilder.append(XMLTransfer.SINGLE_TAG_RIGHT);
+		Calendar calendar2 = Calendar.getInstance();
+		calendar2.setTime(another._startDate);
+		return calendar1.compareTo(calendar2);
+	}
 
-        return strBuilder.toString();
-    }
+	/**
+	 * to XML
+	 * 
+	 * @return
+	 */
+	public String toXML() {
+		StringBuilder strBuilder = new StringBuilder();
+		strBuilder.append(String.format("%s%s ", XMLTransfer.SINGLE_TAG_LEFT,
+				InvestmentAccount.XML_ITEM));
+		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+		strBuilder.append(String.format("%s=\"%s\" %s=\"%s\" %s=\"%s\" ",
+				XML_START_DATE, format.format(_startDate), XML_DUE_DATE,
+				format.format(_dueDate), XML_START_DOC, _startDoc.toString()));
 
-    /**
-     * parse XML to investment element
-     * 
-     * @param elem
-     * @return
-     * @throws InvestmentFileFormatException
-     */
-    public static InvestmentItem parse(CoreDriver coreDriver,
-            InvestmentAccount investAcc, Element elem)
-            throws InvestmentFileFormatException {
-        String startDateStr = elem.getAttribute(XML_START_DATE);
-        String dueDateStr = elem.getAttribute(XML_DUE_DATE);
-        String startDocStr = elem.getAttribute(XML_START_DOC);
-        String isClosedStr = elem.getAttribute(XML_IS_CLOSED);
+		if (_isClosed) {
+			strBuilder.append(String.format("%s=\"true\" %s=\"%s\" %s=\"%s\" ",
+					XML_IS_CLOSED, XML_END_DATE, format.format(_endDate),
+					XML_END_DOC, _endDoc.toString()));
+		} else {
+			strBuilder.append(String.format("%s=\"false\" ", XML_IS_CLOSED));
+		}
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-        try {
-            Date startDate = format.parse(startDateStr);
-            Date dueDate = format.parse(dueDateStr);
-            DocumentIdentity startDoc = DocumentIdentity.parse(startDocStr);
+		strBuilder.append(XMLTransfer.SINGLE_TAG_RIGHT);
 
-            InvestmentItem item = new InvestmentItem(coreDriver, investAcc,
-                    startDate, dueDate, startDoc);
+		return strBuilder.toString();
+	}
 
-            boolean isClosed;
-            if (isClosedStr.toLowerCase().equals("true")) {
-                isClosed = true;
-            } else if (isClosedStr.toLowerCase().equals("false")) {
-                isClosed = false;
-            } else {
-                throw new InvestmentFileFormatException(
-                        "IsClosed Value is invalid: " + isClosedStr);
-            }
+	/**
+	 * parse XML to investment element
+	 * 
+	 * @param elem
+	 * @return
+	 * @throws InvestmentFileFormatException
+	 */
+	public static InvestmentItem parse(CoreDriver coreDriver,
+			InvestmentAccount investAcc, Element elem)
+			throws InvestmentFileFormatException {
+		String startDateStr = elem.getAttribute(XML_START_DATE);
+		String dueDateStr = elem.getAttribute(XML_DUE_DATE);
+		String startDocStr = elem.getAttribute(XML_START_DOC);
+		String isClosedStr = elem.getAttribute(XML_IS_CLOSED);
 
-            if (isClosed == false) {
-                // check the attributes
-                if (elem.hasAttribute(XML_END_DATE)
-                        || elem.hasAttribute(XML_END_DOC)) {
-                    throw new InvestmentFileFormatException(
-                            "Open investemnt item should not contain end doc or end date");
-                }
-            } else {
-                String endDateStr = elem.getAttribute(XML_END_DATE);
-                String endDocStr = elem.getAttribute(XML_END_DOC);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+		try {
+			Date startDate = format.parse(startDateStr);
+			Date dueDate = format.parse(dueDateStr);
+			DocumentIdentity startDoc = DocumentIdentity.parse(startDocStr);
 
-                item._endDate = format.parse(endDateStr);
-                item._endDoc = DocumentIdentity.parse(endDocStr);
-                item._isClosed = true;
-            }
+			InvestmentItem item = new InvestmentItem(coreDriver, investAcc,
+					startDate, dueDate, startDoc);
 
-            return item;
+			boolean isClosed;
+			if (isClosedStr.toLowerCase().equals("true")) {
+				isClosed = true;
+			} else if (isClosedStr.toLowerCase().equals("false")) {
+				isClosed = false;
+			} else {
+				throw new InvestmentFileFormatException(
+						"IsClosed Value is invalid: " + isClosedStr);
+			}
 
-        } catch (ParseException e) {
-            coreDriver.logDebugInfo(InvestmentItem.class, 174, e.toString(),
-                    MessageType.ERROR);
-            throw new InvestmentFileFormatException(e.toString());
-        } catch (DocumentIdentityFormatException e) {
-            coreDriver.logDebugInfo(InvestmentItem.class, 179, e.toString(),
-                    MessageType.ERROR);
-            throw new InvestmentFileFormatException(e.toString());
-        }
-    }
+			if (isClosed == false) {
+				// check the attributes
+				if (elem.hasAttribute(XML_END_DATE)
+						|| elem.hasAttribute(XML_END_DOC)) {
+					throw new InvestmentFileFormatException(
+							"Open investemnt item should not contain end doc or end date");
+				}
+			} else {
+				String endDateStr = elem.getAttribute(XML_END_DATE);
+				String endDocStr = elem.getAttribute(XML_END_DOC);
+
+				item._endDate = format.parse(endDateStr);
+				item._endDoc = DocumentIdentity.parse(endDocStr);
+				item._isClosed = true;
+			}
+
+			return item;
+
+		} catch (ParseException e) {
+			coreDriver.logDebugInfo(InvestmentItem.class, 174, e.toString(),
+					MessageType.ERROR);
+			throw new InvestmentFileFormatException(e.toString());
+		} catch (DocumentIdentityFormatException e) {
+			coreDriver.logDebugInfo(InvestmentItem.class, 179, e.toString(),
+					MessageType.ERROR);
+			throw new InvestmentFileFormatException(e.toString());
+		}
+	}
 
 }
