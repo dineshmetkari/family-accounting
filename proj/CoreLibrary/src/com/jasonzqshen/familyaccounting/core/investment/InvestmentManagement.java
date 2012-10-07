@@ -178,6 +178,21 @@ public class InvestmentManagement extends ManagementBase {
 	}
 
 	/**
+	 * get investment account
+	 * 
+	 * @param identity
+	 * @return
+	 */
+	public InvestmentAccount getInvestmentAccount(
+			MasterDataIdentity_GLAccount identity) {
+		if (_list.containsKey(identity)) {
+			return _list.get(identity);
+		}
+
+		return null;
+	}
+
+	/**
 	 * get investment folder
 	 * 
 	 * @return
