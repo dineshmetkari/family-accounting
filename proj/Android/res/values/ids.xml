@@ -34,5 +34,6 @@
     <item name="dialog_check_balance" type="id"/>
     <item name="dialog_close_ledger_confirm" type="id"/>
     <item name="dialog_cost_details" type="id"/>
+    <item name="dialog_investment_item_commit" type="id"/>
 
 </resources>

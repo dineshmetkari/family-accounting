@@ -10,7 +10,6 @@ import com.jasonzqshen.familyAccounting.entries.GLEntryActivity;
 import com.jasonzqshen.familyAccounting.entries.VendorEntryActivity;
 import com.jasonzqshen.familyAccounting.reports.CostDetailReport;
 import com.jasonzqshen.familyAccounting.reports.DocumentsListActivity;
-import com.jasonzqshen.familyAccounting.reports.GLAccountBalanceReportActivity;
 import com.jasonzqshen.familyAccounting.reports.LiquidityReportsActivity;
 import com.jasonzqshen.familyAccounting.settings.AccountsSettingActivity;
 import com.jasonzqshen.familyAccounting.settings.BusinessAreaSettingActivity;
@@ -59,11 +58,11 @@ public class MainMenuActivity extends ListActivity {
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
                     R.string.menu_liquidity_report, new ActivityAction(
                             LiquidityReportsActivity.class, this)),
-            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
-                    R.string.menu_balance_report, new ActivityAction(
-                            GLAccountBalanceReportActivity.class, this)),
-            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
-                    R.string.menu_profit_loss_report, null),
+            // new MenuAdapterItem(MenuAdapter.ITEM_TYPE,
+            // R.drawable.chart,R.string.menu_balance_report, new
+            // ActivityAction( GLAccountBalanceReportActivity.class, this)),
+            // new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
+            // R.string.menu_profit_loss_report, null),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.chart,
                     R.string.menu_cost_details, new ActivityAction(
                             CostDetailReport.class, this)),
@@ -92,9 +91,10 @@ public class MainMenuActivity extends ListActivity {
                             CustomerSettingActivity.class, this)),
             new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
                     R.string.menu_area_setting, new ActivityAction(
-                            BusinessAreaSettingActivity.class, this)),
-            new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
-                    R.string.menu_advanced, null) };
+                            BusinessAreaSettingActivity.class, this))
+    // , new MenuAdapterItem(MenuAdapter.ITEM_TYPE, R.drawable.settings,
+    // R.string.menu_advanced, null)
+    };
 
     private MenuAdapter _adapter;
 
@@ -159,8 +159,8 @@ public class MainMenuActivity extends ListActivity {
     private void refersh() {
         ArrayList<MenuAdapterItem> items = new ArrayList<MenuAdapterItem>();
         // add customizing entry
-        items.add(CUSTOMIZEING_ENTRY_HEAD);
-        addTemplateEntry(items, this);
+        // items.add(CUSTOMIZEING_ENTRY_HEAD);
+        // addTemplateEntry(items, this);
 
         for (MenuAdapterItem t : _MENU_ITEMS) {
             items.add(t);

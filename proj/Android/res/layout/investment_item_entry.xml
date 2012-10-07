@@ -1,0 +1,187 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/actionbar_background"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin"
+        android:weightSum="1" >
+
+        <TextView
+            android:id="@+id/HomeTextView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.85"
+            android:gravity="center"
+            android:text="@string/entry_investment_entry"
+            android:textAppearance="@style/TextAppearance.ActionBarTitle" />
+
+        <ImageButton
+            android:id="@+id/save_icon"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.15"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/save" />
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin" >
+
+        <TableRow
+            android:id="@+id/startDateRow"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_transparent"
+            android:clickable="true"
+            android:minHeight="48dp"
+            android:weightSum="1" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.4"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingLeft="@dimen/TextLeftMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/entry_start_date"
+                android:textAppearance="@style/TextAppearance.Medium" />
+
+            <TextView
+                android:id="@+id/startDateValue"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.6"
+                android:gravity="right|center_vertical"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingRight="@dimen/TextRightMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/main_test_date"
+                android:textAppearance="@style/TextAppearance.Large" />
+        </TableRow>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/medium_gray" />
+
+        <TableRow
+            android:id="@+id/dueDateRow"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_transparent"
+            android:clickable="true"
+            android:minHeight="48dp"
+            android:weightSum="1" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.4"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingLeft="@dimen/TextLeftMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/entry_due_date"
+                android:textAppearance="@style/TextAppearance.Medium" />
+
+            <TextView
+                android:id="@+id/dueDateValue"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.6"
+                android:gravity="right|center_vertical"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingRight="@dimen/TextRightMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/main_test_date"
+                android:textAppearance="@style/TextAppearance.Large" />
+        </TableRow>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/medium_gray" />
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_transparent"
+            android:clickable="false"
+            android:minHeight="48dp"
+            android:weightSum="1" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.4"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingLeft="@dimen/TextLeftMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/entry_amount"
+                android:textAppearance="@style/TextAppearance.Medium" />
+
+            <EditText
+                android:id="@+id/amountValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:ems="10"
+                android:gravity="center_vertical|right"
+                android:hint="@string/entry_amount_value"
+                android:inputType="numberDecimal" >
+            </EditText>
+        </TableRow>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/medium_gray" />
+
+        <TableRow
+            android:id="@+id/srcRow"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_transparent"
+            android:clickable="true"
+            android:gravity="center_vertical"
+            android:minHeight="48dp"
+            android:weightSum="1" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.4"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/TextBottomMargin"
+                android:paddingLeft="@dimen/TextLeftMargin"
+                android:paddingTop="@dimen/TextTopMargin"
+                android:text="@string/entry_src_account"
+                android:textAppearance="@style/TextAppearance.Medium" />
+
+            <Spinner
+                android:id="@+id/srcValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6" />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>
