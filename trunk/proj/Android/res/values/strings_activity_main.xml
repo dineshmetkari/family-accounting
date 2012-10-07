@@ -9,6 +9,8 @@
     <string name="main_liquidity_label">Liquidity:</string>
     <string name="main_sample_year">2012</string>
     <string name="main_sample_month">2012_08 (1)</string>
+    <string name="main_sample_date">2012.08.01</string>
+    <string name="main_date_to_symbol">~</string>
     <string name="main_home">Home</string>
     <string name="main_chart_title">Cost in current month</string>
     <string name="main_chart_ytitle">Amount</string>

@@ -107,23 +107,23 @@ public class MainActivity extends AbstractCostDetailsActivity {
         switch (item.getItemId()) {
         case R.id.menu_main_menu:
             _handler.navigate2MainMenu();
-            break;
+            return true;
         case R.id.menu_check_balance:
             ActivityAction action = new ActivityAction(
                     CheckBalanceActivity.class, this);
             action.execute();
-            break;
+            return true;
         case R.id.menu_close_ledger:
             showDialog(R.id.dialog_close_ledger_confirm);
-            break;
+            return true;
         case R.id.menu_investment:
             ActivityAction actionInvest = new ActivityAction(
                     InvestmentMainActivity.class, this);
             actionInvest.execute();
-            break;
+            return true;
         }
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -183,7 +183,8 @@ public class MainActivity extends AbstractCostDetailsActivity {
         // revenue value in header
         CurrencyAmount revenueAmount = new CurrencyAmount();
         for (GLAccountGroup group : GLAccountGroup.REVENUE_GROUP) {
-            CurrencyAmount cur = balCol.getGroupBalance(group);
+            CurrencyAmount cur = balCol
+                    .getGroupBalance(group, monthId, monthId);
             cur.negate();
             revenueAmount.addTo(cur);
         }

@@ -16,5 +16,6 @@
     <string name="message_close_confirm">Are you sure to close the ledger?</string>
     <string name="message_id_err">Please enter the valid identity. The identity only contains 0~9 and a~z.</string>
     <string name="message_duplicated_id_err">Duplicated identity. Please enter another identity.</string>
+    <string name="message_investitem_saved">New investment item created.</string>
 
 </resources>

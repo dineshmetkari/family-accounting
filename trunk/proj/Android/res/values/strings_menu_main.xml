@@ -28,5 +28,6 @@
     <string name="menu_close_ledger">Close Ledger</string>
     <string name="menu_investment">Investment</string>
     <string name="menu_cost_details">Cost Details Report</string>
+    <string name="menu_new_investment_item">New Investment Item</string>
 
 </resources>

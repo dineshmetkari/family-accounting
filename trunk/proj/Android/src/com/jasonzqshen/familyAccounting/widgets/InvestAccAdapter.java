@@ -3,7 +3,12 @@ package com.jasonzqshen.familyAccounting.widgets;
 import java.util.ArrayList;
 
 import com.jasonzqshen.familyAccounting.R;
+import com.jasonzqshen.familyAccounting.data.DataCore;
+import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.investment.InvestmentAccount;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
+import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataType;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -53,19 +58,30 @@ public class InvestAccAdapter extends BaseAdapter {
             view = _layoutInflater.inflate(R.layout.investmentaccount_item,
                     null);
         }
+        DataCore dataCore = DataCore.getInstance();
+        CoreDriver coreDriver = dataCore.getCoreDriver();
+        MasterDataManagement mdMgmt = coreDriver.getMasterDataManagement();
+
         InvestmentAccount investAcc = _list.get(position);
 
-        TextView textView = (TextView) view.findViewById(R.id.descp);
-        textView.setText(investAcc.getName());
         TextView amountView = (TextView) view.findViewById(R.id.amountValue);
         amountView.setText(investAcc.getTotalAmount().toString());
+
         TextView revAmountView = (TextView) view
                 .findViewById(R.id.revAmountValue);
         revAmountView.setText(investAcc.getRevAmount().toString());
+
+        // investment account
+        MasterDataBase investAccount = mdMgmt.getMasterData(
+                investAcc.getAccount(), MasterDataType.GL_ACCOUNT);
         TextView accountView = (TextView) view.findViewById(R.id.account);
-        accountView.setText(investAcc.getAccount().toString());
+        accountView.setText(investAccount.getDescp());
+
+        // revenue account
+        MasterDataBase revAccount = mdMgmt.getMasterData(
+                investAcc.getRevAccount(), MasterDataType.GL_ACCOUNT);
         TextView revAccountView = (TextView) view.findViewById(R.id.revAccount);
-        revAccountView.setText(investAcc.getRevAccount().toString());
+        revAccountView.setText(revAccount.getDescp());
 
         return view;
 

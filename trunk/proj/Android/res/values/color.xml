@@ -25,7 +25,6 @@
     <color name="background_light_blue">#E3EEF9</color>
     <color name="margin_blue">#376092</color>
     <color name="list_background">#E6E6E6</color>
-    
     <color name="red_ffaa">#FFAA4643</color>
     <color name="blue_ff45">#FF4572A7</color>
     <color name="green_ff89">#FF89A54E</color>
@@ -44,5 +43,7 @@
     <color name="purple_ffba">#FFBAB0C9</color>
     <color name="outgoing_color">#FFC40110</color>
     <color name="incoming_color">#FF4A8D38</color>
+    <color name="open_item_color">#3dC40110</color>
+    <color name="close_item_color">#3d4A8D38</color>
 
 </resources>
