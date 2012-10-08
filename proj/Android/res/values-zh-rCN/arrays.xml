@@ -1,0 +1,30 @@
+<resources>
+
+    <string-array name="groupby_options">
+        <item>支出科目</item>
+        <item>支出用途</item>
+        <item>日期</item>
+    </string-array>
+    <string-array name="doc_menus">
+        <item>撤销凭证</item>
+    </string-array>
+    <string-array name="display_groupby">
+        <item>按支出项目分类</item>
+        <item>按支出用途分类</item>
+    </string-array>
+    <string-array name="account_group">
+        <item>现金</item>
+        <item>银行活期存款</item>
+        <item>投资</item>
+        <item>预付款</item>
+        <item>固定资产</item>
+        <item>短期贷款</item>
+        <item>长期贷款</item>
+    </string-array>
+    <string-array name="area_priority">
+        <item>低优先级</item>
+        <item>中优先级</item>
+        <item>高优先级</item>
+    </string-array>
+
+</resources>
