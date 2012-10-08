@@ -1,0 +1,24 @@
+<resources>
+
+    <string name="main_equity_label">所有者权益：</string>
+    <string name="main_assert_label">资产：</string>
+    <string name="main_liability_label">负债：</string>
+    <string name="main_cur_cost_label">本月支出：</string>
+    <string name="main_cur_revenue_label">本月收入：</string>
+    <string name="main_chart_label">资产详情：</string>
+    <string name="main_liquidity_label">现金流：</string>
+    <string name="main_sample_year">2012</string>
+    <string name="main_sample_month">2012_08 (1)</string>
+    <string name="main_sample_date">2012.08.01</string>
+    <string name="main_date_to_symbol">~</string>
+    <string name="main_home">家庭财务</string>
+    <string name="main_chart_title">本月支出</string>
+    <string name="main_chart_ytitle">金额</string>
+    <string name="main_accounts">项目</string>
+    <string name="main_business_area">支出用途</string>
+    <string name="main_entries">录入</string>
+    <string name="main_month">本月</string>
+    <string name="main_group_by">显示分类：</string>
+    <string name="main_cost_details">支出详情</string>
+
+</resources>

@@ -82,6 +82,7 @@ public class MainActivity extends AbstractCostDetailsActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         // get text view
         _monthIdentity = (TextView) this.findViewById(R.id.month_identity);
         _yearValue = (TextView) this.findViewById(R.id.year);

@@ -1,0 +1,21 @@
+<resources>
+
+    <string name="message_not_implement">未实现此功能</string>
+    <string name="message_currency_format_error">金额格式错误</string>
+    <string name="message_currency_error">输入金额大于零</string>
+    <string name="message_document_saved">保存完毕，生成记录 %s </string>
+    <string name="message_text_required">文本是必须的</string>
+    <string name="message_template_save_with_failure">模板保存失败</string>
+    <string name="message_template_saved">模板 %s 保存成功</string>
+    <string name="message_reverse_confirm">你确定要撤销 %s?</string>
+    <string name="message_doc_reversed">记录已经被撤销</string>
+    <string name="message_doc_reverse_with_failure">记录撤销失败</string>
+    <string name="message_save_confirm">你确定要保存吗?</string>
+    <string name="message_bank_num_error">银行账户出错，输入16位数字</string>
+    <string name="message_descp_error">描述出错，描述不能为空</string>
+    <string name="message_close_confirm">你确定要执行月底关帐吗？</string>
+    <string name="message_id_err">输入正确标识（ID），标识只能彪悍数字0~9或者字母a~z</string>
+    <string name="message_duplicated_id_err">项同标识已经存在，另输入一个标识</string>
+    <string name="message_investitem_saved">新投资项目创建成功</string>
+
+</resources>

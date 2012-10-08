@@ -1,6 +1,7 @@
 package com.jasonzqshen.familyAccounting.data;
 
 import java.io.File;
+import java.util.Locale;
 
 import android.os.Environment;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.jasonzqshen.familyaccounting.core.exception.format.FormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.TemplateFormatException;
 import com.jasonzqshen.familyaccounting.core.investment.InvestmentManagement;
 import com.jasonzqshen.familyaccounting.core.reports.ReportsManagement;
+import com.jasonzqshen.familyaccounting.core.utils.Language;
 
 /**
  * singleton
@@ -49,6 +51,10 @@ public class DataCore {
         _coreDriver = new CoreDriver();
         _tmpMgmt = new EntryTemplatesManagement(_coreDriver);
         _investMgmt = new InvestmentManagement(_coreDriver);
+
+        if (Locale.SIMPLIFIED_CHINESE.equals(Locale.getDefault())) {
+            _coreDriver.setLanguage(Language.SimpleChinese);
+        }
     }
 
     /**

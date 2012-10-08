@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="balance_report_group_selection">分类：</string>
+    <string name="balance_report_start_month">起始日期：</string>
+    <string name="balance_report_end_month">结束日期：</string>
+    <string name="balance_report_title">余额表</string>
+    <string name="liquidity_report_title">现金流</string>
+    <string name="display_only_liquidity">只显示现金和银行活期存款</string>
+    <string name="liquidity_report_sum">余额：</string>
+    <string name="liquidity_include_prepaid">包含预付项目</string>
+
+</resources>

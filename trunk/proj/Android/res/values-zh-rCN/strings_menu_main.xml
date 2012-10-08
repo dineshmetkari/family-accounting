@@ -1,0 +1,33 @@
+<resources>
+
+    <string name="menu_customizing_entry">自定义记录</string>
+    <string name="menu_customized_entry">设置自定义记录</string>
+    <string name="menu_entry">记录</string>
+    <string name="menu_vendor_entry">支出记录</string>
+    <string name="menu_customer_entry">收入记录</string>
+    <string name="menu_gl_entry">内部转账记录</string>
+    <string name="menu_investment_entry">投资录入</string>
+    <string name="menu_fixed_asset_entry">固定资产录入</string>
+    <string name="menu_report">报表</string>
+    <string name="menu_liquidity_report">现金流表</string>
+    <string name="menu_balance_report">余额表</string>
+    <string name="menu_profit_loss_report">损益表</string>
+    <string name="menu_month_outgoing_report">支出详情表</string>
+    <string name="menu_month_records_report">所有记录</string>
+    <string name="menu_settings">设置</string>
+    <string name="menu_bank_account_setting">银行账户设置</string>
+    <string name="menu_advanced">高级设置</string>
+    <string name="menu_main_menu">主菜单</string>
+    <string name="menu_accounts_setting">余额项目设置</string>
+    <string name="menu_cost_accounts_setting">支出项目设置</string>
+    <string name="menu_rev_accounts_setting">收入项目设置</string>
+    <string name="menu_area_setting">支出用途设置</string>
+    <string name="menu_vendor_setting">商家设置</string>
+    <string name="menu_customer_setting">商户设置</string>
+    <string name="menu_check_balance">余额校对</string>
+    <string name="menu_close_ledger">月底关帐</string>
+    <string name="menu_investment">投资</string>
+    <string name="menu_cost_details">支出详情表</string>
+    <string name="menu_new_investment_item">新投资项</string>
+
+</resources>

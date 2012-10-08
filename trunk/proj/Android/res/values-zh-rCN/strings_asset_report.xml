@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="asset_report_cash">现金</string>
+    <string name="asset_report_bank_account">银行活期存款</string>
+    <string name="asset_report_investment">投资</string>
+    <string name="asset_report_fixed_asset">固定资产</string>
+    <string name="asset_report_prepaid">预付款</string>
+    <string name="asset_report_sum">总计：</string>
+    <string name="asset_report_title">资产报表</string>
+	<string name="asset_report_ytitle">金额</string>
+	<string name="asset_report_xtitle">资产分类</string>
+</resources>
