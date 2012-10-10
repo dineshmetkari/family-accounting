@@ -182,9 +182,9 @@ public class TestUtilities {
         }
     }
 
-    public static final String META_DATA_CONTENT_2012_07 = "cur_month=7\ncur_year=2012\nstart_month=7\nstart_year=2012";
+    public static final String META_DATA_CONTENT_2012_07 = "cur_month=7\ncur_year=2012\nstart_month=7\nstart_year=2012\nversion=1";
 
-    public static final String META_DATA_CONTENT_2012_08 = "cur_month=8\ncur_year=2012\nstart_month=8\nstart_year=2012";
+    public static final String META_DATA_CONTENT_2012_08 = "cur_month=8\ncur_year=2012\nstart_month=8\nstart_year=2012\nversion=1";
 
     public static final String TRAN_CONTENT = "<root />";
 
