@@ -1,0 +1,26 @@
+<resources>
+
+    <string name="md_vendor_other">其他商家</string>
+    <string name="md_customer_other">其他客户</string>
+    <string name="md_busiarea_work">工作用途</string>
+    <string name="md_busiarea_family">家庭往来</string>
+    <string name="md_busiarea_health">健康用途</string>
+    <string name="md_busiarea_friends">朋友人情</string>
+    <string name="md_busiarea_life">日常用途</string>
+    <string name="md_busiarea_entertainment">娱乐</string>
+    <string name="md_gl_cloth">衣服</string>
+    <string name="md_gl_makeup">化妆品</string>
+    <string name="md_gl_dinner">就餐</string>
+    <string name="md_gl_house_expence">居家费用</string>
+    <string name="md_gl_telecommunication">通讯费用</string>
+    <string name="md_gl_electronic_equipment">电子商品</string>
+    <string name="md_gl_grant">现金赠送</string>
+    <string name="md_gl_cash">现金</string>
+    <string name="md_gl_bank_account">银行活期存款</string>
+    <string name="md_gl_deposit">定期存款</string>
+    <string name="md_gl_house">住房</string>
+    <string name="md_gl_car">汽车</string>
+    <string name="md_gl_credit_card">信用卡</string>
+    <string name="md_gl_salary">工资收入</string>
+
+</resources>

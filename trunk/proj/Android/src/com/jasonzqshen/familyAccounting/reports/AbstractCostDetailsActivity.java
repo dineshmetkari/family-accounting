@@ -113,7 +113,7 @@ public abstract class AbstractCostDetailsActivity extends Activity {
         setContentView(getContentView());
 
         try {
-            _dataCore.initialize();
+            _dataCore.initialize(this);
         } catch (ExternalStorageException e) {
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
         } catch (CoreDriverInitException e) {
