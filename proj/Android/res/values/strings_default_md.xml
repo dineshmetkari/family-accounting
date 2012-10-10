@@ -1,0 +1,26 @@
+<resources>
+
+    <string name="md_vendor_other">Other Vendor</string>
+    <string name="md_customer_other">Other Customer</string>
+    <string name="md_busiarea_work">Work</string>
+    <string name="md_busiarea_family">Family</string>
+    <string name="md_busiarea_health">Health</string>
+    <string name="md_busiarea_friends">Freinds</string>
+    <string name="md_busiarea_life">Daily Life</string>
+    <string name="md_busiarea_entertainment">Entertainment</string>
+    <string name="md_gl_cloth">Clothing</string>
+    <string name="md_gl_makeup">Make-up</string>
+    <string name="md_gl_dinner">Dinner</string>
+    <string name="md_gl_house_expence">House Expense</string>
+    <string name="md_gl_telecommunication">Telecommunication</string>
+    <string name="md_gl_electronic_equipment">Electronic Equipment</string>
+    <string name="md_gl_grant">Grant</string>
+    <string name="md_gl_cash">Cash</string>
+    <string name="md_gl_bank_account">Bank Account</string>
+    <string name="md_gl_deposit">Deposit</string>
+    <string name="md_gl_house">House</string>
+    <string name="md_gl_car">Car</string>
+    <string name="md_gl_credit_card">Credit Card</string>
+    <string name="md_gl_salary">Salary</string>
+
+</resources>
