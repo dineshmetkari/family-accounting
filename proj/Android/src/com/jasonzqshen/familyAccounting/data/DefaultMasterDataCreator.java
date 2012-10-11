@@ -84,12 +84,12 @@ public class DefaultMasterDataCreator {
 			new GLPair(R.string.md_gl_bank_account, 9,
 					GLAccountGroup.BANK_ACCOUNT),
 			new GLPair(R.string.md_gl_deposit, 10, GLAccountGroup.INVESTMENT),
-			new GLPair(R.string.md_gl_house, 11, GLAccountGroup.INVESTMENT),
-			new GLPair(R.string.md_gl_car, 12, GLAccountGroup.INVESTMENT),
+			new GLPair(R.string.md_gl_house, 11, GLAccountGroup.ASSETS),
+			new GLPair(R.string.md_gl_car, 12, GLAccountGroup.ASSETS),
 			new GLPair(R.string.md_gl_credit_card, 13,
 					GLAccountGroup.SHORT_LIABILITIES),
-			new GLPair(R.string.md_gl_salary, 14,
-					GLAccountGroup.SALARY) };
+			new GLPair(R.string.md_gl_salary, 14, GLAccountGroup.SALARY),
+			new GLPair(R.string.md_gl_traffic_card, 15, GLAccountGroup.PREPAID) };
 
 	public static void createDefaultMD(Activity activity, CoreDriver coreDriver) {
 		/**
@@ -137,7 +137,7 @@ public class DefaultMasterDataCreator {
 				accountFactory.createNewMasterDataBase(glId,
 						activity.getString(pair.Descp));
 			}
-			
+
 			// store
 			masterDataManagement.store();
 		} catch (ParametersException e) {
