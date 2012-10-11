@@ -22,5 +22,6 @@
     <string name="md_gl_car">Car</string>
     <string name="md_gl_credit_card">Credit Card</string>
     <string name="md_gl_salary">Salary</string>
+    <string name="md_gl_traffic_card">Traffic Card</string>
 
 </resources>

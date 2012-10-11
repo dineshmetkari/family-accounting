@@ -22,5 +22,5 @@
     <string name="md_gl_car">汽车</string>
     <string name="md_gl_credit_card">信用卡</string>
     <string name="md_gl_salary">工资收入</string>
-
+    <string name="md_gl_traffic_card">公交卡</string>
 </resources>
