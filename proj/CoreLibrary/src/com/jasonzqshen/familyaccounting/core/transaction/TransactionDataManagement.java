@@ -1,8 +1,12 @@
 package com.jasonzqshen.familyaccounting.core.transaction;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -346,9 +350,10 @@ public class TransactionDataManagement extends ManagementBase {
                         "Parsed document collections to XML document",
                         MessageType.INFO);
 
-        FileWriter writer;
+        Writer writer;
         try {
-            writer = new FileWriter(file);
+            writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
+
             String header = null;
             Language lang = _coreDriver.getLanguage();
             if (lang == Language.Engilish) {
@@ -566,7 +571,7 @@ public class TransactionDataManagement extends ManagementBase {
                 file.createNewFile();
 
             }
-            FileWriter writer = new FileWriter(file);
+            BufferedWriter writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
             writer.write(xdoc, 0, xdoc.length());
             writer.close();
         } catch (IOException e) {
