@@ -329,7 +329,7 @@ public class HeadEntity implements Comparable<HeadEntity> {
         }
 
         // text
-        String text = elem.getAttribute(TransDataUtils.XML_TEXT);
+        String text = XMLTransfer.parseFromSafeString(elem.getAttribute(TransDataUtils.XML_TEXT));
 
         // document type
         String docTypeStr = elem.getAttribute(TransDataUtils.XML_DOC_TYPE);
@@ -583,8 +583,8 @@ public class HeadEntity implements Comparable<HeadEntity> {
         strBuilder.append(String.format("%s=\"%s\" ", TransDataUtils.XML_DATE,
                 format.format(_postingDate)));
         // text
-        strBuilder.append(String.format("%s=\"%s\" ", XMLTransfer.toSafeString(TransDataUtils.XML_TEXT),
-                _docText));
+        strBuilder.append(String.format("%s=\"%s\" ", TransDataUtils.XML_TEXT,
+        		XMLTransfer.toSafeString(_docText)));
         // document type
         strBuilder.append(String.format("%s=\"%s\" ",
                 TransDataUtils.XML_DOC_TYPE, _type));

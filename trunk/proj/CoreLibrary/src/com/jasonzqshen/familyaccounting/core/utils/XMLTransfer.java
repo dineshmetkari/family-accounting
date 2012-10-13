@@ -21,6 +21,8 @@ public class XMLTransfer {
 	public static final String char_amp = "&amp;";
 	public static final String char_apos = "&apos;";
 	public static final String char_quot = "&quot;";
+	public static final String char_lt = "&lt;";
+	public static final String char_gt = "&gt;";
 
 	public static boolean validCharacters(String str) {
 		return true;
@@ -32,7 +34,23 @@ public class XMLTransfer {
 		
 		rs = rs.replaceAll("&", char_amp);
 		rs = rs.replaceAll("'", char_apos);
-		rs = rs.replaceAll("\"", char_quot);		
+		rs = rs.replaceAll("\"", char_quot);	
+		rs = rs.replaceAll("<", char_lt);
+		rs = rs.replaceAll(">", char_gt);
+		
+		return rs;
+		
+	}
+	
+	public static String parseFromSafeString(String str) {
+		
+		String rs = str;
+		
+		rs = rs.replaceAll(char_amp, "&");
+		rs = rs.replaceAll(char_apos, "'");
+		rs = rs.replaceAll(char_quot, "\"");	
+		rs = rs.replaceAll(char_lt, "<");
+		rs = rs.replaceAll(char_gt, ">");		
 		
 		return rs;
 		
