@@ -33,6 +33,7 @@ import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManageme
 import com.jasonzqshen.familyaccounting.core.utils.DebugInformation;
 import com.jasonzqshen.familyaccounting.core.utils.Language;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
+import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
 /**
  * Back end of the family finance application. The CoreDriver.java is the driver
@@ -416,7 +417,7 @@ public class CoreDriver {
 		}
 
 		try {
-			Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
+			Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file), XMLTransfer.default_charset));
 			writer.write(strBuilder.toString(), 0, strBuilder.length());
 			writer.close();
 		} catch (IOException e) {

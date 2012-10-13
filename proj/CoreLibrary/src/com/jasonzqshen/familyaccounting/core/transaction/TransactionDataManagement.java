@@ -3,7 +3,6 @@ package com.jasonzqshen.familyaccounting.core.transaction;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -352,7 +351,7 @@ public class TransactionDataManagement extends ManagementBase {
 
         Writer writer;
         try {
-            writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
+            writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),XMLTransfer.default_charset));
 
             String header = null;
             Language lang = _coreDriver.getLanguage();
@@ -571,7 +570,7 @@ public class TransactionDataManagement extends ManagementBase {
                 file.createNewFile();
 
             }
-            BufferedWriter writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
+            BufferedWriter writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),XMLTransfer.default_charset));
             writer.write(xdoc, 0, xdoc.length());
             writer.close();
         } catch (IOException e) {

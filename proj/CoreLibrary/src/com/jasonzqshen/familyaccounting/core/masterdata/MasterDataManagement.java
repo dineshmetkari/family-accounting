@@ -3,7 +3,6 @@ package com.jasonzqshen.familyaccounting.core.masterdata;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -34,6 +33,7 @@ import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 import com.jasonzqshen.familyaccounting.core.utils.Language;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
+import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
 /**
  * Master Data Management, which contains all master data factories.
@@ -351,7 +351,7 @@ public class MasterDataManagement extends ManagementBase {
 
 		Writer writer;
 		try {
-			writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
+			writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),XMLTransfer.default_charset));
 			String header = null;
 			Language lang = _coreDriver.getLanguage();
 			if (lang == Language.Engilish) {
@@ -602,7 +602,7 @@ public class MasterDataManagement extends ManagementBase {
 					file.createNewFile();
 				}
 
-				Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
+				Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),XMLTransfer.default_charset));
 				writer.write(xdoc, 0, xdoc.length());
 				writer.close();
 			} catch (NoSuchMethodException e1) {
