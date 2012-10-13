@@ -3,7 +3,6 @@ package com.jasonzqshen.familyaccounting.core.document_entries;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -253,7 +252,7 @@ public class EntryTemplatesManagement extends ManagementBase {
         Writer writer;
         try {
             String xdoc = this.toXMLDoc();
-            writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
+            writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),XMLTransfer.default_charset));
             String header = null;
 			Language lang = _coreDriver.getLanguage();
 			if (lang == Language.Engilish) {

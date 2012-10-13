@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -30,6 +29,7 @@ import com.jasonzqshen.familyaccounting.core.exception.format.InvestmentFileForm
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAccount;
 import com.jasonzqshen.familyaccounting.core.utils.MessageType;
+import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 
 public class InvestmentManagement extends ManagementBase {
 	public static final String METADATA_FILE = "investment_metadata.txt";
@@ -234,7 +234,7 @@ public class InvestmentManagement extends ManagementBase {
 		String filePath = String.format("%s/%s", folderPath, METADATA_FILE);
 		File metaFile = new File(filePath);
 		try {
-			Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(metaFile),"UTF-8"));
+			Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(metaFile),XMLTransfer.default_charset));
 			writer.write(this.getMetaData());
 			writer.close();
 

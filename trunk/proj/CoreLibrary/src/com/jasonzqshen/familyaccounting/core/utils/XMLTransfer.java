@@ -23,6 +23,8 @@ public class XMLTransfer {
 	public static final String char_quot = "&quot;";
 	public static final String char_lt = "&lt;";
 	public static final String char_gt = "&gt;";
+	
+	public static final String default_charset = "UTF-8";
 
 	public static boolean validCharacters(String str) {
 		return true;
