@@ -12,6 +12,8 @@
     <string name="md_gl_makeup">Make-up</string>
     <string name="md_gl_dinner">Dinner</string>
     <string name="md_gl_house_expence">House Expense</string>
+    <string name="md_gl_traffic">Traffic</string>
+    <string name="md_gl_loss">Loss</string>
     <string name="md_gl_telecommunication">Telecommunication</string>
     <string name="md_gl_electronic_equipment">Electronic Equipment</string>
     <string name="md_gl_grant">Grant</string>
@@ -23,5 +25,6 @@
     <string name="md_gl_credit_card">Credit Card</string>
     <string name="md_gl_salary">Salary</string>
     <string name="md_gl_traffic_card">Traffic Card</string>
+    <string name="md_gl_equity">Equity</string>
 
 </resources>

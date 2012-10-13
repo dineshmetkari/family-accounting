@@ -26,7 +26,12 @@ import com.jasonzqshen.familyaccounting.core.utils.Language;
 public class DataCore {
 	public static final String TAG = "DataCore";
 
-	public static final String _PACKAGE = "FamilyLedger";
+	public static final String _ANDROID_ROOT = "Android";
+	public static final String _DATA_ROOT = "data";
+	public static final String _FILES_ROOT = "files";
+	public static final String _PKG = "package";
+	public static final String[] _PATH = new String[] { _ANDROID_ROOT,
+			_DATA_ROOT, _PKG };
 
 	private static DataCore _instance;
 
@@ -53,6 +58,7 @@ public class DataCore {
 		_tmpMgmt = new EntryTemplatesManagement(_coreDriver);
 		_investMgmt = new InvestmentManagement(_coreDriver);
 
+		// set Chinese
 		if (Locale.SIMPLIFIED_CHINESE.equals(Locale.getDefault())) {
 			_coreDriver.setLanguage(Language.SimpleChinese);
 		}
@@ -78,10 +84,16 @@ public class DataCore {
 					"Cannot read or writer to external storage.");
 		}
 
+		// construct root folder for the application
 		File rootDir = Environment.getExternalStorageDirectory();
-		_rootFolder = String.format("%s/%s", rootDir.getAbsolutePath(),
-				_PACKAGE);
+		_rootFolder = establishRootFolder(activity, rootDir.getAbsolutePath());
+		if (_rootFolder == null) {
+			throw new ExternalStorageException(
+					"Cannot create folder for application.");
+		}
+
 		// check root folder exists
+		_rootFolder = String.format("%s/%s", _rootFolder, _FILES_ROOT);
 		boolean initMasterData = false;
 		File rootFolder = new File(_rootFolder);
 		if (rootFolder.exists() == false) {
@@ -152,4 +164,34 @@ public class DataCore {
 	public InvestmentManagement getInvestMgmt() {
 		return _investMgmt;
 	}
+
+	/**
+	 * establish root folder
+	 * 
+	 * @param path
+	 *            of the SD root
+	 * 
+	 * @return folder path
+	 */
+	private String establishRootFolder(Activity activity, String sdRoot) {
+		String folderPath = sdRoot;
+
+		for (String str : _PATH) {
+			String id = str;
+			if (str.equals(_PKG)) {
+				id = activity.getPackageName();
+			}
+
+			folderPath = String.format("%s/%s", folderPath, id);
+			File folder = new File(folderPath);
+			if (folder.exists() == false) {
+				if (folder.mkdir() == false) {
+					return null;
+				}
+			}
+		}
+
+		return folderPath;
+	}
+
 }

@@ -89,7 +89,10 @@ public class DefaultMasterDataCreator {
 			new GLPair(R.string.md_gl_credit_card, 13,
 					GLAccountGroup.SHORT_LIABILITIES),
 			new GLPair(R.string.md_gl_salary, 14, GLAccountGroup.SALARY),
-			new GLPair(R.string.md_gl_traffic_card, 15, GLAccountGroup.PREPAID) };
+			new GLPair(R.string.md_gl_traffic_card, 15, GLAccountGroup.PREPAID),
+			new GLPair(R.string.md_gl_equity, 16, GLAccountGroup.EQUITY),
+			new GLPair(R.string.md_gl_traffic, 17, GLAccountGroup.COST_PURE),
+			new GLPair(R.string.md_gl_loss, 18, GLAccountGroup.COST_ACCI) };
 
 	public static void createDefaultMD(Activity activity, CoreDriver coreDriver) {
 		/**
