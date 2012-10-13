@@ -1,8 +1,12 @@
 package com.jasonzqshen.familyaccounting.core.masterdata;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -345,9 +349,9 @@ public class MasterDataManagement extends ManagementBase {
 			}
 		}
 
-		FileWriter writer;
+		Writer writer;
 		try {
-			writer = new FileWriter(file);
+			writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
 			String header = null;
 			Language lang = _coreDriver.getLanguage();
 			if (lang == Language.Engilish) {
@@ -598,7 +602,7 @@ public class MasterDataManagement extends ManagementBase {
 					file.createNewFile();
 				}
 
-				FileWriter writer = new FileWriter(file);
+				Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
 				writer.write(xdoc, 0, xdoc.length());
 				writer.close();
 			} catch (NoSuchMethodException e1) {
