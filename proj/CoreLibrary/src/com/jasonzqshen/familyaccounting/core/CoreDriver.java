@@ -1,13 +1,17 @@
 package com.jasonzqshen.familyaccounting.core;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
@@ -412,7 +416,7 @@ public class CoreDriver {
 		}
 
 		try {
-			FileWriter writer = new FileWriter(file);
+			Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
 			writer.write(strBuilder.toString(), 0, strBuilder.length());
 			writer.close();
 		} catch (IOException e) {

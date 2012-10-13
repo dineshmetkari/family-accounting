@@ -1,8 +1,12 @@
 package com.jasonzqshen.familyaccounting.core.document_entries;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -246,10 +250,10 @@ public class EntryTemplatesManagement extends ManagementBase {
         String filePath = String.format("%s/%s", _coreDriver.getRootPath(),
                 FILE_NAME);
         File file = new File(filePath);
-        FileWriter writer;
+        Writer writer;
         try {
             String xdoc = this.toXMLDoc();
-            writer = new FileWriter(file);
+            writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file),"UTF-8"));
             String header = null;
 			Language lang = _coreDriver.getLanguage();
 			if (lang == Language.Engilish) {
