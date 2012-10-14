@@ -21,7 +21,7 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
-import com.jasonzqshen.familyaccounting.core.exception.SaveOpenLedgerException;
+import com.jasonzqshen.familyaccounting.core.exception.SaveClosedLedgerException;
 import com.jasonzqshen.familyaccounting.core.exception.StorageException;
 import com.jasonzqshen.familyaccounting.core.exception.format.DocumentIdentityFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.TransactionDataFileFormatException;
@@ -569,12 +569,12 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	 * @param needStore
 	 *            the flag whether to store the memory to disk
 	 * @return
-	 * @throws SaveOpenLedgerException
+	 * @throws SaveClosedLedgerException
 	 * @throws BalanceNotZero
 	 * @throws MandatoryFieldIsMissing
 	 * @throws StorageException
 	 */
-	public void save(boolean needStore) throws SaveOpenLedgerException,
+	public void save(boolean needStore) throws SaveClosedLedgerException,
 			MandatoryFieldIsMissing, BalanceNotZero, StorageException {
 		_coreDriver.logDebugInfo(this.getClass(), 427,
 				"Starting to save document...", MessageType.INFO);

@@ -9,7 +9,7 @@ import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefi
 import com.jasonzqshen.familyaccounting.core.exception.NoFieldNameException;
 import com.jasonzqshen.familyaccounting.core.exception.NotInValueRangeException;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
-import com.jasonzqshen.familyaccounting.core.exception.SaveOpenLedgerException;
+import com.jasonzqshen.familyaccounting.core.exception.SaveClosedLedgerException;
 import com.jasonzqshen.familyaccounting.core.exception.StorageException;
 import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
@@ -227,7 +227,7 @@ public class CustomerEntry implements IDocumentEntry {
 	}
 
 	public void save(boolean store) throws MandatoryFieldIsMissing,
-			SaveOpenLedgerException {
+			SaveClosedLedgerException {
 		if (_isSaved) {
 			return;
 		}
