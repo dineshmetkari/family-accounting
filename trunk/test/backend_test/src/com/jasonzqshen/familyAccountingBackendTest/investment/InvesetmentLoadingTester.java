@@ -245,7 +245,8 @@ public class InvesetmentLoadingTester extends TesterBase {
         calendar.setTime(date);
         assertEquals(2012, calendar.get(Calendar.YEAR));
         assertEquals(6, calendar.get(Calendar.MONTH));
-        assertEquals("month_end_closing", head.getDocText());
+        assertEquals("", head.getDocText());
+        assertEquals(true, head.IsClosed()); // check closed
         assertEquals(DocumentType.GL, head.getDocumentType());
         assertEquals(false, head.IsReversed());
 
