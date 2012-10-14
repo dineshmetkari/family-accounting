@@ -13,8 +13,6 @@ import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
  * 
  */
 public class MonthLedger {
-	public static final String CLOSING_DOC_TAG = "month_end_closing";
-
 	private final Hashtable<DocumentIdentity, HeadEntity> _list;
 	private final MonthIdentity _monthId;
 	private boolean _isClosed;
