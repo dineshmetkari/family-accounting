@@ -211,7 +211,8 @@ public class TransactionDataChecker {
      */
     private static void checkClosingDoc(HeadEntity closingDoc) {
         // text
-        assertEquals(MonthLedger.CLOSING_DOC_TAG, closingDoc.getDocText());
+    	assertEquals(true, closingDoc.IsClosed());
+        assertEquals("", closingDoc.getDocText());
         // items
         ItemEntity[] items = closingDoc.getItems();
         assertEquals(3, items.length);
