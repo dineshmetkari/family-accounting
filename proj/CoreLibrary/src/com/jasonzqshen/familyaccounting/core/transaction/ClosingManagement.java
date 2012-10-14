@@ -7,8 +7,11 @@ import java.util.Date;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.exception.BalanceNotZero;
+import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
+import com.jasonzqshen.familyaccounting.core.exception.SaveOpenLedgerException;
+import com.jasonzqshen.familyaccounting.core.exception.StorageException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
@@ -23,7 +26,7 @@ public class ClosingManagement {
 	private final TransactionDataManagement _transDataMgmt;
 
 	private final CoreDriver _coreDriver;
-	
+
 	ClosingManagement(CoreDriver coreDriver,
 			TransactionDataManagement transDataMgmt) {
 		_taskMgmts = new ArrayList<IClosingTaskManagement>();
@@ -59,6 +62,7 @@ public class ClosingManagement {
 	 * 
 	 * @param monthLedger
 	 * @return equity document
+	 * @throws SaveOpenLedgerException
 	 */
 	HeadEntity closeLedger() {
 		MonthLedger openLedger = _transDataMgmt.getCurrentLedger();
@@ -136,11 +140,24 @@ public class ClosingManagement {
 			equityItem.setAmount(indicator, balance);
 		}
 
-		boolean ret = headEntity.save(true);
-		if (ret == false) {
-			_coreDriver.logDebugInfo(this.getClass(), 135,
-					"Equity document save with failure.", MessageType.ERROR);
-			throw new SystemException(new BalanceNotZero());
+		try {
+			headEntity.save(true);
+		} catch (StorageException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 146,
+					"Storage Exception, cannot store data to file system.",
+					MessageType.WARNING);
+		} catch (MandatoryFieldIsMissing e) {
+			_coreDriver.logDebugInfo(this.getClass(), 146,
+					"Mandatory field is missing.", MessageType.ERROR);
+			throw new SystemException(e);
+		} catch (BalanceNotZero e) {
+			_coreDriver.logDebugInfo(this.getClass(), 155,
+					"Balance is not zero", MessageType.ERROR);
+			throw new SystemException(e);
+		} catch (SaveOpenLedgerException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 158,
+					"Save in close ledger", MessageType.ERROR);
+			throw new SystemException(e);
 		}
 
 		return headEntity;

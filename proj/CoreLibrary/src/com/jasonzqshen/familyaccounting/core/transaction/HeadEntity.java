@@ -21,6 +21,8 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityInvalidChar;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityNoData;
 import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
+import com.jasonzqshen.familyaccounting.core.exception.SaveOpenLedgerException;
+import com.jasonzqshen.familyaccounting.core.exception.StorageException;
 import com.jasonzqshen.familyaccounting.core.exception.format.DocumentIdentityFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.TransactionDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
@@ -567,24 +569,17 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	 * @param needStore
 	 *            the flag whether to store the memory to disk
 	 * @return
+	 * @throws SaveOpenLedgerException
+	 * @throws BalanceNotZero
+	 * @throws MandatoryFieldIsMissing
+	 * @throws StorageException
 	 */
-	public boolean save(boolean needStore) {
+	public void save(boolean needStore) throws SaveOpenLedgerException,
+			MandatoryFieldIsMissing, BalanceNotZero, StorageException {
 		_coreDriver.logDebugInfo(this.getClass(), 427,
 				"Starting to save document...", MessageType.INFO);
 
-		try {
-			checkBeforeSave();
-		} catch (MandatoryFieldIsMissing e) {
-			_coreDriver.logDebugInfo(this.getClass(), 433,
-					"Check failed during saving document " + e.toString(),
-					MessageType.ERROR);
-			return false;
-		} catch (BalanceNotZero e) {
-			_coreDriver.logDebugInfo(this.getClass(), 437,
-					"Check failed during saving document " + e.toString(),
-					MessageType.INFO);
-			return false;
-		}
+		checkBeforeSave();
 
 		TransactionDataManagement transaction = _coreDriver
 				.getTransDataManagement();
@@ -595,11 +590,9 @@ public class HeadEntity implements Comparable<HeadEntity> {
 						450,
 						"Check is OK. Then get the transaction management and then all the transaction to save the document.",
 						MessageType.INFO);
-		if (transaction.saveDocument(this, needStore) == false) {
-			_coreDriver.logDebugInfo(this.getClass(), 454,
-					"Save document with errors", MessageType.INFO);
-			return false;
-		}
+
+		// store
+		transaction.saveDocument(this, needStore);
 
 		String info = String.format("Document %s in %s saved successfully.",
 				_docNumber, _monthId);
@@ -608,7 +601,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 
 		// raise saved document
 		_coreDriver.getListenersManagement().saveDoc(this);
-		return true;
 	}
 
 	/**

@@ -247,8 +247,11 @@ public class TransactionDataManagement extends ManagementBase {
 	 * save document
 	 * 
 	 * @param head
+	 * @throws SaveOpenLedgerException
+	 * @throws StorageException
 	 */
-	boolean saveDocument(HeadEntity head, boolean needStroe) {
+	void saveDocument(HeadEntity head, boolean needStroe)
+			throws SaveOpenLedgerException, StorageException {
 		_coreDriver.logDebugInfo(this.getClass(), 231,
 				"Call transaction to save the document", MessageType.INFO);
 
@@ -265,13 +268,13 @@ public class TransactionDataManagement extends ManagementBase {
 			if (ledger == null) {
 				_coreDriver.logDebugInfo(this.getClass(), 239,
 						"Error in document month identity", MessageType.ERROR);
-				return false;
+				throw new SaveOpenLedgerException();
 			}
 
 			if (ledger.isClosed()) {
 				_coreDriver.logDebugInfo(this.getClass(), 239,
 						"Ledger is closed.", MessageType.ERROR);
-				return false;
+				throw new SaveOpenLedgerException();
 			}
 
 			// set document number
@@ -317,8 +320,6 @@ public class TransactionDataManagement extends ManagementBase {
 		_coreDriver.logDebugInfo(this.getClass(), 278,
 				"Call transaction to save the document successfully",
 				MessageType.INFO);
-
-		return true;
 	}
 
 	/**
@@ -327,7 +328,7 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @param monthId
 	 * @throws SystemException
 	 */
-	public void store(MonthIdentity monthId) {
+	public void store(MonthIdentity monthId) throws StorageException {
 		// store master data
 		_coreDriver.logDebugInfo(this.getClass(), 293,
 				String.format("Start storing %s to disk", monthId),
@@ -351,7 +352,7 @@ public class TransactionDataManagement extends ManagementBase {
 			} catch (IOException e) {
 				_coreDriver.logDebugInfo(this.getClass(), 304, e.toString(),
 						MessageType.ERROR);
-				throw new SystemException(e);
+				throw new StorageException();
 			}
 		}
 		String xdoc = collection.toXML();
@@ -390,8 +391,10 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @param docId
 	 * @param msgs
 	 * @return
+	 * @throws SaveOpenLedgerException
 	 */
-	public HeadEntity reverseDocument(DocumentIdentity docId) {
+	public HeadEntity reverseDocument(DocumentIdentity docId)
+			throws SaveOpenLedgerException {
 		_coreDriver.logDebugInfo(this.getClass(), 348,
 				"Start reversing document " + docId.toString(),
 				MessageType.INFO);
@@ -437,9 +440,20 @@ public class TransactionDataManagement extends ManagementBase {
 
 			_coreDriver.logDebugInfo(this.getClass(), 392,
 					"Save the reverse document", MessageType.INFO);
-			boolean ret = head.save(false);
-			if (ret == false) {
-				return null;
+			try {
+				head.save(false);
+			} catch (MandatoryFieldIsMissing e) {
+				_coreDriver.logDebugInfo(this.getClass(), 448, e.toString(),
+						MessageType.ERROR);
+				throw new SystemException(e);
+			} catch (BalanceNotZero e) {
+				_coreDriver.logDebugInfo(this.getClass(), 452,
+						"Balance is not zero", MessageType.ERROR);
+				throw new SystemException(e);
+			} catch (StorageException e) {
+				_coreDriver.logDebugInfo(this.getClass(), 452,
+						"Dirty data does not store to file system",
+						MessageType.ERROR);
 			}
 
 			_coreDriver.logDebugInfo(this.getClass(), 399,
@@ -453,7 +467,13 @@ public class TransactionDataManagement extends ManagementBase {
 			_coreDriver.logDebugInfo(this.getClass(), 399,
 					"Store memory to disk during reverse document",
 					MessageType.INFO);
-			this.store(head.getMonthId());
+			try {
+				this.store(head.getMonthId());
+			} catch (StorageException e) {
+				_coreDriver.logDebugInfo(this.getClass(), 452,
+						"Dirty data does not store to file system",
+						MessageType.ERROR);
+			}
 
 			String info = String.format(
 					"Document %s is reversed by document %s.",
@@ -617,6 +637,11 @@ public class TransactionDataManagement extends ManagementBase {
 
 		_coreDriver.getListenersManagement().closeLedger(_openLedger);
 
-		this.store(_coreDriver.getCurMonthId());
+		try {
+			this.store(_coreDriver.getCurMonthId());
+		} catch (StorageException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 643,
+					"Dirty data is not in file system.", MessageType.WARNING);
+		}
 	}
 }
