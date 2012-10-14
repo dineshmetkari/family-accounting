@@ -12,7 +12,7 @@ import com.jasonzqshen.familyaccounting.core.exception.BalanceNotZero;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
-import com.jasonzqshen.familyaccounting.core.exception.SaveOpenLedgerException;
+import com.jasonzqshen.familyaccounting.core.exception.SaveClosedLedgerException;
 import com.jasonzqshen.familyaccounting.core.exception.StorageException;
 import com.jasonzqshen.familyaccounting.core.exception.format.DocumentIdentityFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.InvestmentFileFormatException;
@@ -251,7 +251,7 @@ public class InvestmentItem implements Comparable<InvestmentItem> {
 
 		try {
 			headEntity.save(true);
-		} catch (SaveOpenLedgerException e) {
+		} catch (SaveClosedLedgerException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 255,
 					"Save in closed ledger.", MessageType.ERROR);
 			throw new SystemException(e);

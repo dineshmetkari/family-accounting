@@ -247,11 +247,11 @@ public class TransactionDataManagement extends ManagementBase {
 	 * save document
 	 * 
 	 * @param head
-	 * @throws SaveOpenLedgerException
+	 * @throws SaveClosedLedgerException
 	 * @throws StorageException
 	 */
 	void saveDocument(HeadEntity head, boolean needStroe)
-			throws SaveOpenLedgerException, StorageException {
+			throws SaveClosedLedgerException, StorageException {
 		_coreDriver.logDebugInfo(this.getClass(), 231,
 				"Call transaction to save the document", MessageType.INFO);
 
@@ -268,13 +268,13 @@ public class TransactionDataManagement extends ManagementBase {
 			if (ledger == null) {
 				_coreDriver.logDebugInfo(this.getClass(), 239,
 						"Error in document month identity", MessageType.ERROR);
-				throw new SaveOpenLedgerException();
+				throw new SaveClosedLedgerException();
 			}
 
 			if (ledger.isClosed()) {
 				_coreDriver.logDebugInfo(this.getClass(), 239,
 						"Ledger is closed.", MessageType.ERROR);
-				throw new SaveOpenLedgerException();
+				throw new SaveClosedLedgerException();
 			}
 
 			// set document number
@@ -391,21 +391,35 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @param docId
 	 * @param msgs
 	 * @return
-	 * @throws SaveOpenLedgerException
+	 * @throws SaveClosedLedgerException
+	 * @throws ReverseOrgDocNotExistException
+	 * @throws DocReservedException
 	 */
 	public HeadEntity reverseDocument(DocumentIdentity docId)
-			throws SaveOpenLedgerException {
+			throws SaveClosedLedgerException, ReverseOrgDocNotExistException,
+			DocReservedException {
 		_coreDriver.logDebugInfo(this.getClass(), 348,
 				"Start reversing document " + docId.toString(),
 				MessageType.INFO);
 
+		// ------------------------------------------
+		// check document
+		HeadEntity orgHead = this.getEntity(docId);
+		if (orgHead == null) {
+			_coreDriver.logDebugInfo(this.getClass(), 348, "No such document",
+					MessageType.ERROR);
+			throw new ReverseOrgDocNotExistException();
+		}
+		if (orgHead.IsReversed()) {
+			_coreDriver.logDebugInfo(this.getClass(), 348,
+					"Document has been reserved before", MessageType.ERROR);
+			throw new DocReservedException();
+		}
+		if (!_coreDriver.getCurMonthId().equals(orgHead.getMonthId())) {
+			throw new SaveClosedLedgerException();
+		}
+
 		try {
-			HeadEntity orgHead = this.getEntity(docId);
-			if (orgHead == null) {
-				_coreDriver.logDebugInfo(this.getClass(), 348,
-						"No such document", MessageType.WARNING);
-				return null;
-			}
 
 			HeadEntity head = new HeadEntity(_coreDriver, _masterDataMgmt);
 			head.setPostingDate(orgHead.getPostingDate());

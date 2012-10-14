@@ -10,7 +10,7 @@ import com.jasonzqshen.familyaccounting.core.exception.BalanceNotZero;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
-import com.jasonzqshen.familyaccounting.core.exception.SaveOpenLedgerException;
+import com.jasonzqshen.familyaccounting.core.exception.SaveClosedLedgerException;
 import com.jasonzqshen.familyaccounting.core.exception.StorageException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
@@ -154,7 +154,7 @@ public class ClosingManagement {
 			_coreDriver.logDebugInfo(this.getClass(), 155,
 					"Balance is not zero", MessageType.ERROR);
 			throw new SystemException(e);
-		} catch (SaveOpenLedgerException e) {
+		} catch (SaveClosedLedgerException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 158,
 					"Save in close ledger", MessageType.ERROR);
 			throw new SystemException(e);

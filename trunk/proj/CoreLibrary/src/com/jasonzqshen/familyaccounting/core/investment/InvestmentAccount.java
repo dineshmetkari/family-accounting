@@ -20,7 +20,7 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.MasterDataIdentityNotDefined;
 import com.jasonzqshen.familyaccounting.core.exception.NullValueNotAcceptable;
-import com.jasonzqshen.familyaccounting.core.exception.SaveOpenLedgerException;
+import com.jasonzqshen.familyaccounting.core.exception.SaveClosedLedgerException;
 import com.jasonzqshen.familyaccounting.core.exception.StorageException;
 import com.jasonzqshen.familyaccounting.core.exception.format.InvestmentFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
@@ -203,7 +203,7 @@ public class InvestmentAccount implements Comparable<InvestmentAccount> {
 
 		try {
 			headEntity.save(true);
-		} catch (SaveOpenLedgerException e) {
+		} catch (SaveClosedLedgerException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 255,
 					"Save in closed ledger.", MessageType.ERROR);
 			throw new SystemException(e);

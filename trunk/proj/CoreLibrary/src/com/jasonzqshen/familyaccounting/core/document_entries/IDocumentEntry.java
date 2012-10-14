@@ -3,7 +3,7 @@ package com.jasonzqshen.familyaccounting.core.document_entries;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.NoFieldNameException;
 import com.jasonzqshen.familyaccounting.core.exception.NotInValueRangeException;
-import com.jasonzqshen.familyaccounting.core.exception.SaveOpenLedgerException;
+import com.jasonzqshen.familyaccounting.core.exception.SaveClosedLedgerException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 
@@ -36,7 +36,7 @@ public interface IDocumentEntry {
 	 * @throws MandatoryFieldIsMissing
 	 */
 	void save(boolean saved) throws MandatoryFieldIsMissing,
-			SaveOpenLedgerException;
+			SaveClosedLedgerException;
 
 	/**
 	 * is saved
