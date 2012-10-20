@@ -21,64 +21,63 @@ import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 
 public class CreateWithTemplateTester extends TesterBase {
-    EntryTemplatesManagement tempMgmt;
+	EntryTemplatesManagement tempMgmt;
 
-    @Override
-    protected void doTest(CoreDriver coreDriver) throws Exception {
-        TestUtilities
-                .establishFolder2012_07(TestUtilities.TEST_ROOT_CREATE_WITH_TEMPLATE);
-        tempMgmt = new EntryTemplatesManagement(coreDriver);
-        coreDriver.setRootPath(TestUtilities.TEST_ROOT_CREATE_WITH_TEMPLATE);
-        assertEquals(true, coreDriver.isInitialized());
+	@Override
+	protected void doTest(CoreDriver coreDriver) throws Exception {
+		TestUtilities.establishFolder2012_07(
+				TestUtilities.TEST_ROOT_CREATE_WITH_TEMPLATE, coreDriver);
+		tempMgmt = new EntryTemplatesManagement(coreDriver);
+		//coreDriver.setRootPath(TestUtilities.TEST_ROOT_CREATE_WITH_TEMPLATE);
+		assertEquals(true, coreDriver.isInitialized());
 
-        MasterDataCreater.createMasterData(coreDriver);
+		MasterDataCreater.createMasterData(coreDriver);
 
-        // create templates
+		// create templates
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
-        // create document with template
-        tempMgmt.initialize();
-        TemplatesCreateTester.createTemplate(coreDriver, tempMgmt);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
+		// create document with template
+		tempMgmt.initialize();
+		TemplatesCreateTester.createTemplate(coreDriver, tempMgmt);
 
-        Date date = format.parse("2012.07.02");
+		Date date = format.parse("2012.07.02");
 
-        VendorEntry vendor = (VendorEntry) tempMgmt.getEntryTemplate(1)
-                .generateEntry();
-        vendor.setValue(VendorEntry.POSTING_DATE, date);
-        vendor.save(true);
+		VendorEntry vendor = (VendorEntry) tempMgmt.getEntryTemplate(1)
+				.generateEntry();
+		vendor.setValue(VendorEntry.POSTING_DATE, date);
+		vendor.save(true);
 
-        CustomerEntry customer = (CustomerEntry) tempMgmt.getEntryTemplate(3)
-                .generateEntry();
-        customer.setValue(CustomerEntry.POSTING_DATE, date);
-        customer.setValue(CustomerEntry.AMOUNT, TestData.AMOUNT_CUSTOMER);
-        customer.save(true);
+		CustomerEntry customer = (CustomerEntry) tempMgmt.getEntryTemplate(3)
+				.generateEntry();
+		customer.setValue(CustomerEntry.POSTING_DATE, date);
+		customer.setValue(CustomerEntry.AMOUNT, TestData.AMOUNT_CUSTOMER);
+		customer.save(true);
 
-        GLAccountEntry glEntry = (GLAccountEntry) tempMgmt.getEntryTemplate(2)
-                .generateEntry();
-        glEntry.setValue(GLAccountEntry.POSTING_DATE, date);
-        glEntry.setValue(GLAccountEntry.AMOUNT, TestData.AMOUNT_GL);
-        glEntry.save(true);
+		GLAccountEntry glEntry = (GLAccountEntry) tempMgmt.getEntryTemplate(2)
+				.generateEntry();
+		glEntry.setValue(GLAccountEntry.POSTING_DATE, date);
+		glEntry.setValue(GLAccountEntry.AMOUNT, TestData.AMOUNT_GL);
+		glEntry.save(true);
 
-        TransactionDataManagement transManagement = coreDriver
-                .getTransDataManagement();
-        transManagement.monthEndClose();
+		TransactionDataManagement transManagement = coreDriver
+				.getTransDataManagement();
 
-        // month 08
-        date = format.parse("2012.08.02");
-        HeadEntity headEntity = DocumentCreater.createVendorDoc(coreDriver,
-                date);
-        DocumentIdentity docId = headEntity.getDocIdentity();
-        transManagement.reverseDocument(docId);
-    }
+		// month 08
+		date = format.parse("2012.08.02");
+		HeadEntity headEntity = DocumentCreater.createVendorDoc(coreDriver,
+				date);
+		DocumentIdentity docId = headEntity.getDocIdentity();
+		transManagement.reverseDocument(docId);
+	}
 
-    @Override
-    protected void check(CoreDriver coreDriver) throws Exception {
-        TransactionDataChecker.checkTransactionData(coreDriver);
+	@Override
+	protected void check(CoreDriver coreDriver) throws Exception {
+		TransactionDataChecker.checkTransactionData(coreDriver);
 
-        // reload
-        coreDriver.restart();
-        TransactionDataChecker.checkTransactionData(coreDriver);
+		// reload
+		coreDriver.restart();
+		TransactionDataChecker.checkTransactionData(coreDriver);
 
-    }
+	}
 
 }

@@ -37,8 +37,6 @@ public class InitializeWithEmptyFolderTester extends TesterBase {
 		assertTrue(null != tranData);
 		MonthIdentity[] monthIds = tranData.getAllMonthIds();
 		assertEquals(1, monthIds.length);
-
-		assertEquals(0, tranData.getCurrentLedger().getCount());
 	}
 
 	@Override

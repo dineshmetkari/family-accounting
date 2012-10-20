@@ -22,9 +22,9 @@ public class ModificationTester extends TesterBase {
 	protected void doTest(CoreDriver coreDriver) throws Exception {
 		// -------------------------------------------------------
 		// initialize test
-		TestUtilities
-				.establishFolder2012_07(TestUtilities.TEST_ROOT_LEDGER_CLOSING);
-		coreDriver.setRootPath(TestUtilities.TEST_ROOT_LEDGER_CLOSING);
+		TestUtilities.establishFolder2012_07(
+				TestUtilities.TEST_ROOT_LEDGER_CLOSING, coreDriver);
+		//coreDriver.setRootPath(TestUtilities.TEST_ROOT_LEDGER_CLOSING);
 		assertEquals(true, coreDriver.isInitialized());
 
 		// -------------------------------------------------------
@@ -44,7 +44,6 @@ public class ModificationTester extends TesterBase {
 		// month close
 		TransactionDataManagement transManagement = coreDriver
 				.getTransDataManagement();
-		transManagement.monthEndClose();
 
 		coreDriver.restart();
 

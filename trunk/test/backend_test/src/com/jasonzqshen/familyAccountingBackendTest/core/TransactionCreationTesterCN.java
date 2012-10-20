@@ -27,16 +27,16 @@ public class TransactionCreationTesterCN extends TesterBase {
 
 	@Override
 	protected void doTest(CoreDriver coreDriver) throws Exception {
-		TestUtilities
-				.establishFolder2012_07(TestUtilities.TEST_ROOT_LEDGER_CLOSING_CN);
-		coreDriver.setRootPath(TestUtilities.TEST_ROOT_LEDGER_CLOSING_CN);
+		TestUtilities.establishFolder2012_07(
+				TestUtilities.TEST_ROOT_LEDGER_CLOSING_CN, coreDriver);
+		//coreDriver.setRootPath(TestUtilities.TEST_ROOT_LEDGER_CLOSING_CN);
 		coreDriver.setLanguage(Language.SimpleChinese);
 		assertEquals(true, coreDriver.isInitialized());
-		
+
 		MasterDataCreaterCN.createMasterData(coreDriver);
 		// check master data
 		MasterDataCheckerCN.checkMasterData(coreDriver);
-		
+
 		SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
 
 		// month 08, reverse document
@@ -48,7 +48,6 @@ public class TransactionCreationTesterCN extends TesterBase {
 
 		TransactionDataManagement transManagement = coreDriver
 				.getTransDataManagement();
-		transManagement.monthEndClose();
 
 		coreDriver.restart();
 
