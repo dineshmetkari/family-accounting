@@ -5,21 +5,21 @@ import java.util.ArrayList;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataFactoryBase;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
-import com.jasonzqshen.familyaccounting.core.transaction.MonthLedger;
 
 public class ListenersManagement {
 	private final ArrayList<LoadDocumentListener> _loadDocumentListeners;
 	private final ArrayList<LoadMasterDataListener> _loadMasterDataListeners;
 	private final ArrayList<CreateMasterDataListener> _createMasterDataListeners;
 	private final ArrayList<SaveDocumentListener> _saveDocListeners;
-	private final ArrayList<LedgerCloseListener> _ledgerCloseListeners;
+
+	// private final ArrayList<LedgerCloseListener> _ledgerCloseListeners;
 
 	public ListenersManagement() {
 		_loadDocumentListeners = new ArrayList<LoadDocumentListener>();
 		_loadMasterDataListeners = new ArrayList<LoadMasterDataListener>();
 		_createMasterDataListeners = new ArrayList<CreateMasterDataListener>();
 		_saveDocListeners = new ArrayList<SaveDocumentListener>();
-		_ledgerCloseListeners = new ArrayList<LedgerCloseListener>();
+		// _ledgerCloseListeners = new ArrayList<LedgerCloseListener>();
 	}
 
 	/**
@@ -68,9 +68,9 @@ public class ListenersManagement {
 	 * @param listener
 	 *            load document listener
 	 */
-	public void addCloseLedgerListener(LedgerCloseListener listener) {
-		_ledgerCloseListeners.add(listener);
-	}
+	//public void addCloseLedgerListener(LedgerCloseListener listener) {
+	//	_ledgerCloseListeners.add(listener);
+	//}
 
 	/**
 	 * raise save documents successfully
@@ -119,9 +119,9 @@ public class ListenersManagement {
 		}
 	}
 
-	public void closeLedger(MonthLedger ledger) {
-		for (LedgerCloseListener l : _ledgerCloseListeners) {
-			l.onLedgerCloseListener(ledger);
-		}
-	}
+	//public void closeLedger(MonthLedger ledger) {
+	//	for (LedgerCloseListener l : _ledgerCloseListeners) {
+	//		l.onLedgerCloseListener(ledger);
+	//	}
+	//}
 }

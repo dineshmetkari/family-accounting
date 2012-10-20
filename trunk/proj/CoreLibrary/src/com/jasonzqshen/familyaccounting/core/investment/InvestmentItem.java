@@ -21,7 +21,6 @@ import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity_GLAcc
 import com.jasonzqshen.familyaccounting.core.transaction.DocumentIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.ItemEntity;
-import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CreditDebitIndicator;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
@@ -192,15 +191,6 @@ public class InvestmentItem implements Comparable<InvestmentItem> {
 
 		// get due date
 		Date endDate = _dueDate;
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(endDate);
-		MonthIdentity curMonthId = _coreDriver.getCurMonthId();
-		if (curMonthId._fiscalMonth != calendar.get(Calendar.MONTH) - 1
-				|| curMonthId._fiscalYear != calendar.get(Calendar.YEAR)) {
-			calendar.set(Calendar.YEAR, curMonthId._fiscalYear);
-			calendar.set(Calendar.MONTH, curMonthId._fiscalMonth - 1);
-			endDate = calendar.getTime();
-		}
 
 		// get the destination account
 		TransactionDataManagement transMgmt = _coreDriver

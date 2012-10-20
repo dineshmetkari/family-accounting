@@ -579,6 +579,7 @@ public class HeadEntity implements Comparable<HeadEntity> {
 		_coreDriver.logDebugInfo(this.getClass(), 427,
 				"Starting to save document...", MessageType.INFO);
 
+		// check before save
 		checkBeforeSave();
 
 		TransactionDataManagement transaction = _coreDriver

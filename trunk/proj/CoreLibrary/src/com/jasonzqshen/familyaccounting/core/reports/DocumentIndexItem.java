@@ -1,11 +1,15 @@
 package com.jasonzqshen.familyaccounting.core.reports;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
 
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
+import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
+import com.jasonzqshen.familyaccounting.core.exception.FiscalYearRangeException;
+import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
 import com.jasonzqshen.familyaccounting.core.transaction.HeadEntity;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
@@ -69,7 +73,7 @@ public class DocumentIndexItem {
 			startId = _coreDriver.getStartMonthId();
 		}
 		if (endId == null) {
-			endId = _coreDriver.getCurMonthId();
+			endId = _coreDriver.getCurCalendarMonthId();
 		}
 		ArrayList<HeadEntity> ret = new ArrayList<HeadEntity>();
 		for (HeadEntity head : _list) {
@@ -99,7 +103,7 @@ public class DocumentIndexItem {
 			startId = _coreDriver.getStartMonthId();
 		}
 		if (endId == null) {
-			endId = _coreDriver.getCurMonthId();
+			endId = _coreDriver.getCurCalendarMonthId();
 		}
 		ArrayList<HeadEntity> ret = new ArrayList<HeadEntity>();
 		for (HeadEntity head : _list) {

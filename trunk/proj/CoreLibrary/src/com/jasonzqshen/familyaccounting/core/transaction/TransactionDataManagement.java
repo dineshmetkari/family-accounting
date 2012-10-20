@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -34,13 +32,11 @@ public class TransactionDataManagement extends ManagementBase {
 
 	private final Hashtable<MonthIdentity, MonthLedger> _list;
 
-	private MonthLedger _openLedger; // current open ledger
+	// private MonthLedger _openLedger; // current open ledger
 
 	private final MasterDataManagement _masterDataMgmt;
 
 	private final GLAccountBalanceCollection _glAccBalCol;
-
-	private final ClosingManagement _clsMgmt;
 
 	/**
 	 * constructor
@@ -55,16 +51,6 @@ public class TransactionDataManagement extends ManagementBase {
 
 		_glAccBalCol = new GLAccountBalanceCollection(_coreDriver,
 				_masterDataMgmt);
-		_clsMgmt = new ClosingManagement(_coreDriver, this);
-	}
-
-	/**
-	 * get closing management
-	 * 
-	 * @return
-	 */
-	public ClosingManagement getClsMgmt() {
-		return _clsMgmt;
 	}
 
 	/**
@@ -83,29 +69,25 @@ public class TransactionDataManagement extends ManagementBase {
 	 *             bug
 	 */
 	public void initialize() throws TransactionDataFileFormatException {
-
-		MonthIdentity cureMonthId = _coreDriver.getCurMonthId();
-		_coreDriver.logDebugInfo(
-				this.getClass(),
-				75,
-				String.format("Current month identity is %s",
-						cureMonthId.toString()), MessageType.INFO);
-
 		_coreDriver.logDebugInfo(this.getClass(), 75, String.format(
 				"Starting month identity is %s", _coreDriver.getStartMonthId()
 						.toString()), MessageType.INFO);
-		try {
-			for (MonthIdentity startId = _coreDriver.getStartMonthId(); startId
-					.compareTo(cureMonthId) < 0; startId = startId.addMonth()) {
-				MonthLedger collection = load(startId);
-				if (collection.isClosed() == false) {
-					throw new TransactionDataFileFormatException(
-							startId.toString());
-				}
 
+		MonthIdentity[] monthIdSet = _coreDriver.getAllMonthIds();
+
+		// loop all the month ledger file to load transaction data
+		try {
+			for (MonthIdentity monthId : monthIdSet) {
+				_coreDriver.logDebugInfo(
+						this.getClass(),
+						75,
+						String.format("loading month identity is %s",
+								monthId.toString()), MessageType.INFO);
+
+				load(monthId);
 			}
 			// load current month identity
-			_openLedger = load(cureMonthId);
+			// _openLedger = load(cureMonthId);
 		} catch (NoTransactionDataFileException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 99, e.toString(),
 					MessageType.ERROR);
@@ -141,8 +123,13 @@ public class TransactionDataManagement extends ManagementBase {
 		MonthLedger monthledger = new MonthLedger(monthId);
 		_list.put(monthId, monthledger);
 
+		File file = new File(filePath);
+		// check if file exist
+		if (!file.exists()) {
+			return monthledger;
+		}
 		try {
-			File file = new File(filePath);
+
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder builder = docFactory.newDocumentBuilder();
@@ -204,13 +191,6 @@ public class TransactionDataManagement extends ManagementBase {
 			}
 			// -----------------------------------------------------------------
 
-			// check month ledger
-			MonthIdentity openMonthId = _coreDriver.getCurMonthId();
-			if (!openMonthId.equals(monthledger.getMonthID())
-					&& !monthledger.isClosed()) {
-				throw new TransactionDataFileFormatException(
-						"The month ledger should be close ledger, but no close document.");
-			}
 			return monthledger;
 		} catch (ParserConfigurationException e) {
 			_coreDriver.logDebugInfo(this.getClass(), 170, e.toString(),
@@ -264,16 +244,10 @@ public class TransactionDataManagement extends ManagementBase {
 					"Document is never saved", MessageType.INFO);
 
 			MonthIdentity monthId = head.getMonthId();
-			MonthLedger ledger = _list.get(monthId);
+			MonthLedger ledger = this.getLedger(monthId);
 			if (ledger == null) {
 				_coreDriver.logDebugInfo(this.getClass(), 239,
 						"Error in document month identity", MessageType.ERROR);
-				throw new SaveClosedLedgerException();
-			}
-
-			if (ledger.isClosed()) {
-				_coreDriver.logDebugInfo(this.getClass(), 239,
-						"Ledger is closed.", MessageType.ERROR);
 				throw new SaveClosedLedgerException();
 			}
 
@@ -339,7 +313,7 @@ public class TransactionDataManagement extends ManagementBase {
 		MasterDataManagement manage = _coreDriver.getMasterDataManagement();
 		manage.store();
 
-		MonthLedger collection = _list.get(monthId);
+		MonthLedger collection = this.getLedger(monthId);
 
 		String filePath = this.generateFilePath(monthId);
 		_coreDriver.logDebugInfo(this.getClass(), 297, "Generate file path: "
@@ -414,9 +388,6 @@ public class TransactionDataManagement extends ManagementBase {
 			_coreDriver.logDebugInfo(this.getClass(), 348,
 					"Document has been reserved before", MessageType.ERROR);
 			throw new DocReservedException();
-		}
-		if (!_coreDriver.getCurMonthId().equals(orgHead.getMonthId())) {
-			throw new SaveClosedLedgerException();
 		}
 
 		try {
@@ -514,16 +485,23 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @return
 	 */
 	public MonthLedger getLedger(MonthIdentity monthId) {
-		return _list.get(monthId);
-	}
+		// get current calendar month
+		MonthIdentity curMonthId = _coreDriver.getCurCalendarMonthId();
 
-	/**
-	 * get current ledger
-	 * 
-	 * @return
-	 */
-	public MonthLedger getCurrentLedger() {
-		return _openLedger;
+		// check whether ledger beyond the range
+		if (_coreDriver.getStartMonthId().compareTo(monthId) > 0
+				|| curMonthId.compareTo(monthId) < 0) {
+			return null;
+		}
+
+		// create new month ledger
+		if (!_list.containsKey(monthId)) {
+			MonthLedger ledger = new MonthLedger(monthId);
+			_list.put(monthId, ledger);
+			return ledger;
+		}
+
+		return _list.get(monthId);
 	}
 
 	/**
@@ -552,16 +530,7 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @return
 	 */
 	public MonthIdentity[] getAllMonthIds() {
-		ArrayList<MonthIdentity> idArray = new ArrayList<MonthIdentity>(
-				_list.keySet());
-		Collections.sort(idArray);
-		MonthIdentity[] ids = new MonthIdentity[idArray.size()];
-		int i = 0;
-		for (MonthIdentity id : idArray) {
-			ids[i++] = id;
-		}
-
-		return ids;
+		return _coreDriver.getAllMonthIds();
 	}
 
 	/**
@@ -571,11 +540,11 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @return
 	 */
 	public HeadEntity getEntity(DocumentIdentity docId) {
-		MonthLedger collection = _list.get(docId._monthIdentity);
-		if (collection == null) {
+		MonthLedger ledger = this.getLedger(docId._monthIdentity);
+		if (ledger == null) {
 			return null;
 		}
-		return collection.getEntity(docId);
+		return ledger.getEntity(docId);
 	}
 
 	/**
@@ -601,61 +570,30 @@ public class TransactionDataManagement extends ManagementBase {
 			transFolder.mkdir();
 		}
 
-		MonthIdentity monthId = _coreDriver.getStartMonthId();
-		// create transaction file
-		MonthLedger ledger = new MonthLedger(monthId);
-		_list.put(monthId, ledger);
-		_openLedger = ledger;
-		String xdoc = ledger.toXML();
+		MonthIdentity[] monthIds = _coreDriver.getAllMonthIds();
+		for (MonthIdentity monthId : monthIds) {
+			// create transaction file for each available month ledger
+			MonthLedger ledger = new MonthLedger(monthId);
+			_list.put(monthId, ledger);
+			String xdoc = ledger.toXML();
 
-		String filePath = generateFilePath(monthId);
-		try {
-			File file = new File(filePath);
-			if (!file.exists()) {
-
-				file.createNewFile();
-
+			String filePath = generateFilePath(monthId);
+			try {
+				File file = new File(filePath);
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+				BufferedWriter writer = new BufferedWriter(
+						new OutputStreamWriter(new FileOutputStream(file),
+								XMLTransfer.default_charset));
+				writer.write(xdoc, 0, xdoc.length());
+				writer.close();
+			} catch (IOException e) {
+				_coreDriver.logDebugInfo(this.getClass(), 530, e.toString(),
+						MessageType.ERROR);
+				throw new SystemException(e);
 			}
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(file), XMLTransfer.default_charset));
-			writer.write(xdoc, 0, xdoc.length());
-			writer.close();
-		} catch (IOException e) {
-			_coreDriver.logDebugInfo(this.getClass(), 530, e.toString(),
-					MessageType.ERROR);
-			throw new SystemException(e);
 		}
 	}
 
-	/**
-	 * month end close
-	 */
-	public void monthEndClose() {
-		HeadEntity head = _clsMgmt.closeLedger();
-		if (head == null) {
-			return;
-		}
-		_coreDriver.logDebugInfo(this.getClass(), 547,
-				"Equity generated successfully.", MessageType.INFO);
-		_openLedger.setClosingDoc(head);
-
-		// create new ledger
-		MonthIdentity id = _openLedger.getMonthID().addMonth();
-		MonthLedger ledger = new MonthLedger(id);
-		_openLedger = ledger;
-		_list.put(id, ledger);
-
-		_coreDriver.logDebugInfo(this.getClass(), 584,
-				"Closed current ledger and then create ledger for next month."
-						+ ledger.getMonthID().toString(), MessageType.INFO);
-
-		_coreDriver.getListenersManagement().closeLedger(_openLedger);
-
-		try {
-			this.store(_coreDriver.getCurMonthId());
-		} catch (StorageException e) {
-			_coreDriver.logDebugInfo(this.getClass(), 643,
-					"Dirty data is not in file system.", MessageType.WARNING);
-		}
-	}
 }
