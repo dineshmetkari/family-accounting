@@ -12,11 +12,10 @@ public class TransDataUtils {
 	public static final String XML_DOC_TYPE = "doc_type";
 	public static final String XML_IS_REVERSED = "is_reversed";
 	public static final String XML_REF = "ref";
-	public static final String XML_IS_CLOSED = "is_closed";
 
 	public static final String[] HEAD_XML_TAGS = new String[] { XML_DOC_NUM,
 			XML_YEAR, XML_MONTH, XML_DATE, XML_TEXT, XML_DOC_TYPE,
-			XML_IS_REVERSED, XML_REF, XML_IS_CLOSED };
+			XML_IS_REVERSED, XML_REF };
 
 	public static final String XML_LINE_NUM = "line_num";
 	public static final String XML_ACCOUNT_TYPE = "account_type";

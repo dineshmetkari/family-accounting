@@ -178,11 +178,6 @@ public class TransactionDataManagement extends ManagementBase {
 										MessageType.INFO);
 						monthledger.add(head);
 
-						// check month closed document
-						if (head.IsClosed()) {
-							monthledger.setClosingDoc(head);
-						}
-
 						// raise load document
 						_coreDriver.getListenersManagement()
 								.loadDoc(this, head);
