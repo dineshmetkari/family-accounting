@@ -14,6 +14,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Hashtable;
 
 import com.jasonzqshen.familyaccounting.core.exception.FiscalMonthRangeException;
@@ -23,12 +24,10 @@ import com.jasonzqshen.familyaccounting.core.exception.format.FormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.MetaDataFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.NoMasterDataFactoryClass;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
-import com.jasonzqshen.familyaccounting.core.listeners.LedgerCloseListener;
 import com.jasonzqshen.familyaccounting.core.listeners.ListenersManagement;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
 import com.jasonzqshen.familyaccounting.core.reports.ReportsManagement;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
-import com.jasonzqshen.familyaccounting.core.transaction.MonthLedger;
 import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.DebugInformation;
 import com.jasonzqshen.familyaccounting.core.utils.Language;
@@ -59,9 +58,9 @@ public class CoreDriver {
 
 	public static final String START_MONTH_TAG = "start_month";
 
-	public static final String CUR_YEAR_TAG = "cur_year";
+	// public static final String CUR_YEAR_TAG = "cur_year";
 
-	public static final String CUR_MONTH_TAG = "cur_month";
+	// public static final String CUR_MONTH_TAG = "cur_month";
 	public static final String VERSION = "version";
 
 	public static final String MASTERDATA = "MD";
@@ -72,19 +71,20 @@ public class CoreDriver {
 
 	private boolean _flushLog2FileSystem = false;
 
-	private LedgerCloseListener _closeLedgerListener = new LedgerCloseListener() {
-		@Override
-		public void onLedgerCloseListener(MonthLedger ledger) {
-			_curMonthId = ledger.getMonthID();
+	// private LedgerCloseListener _closeLedgerListener = new
+	// LedgerCloseListener() {
+	// @Override
+	// public void onLedgerCloseListener(MonthLedger ledger) {
+	// _curMonthId = ledger.getMonthID();
 
-			saveMetaData();
+	// saveMetaData();
 
-			logDebugInfo(this.getClass(), 58,
-					"Save meta data file with new current month identity, "
-							+ ledger.getMonthID().toString(), MessageType.INFO);
-		}
+	// logDebugInfo(this.getClass(), 58,
+	// "Save meta data file with new current month identity, "
+	// + ledger.getMonthID().toString(), MessageType.INFO);
+	// }
 
-	};
+	// };
 
 	private final ListenersManagement _listenerManagement;
 
@@ -92,7 +92,7 @@ public class CoreDriver {
 
 	private MonthIdentity _startMonthId;
 
-	private MonthIdentity _curMonthId;
+	// private MonthIdentity _curMonthId;
 
 	private boolean _isInitialized;
 
@@ -109,7 +109,7 @@ public class CoreDriver {
 		_infos = new ArrayList<DebugInformation>();
 
 		_listenerManagement = new ListenersManagement();
-		_listenerManagement.addCloseLedgerListener(_closeLedgerListener);
+		// _listenerManagement.addCloseLedgerListener(_closeLedgerListener);
 
 		// managements
 		_managements = new Hashtable<String, ManagementBase>();
@@ -119,7 +119,7 @@ public class CoreDriver {
 		_managements.put(REPORTDATA, new ReportsManagement(this,
 				(MasterDataManagement) _managements.get(MASTERDATA)));
 
-		_curMonthId = null;
+		// _curMonthId = null;
 		_startMonthId = null;
 
 		_applicationRootPath = null;
@@ -335,8 +335,8 @@ public class CoreDriver {
 			String line;
 			int startYear = 0;
 			int startMonth = 0;
-			int curYear = 0;
-			int curMonth = 0;
+			// int curYear = 0;
+			// int curMonth = 0;
 			int versionNumber = 0;
 			while ((line = br.readLine()) != null) {
 				String[] values = line.split("=");
@@ -344,11 +344,12 @@ public class CoreDriver {
 					throw new MetaDataFormatException("Meta data format error.");
 				}
 
-				if (values[0].equals(CUR_MONTH_TAG)) {
-					curMonth = Integer.parseInt(values[1]);
-				} else if (values[0].equals(CUR_YEAR_TAG)) {
-					curYear = Integer.parseInt(values[1]);
-				} else if (values[0].equals(START_MONTH_TAG)) {
+				// if (values[0].equals(CUR_MONTH_TAG)) {
+				// curMonth = Integer.parseInt(values[1]);
+				// } else if (values[0].equals(CUR_YEAR_TAG)) {
+				// curYear = Integer.parseInt(values[1]);
+				// } else
+				if (values[0].equals(START_MONTH_TAG)) {
 					startMonth = Integer.parseInt(values[1]);
 				} else if (values[0].equals(START_YEAR_TAG)) {
 					startYear = Integer.parseInt(values[1]);
@@ -358,7 +359,7 @@ public class CoreDriver {
 			}
 
 			_startMonthId = new MonthIdentity(startYear, startMonth);
-			_curMonthId = new MonthIdentity(curYear, curMonth);
+			// _curMonthId = new MonthIdentity(curYear, curMonth);
 			// check version
 			boolean ret = this.versionCheck(versionNumber);
 			if (ret == false) {
@@ -391,10 +392,10 @@ public class CoreDriver {
 	 */
 	private void saveMetaData() {
 		StringBuilder strBuilder = new StringBuilder();
-		strBuilder.append(String.format("%s=%d\n", CUR_MONTH_TAG,
-				_curMonthId._fiscalMonth));
-		strBuilder.append(String.format("%s=%d\n", CUR_YEAR_TAG,
-				_curMonthId._fiscalYear));
+		// strBuilder.append(String.format("%s=%d\n", CUR_MONTH_TAG,
+		// _curMonthId._fiscalMonth));
+		// strBuilder.append(String.format("%s=%d\n", CUR_YEAR_TAG,
+		// _curMonthId._fiscalYear));
 		strBuilder.append(String.format("%s=%d\n", START_MONTH_TAG,
 				_startMonthId._fiscalMonth));
 		strBuilder.append(String.format("%s=%d\n", START_YEAR_TAG,
@@ -417,7 +418,8 @@ public class CoreDriver {
 		}
 
 		try {
-			Writer writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file), XMLTransfer.default_charset));
+			Writer writer = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(file), XMLTransfer.default_charset));
 			writer.write(strBuilder.toString(), 0, strBuilder.length());
 			writer.close();
 		} catch (IOException e) {
@@ -436,9 +438,10 @@ public class CoreDriver {
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH) + 1;
 
+		// set starting month identity
 		try {
 			_startMonthId = new MonthIdentity(year, month);
-			_curMonthId = new MonthIdentity(year, month);
+			// _curMonthId = new MonthIdentity(year, month);
 		} catch (FiscalYearRangeException e) {
 			this.logDebugInfo(this.getClass(), 300, e.toString(),
 					MessageType.ERROR);
@@ -472,7 +475,27 @@ public class CoreDriver {
 	}
 
 	/**
-	 * get month identity
+	 * set starting month identity
+	 * 
+	 * @return if input month identity is smaller or equal than current starting
+	 *         month identity, return false.
+	 */
+	public boolean setStartMonthId(MonthIdentity monthId) {
+		// check
+		if (this._startMonthId.compareTo(monthId) <= 0) {
+			return false;
+		}
+
+		this._startMonthId = monthId;
+
+		// save meta data
+		saveMetaData();
+
+		return true;
+	}
+
+	/**
+	 * get starting month identity
 	 * 
 	 * @return month identity
 	 */
@@ -485,8 +508,42 @@ public class CoreDriver {
 	 * 
 	 * @return
 	 */
-	public MonthIdentity getCurMonthId() {
-		return _curMonthId;
+	public MonthIdentity getCurCalendarMonthId() {
+		MonthIdentity curMonthId;
+		Calendar calendar = Calendar.getInstance();
+		try {
+			curMonthId = new MonthIdentity(calendar.get(Calendar.YEAR),
+					calendar.get(Calendar.MONTH) + 1);
+			return curMonthId;
+		} catch (FiscalYearRangeException e) {
+			throw new SystemException(e);// bug
+		} catch (FiscalMonthRangeException e) {
+			throw new SystemException(e);// bug
+		}
+	}
+
+	/**
+	 * get all month identities
+	 * 
+	 * @return
+	 */
+	public MonthIdentity[] getAllMonthIds() {
+		ArrayList<MonthIdentity> idArray = new ArrayList<MonthIdentity>();
+		MonthIdentity curMonthId = this.getCurCalendarMonthId();
+
+		for (MonthIdentity monthId = _startMonthId; monthId
+				.compareTo(curMonthId) <= 0; monthId = monthId.addMonth()) {
+			idArray.add(monthId);
+		}
+
+		Collections.sort(idArray);
+		MonthIdentity[] ids = new MonthIdentity[idArray.size()];
+		int i = 0;
+		for (MonthIdentity id : idArray) {
+			ids[i++] = id;
+		}
+
+		return ids;
 	}
 
 	/**
