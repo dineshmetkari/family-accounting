@@ -15,30 +15,12 @@ import com.jasonzqshen.familyaccounting.core.utils.XMLTransfer;
 public class MonthLedger {
 	private final Hashtable<DocumentIdentity, HeadEntity> _list;
 	private final MonthIdentity _monthId;
-	// private boolean _isClosed;
-	private HeadEntity _closingDoc;
+
 
 	public MonthLedger(MonthIdentity monthId) {
 		_monthId = monthId;
 		_list = new Hashtable<DocumentIdentity, HeadEntity>();
 		// _isClosed = false;
-	}
-
-	/**
-	 * set closing document
-	 */
-	void setClosingDoc(HeadEntity doc) {
-		_closingDoc = doc;
-		// _isClosed = true;
-	}
-
-	/**
-	 * get closing document
-	 * 
-	 * @return
-	 */
-	public HeadEntity getClosingDoc() {
-		return _closingDoc;
 	}
 
 	/**

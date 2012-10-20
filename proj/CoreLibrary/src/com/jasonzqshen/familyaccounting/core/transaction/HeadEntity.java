@@ -61,8 +61,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 
 	private boolean _isSaved;
 
-	boolean _isClosed;
-
 	/**
 	 * header fields
 	 */
@@ -80,7 +78,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 
 		_isReversed = false;
 		_isSaved = false;
-		_isClosed = false;
 	}
 
 	/**
@@ -224,15 +221,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 	}
 
 	/**
-	 * is closed
-	 * 
-	 * @return
-	 */
-	public boolean IsClosed() {
-		return _isClosed;
-	}
-
-	/**
 	 * get document items
 	 * 
 	 * @return
@@ -302,9 +290,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 				return null;
 			}
 			return _ref.toString();
-		} else if (TransDataUtils.XML_IS_CLOSED.equals(key)) {
-			// is closed
-			return String.valueOf(_isClosed);
 		}
 
 		if (_fields.containsKey(key)) {
@@ -434,8 +419,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 			throw new TransactionDataFileFormatException("");
 		}
 
-		String isClosedStr = elem.getAttribute(TransDataUtils.XML_IS_CLOSED);
-
 		// reference
 		String refStr = elem.getAttribute(TransDataUtils.XML_REF);
 
@@ -449,11 +432,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 			head._docText = text;
 			head._type = DocumentType.parse(docTypeStr.charAt(0));
 			head._isReversed = Boolean.parseBoolean(isReversedStr);
-			if (StringUtility.isNullOrEmpty(isClosedStr)) {
-				head._isClosed = false;
-			} else {
-				head._isClosed = Boolean.parseBoolean(isClosedStr);
-			}
 
 			if (!StringUtility.isNullOrEmpty(refStr)) {
 				head._ref = DocumentIdentity.parse(refStr);
