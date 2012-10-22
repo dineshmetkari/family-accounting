@@ -6,6 +6,7 @@ import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.listeners.CreateMasterDataListener;
 import com.jasonzqshen.familyaccounting.core.listeners.LoadDocumentListener;
 import com.jasonzqshen.familyaccounting.core.listeners.LoadMasterDataListener;
+import com.jasonzqshen.familyaccounting.core.listeners.ReverseDocumentListener;
 import com.jasonzqshen.familyaccounting.core.listeners.SaveDocumentListener;
 import com.jasonzqshen.familyaccounting.core.masterdata.GLAccountMasterData;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
@@ -37,14 +38,26 @@ public class GLAccountBalanceCollection {
 				_loadDocumentListener);
 		_coreDriver.getListenersManagement().addLoadMasterListener(
 				_loadMasterDataListener);
-		coreDriver.getListenersManagement().addCreateMasterListener(
+		_coreDriver.getListenersManagement().addCreateMasterListener(
 				_createMasterListener);
+		_coreDriver.getListenersManagement().addReverseDocListener(
+				_reverseDocListener);
 	}
 
 	// load document listener
 	private final LoadDocumentListener _loadDocumentListener = new LoadDocumentListener() {
 		public void onLoadDocumentListener(Object source, HeadEntity document) {
 			newDoc(document);
+		}
+	};
+
+	/**
+	 * reverse document listener
+	 */
+	private final ReverseDocumentListener _reverseDocListener = new ReverseDocumentListener() {
+		@Override
+		public void onReverseDocument(HeadEntity doc) {
+			reverseDoc(doc);
 		}
 	};
 
@@ -71,14 +84,29 @@ public class GLAccountBalanceCollection {
 	};
 
 	/**
+	 * reverse document
+	 * 
+	 * @param doc
+	 */
+	private void reverseDoc(HeadEntity doc) {
+		for (ItemEntity item : doc.getItems()) {
+			CurrencyAmount amount = item.getAmount();
+			if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+				amount.negate();
+			}
+			GLAccountBalanceItem balItem = _items.get(item.getGLAccount());
+
+			balItem.addAmount(doc.getMonthId(), amount);
+		}
+	}
+
+	/**
 	 * set report when new document
 	 * 
 	 * @param head
 	 */
 	private void newDoc(HeadEntity head) {
-
 		for (ItemEntity item : head.getItems()) {
-
 			CurrencyAmount amount = item.getAmount();
 			if (item.getCDIndicator() == CreditDebitIndicator.CREDIT) {
 				amount.negate();

@@ -18,105 +18,120 @@ import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
  */
 public class DocumentIndexItemWithBalance extends DocumentIndexItem {
 
-    private final MasterDataType _type;
+	private final MasterDataType _type;
 
-    private final CurrencyAmount _sum;
+	private final CurrencyAmount _sum;
 
-    /**
-     * 
-     * @param coreDriver
-     * @param id
-     */
-    DocumentIndexItemWithBalance(CoreDriver coreDriver, MasterDataIdentity id,
-            MasterDataType type) {
-        super(coreDriver, id);
+	/**
+	 * 
+	 * @param coreDriver
+	 * @param id
+	 */
+	DocumentIndexItemWithBalance(CoreDriver coreDriver, MasterDataIdentity id,
+			MasterDataType type) {
+		super(coreDriver, id);
 
-        _type = type;
-        _sum = new CurrencyAmount();
-    }
+		_type = type;
+		_sum = new CurrencyAmount();
+	}
 
-    @Override
-    protected void addDoc(HeadEntity head) {
-        super.addDoc(head);
+	@Override
+	protected void addDoc(HeadEntity head) {
+		super.addDoc(head);
 
-        // add the balance items
-        ItemEntity[] items = head.getItems();
-        for (ItemEntity item : items) {
-            _sum.addTo(getAmountFromItem(item));
-        }
-    }
+		// add the balance items
+		ItemEntity[] items = head.getItems();
+		for (ItemEntity item : items) {
+			_sum.addTo(getAmountFromItem(item));
+		}
+	}
 
-    /**
-     * get the amount from item
-     * 
-     * @param item
-     * @return
-     */
-    private CurrencyAmount getAmountFromItem(ItemEntity item) {
-        if (_type == MasterDataType.BUSINESS_AREA) {
-            MasterDataIdentity business = item.getBusinessArea();
-            if (this._id.equals(business)) {
-                if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
-                    return item.getAmount();
-                } else {
-                    CurrencyAmount amount = item.getAmount();
-                    amount.negate();
-                    return amount;
-                }
-            }
-        } else if (_type == MasterDataType.CUSTOMER) {
-            MasterDataIdentity customer = item.getCustomer();
-            if (this._id.equals(customer)) {
-                if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
-                    return item.getAmount();
-                } else {
-                    CurrencyAmount amount = item.getAmount();
-                    amount.negate();
-                    return amount;
-                }
-            }
-        } else if (_type == MasterDataType.VENDOR) {
-            MasterDataIdentity vendor = item.getVendor();
-            if (this._id.equals(vendor)) {
-                if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
-                    return item.getAmount();
-                } else {
-                    CurrencyAmount amount = item.getAmount();
-                    amount.negate();
-                    return amount;
-                }
-            }
-        }
+	/**
+	 * remove document
+	 */
+	protected void removeDoc(HeadEntity head) {
+		super.removeDoc(head);
 
-        return new CurrencyAmount();
-    }
+		// add the balance items
+		ItemEntity[] items = head.getItems();
+		for (ItemEntity item : items) {
+			CurrencyAmount amount = getAmountFromItem(item);
+			amount.negate();
+			_sum.addTo(amount);
+		}
+	}
 
-    /**
-     * get amount sum
-     * 
-     * @return
-     */
-    public CurrencyAmount getAmountSum() {
-        return new CurrencyAmount(_sum);
-    }
+	/**
+	 * get the amount from item
+	 * 
+	 * @param item
+	 * @return
+	 */
+	private CurrencyAmount getAmountFromItem(ItemEntity item) {
+		if (_type == MasterDataType.BUSINESS_AREA) {
+			MasterDataIdentity business = item.getBusinessArea();
+			if (this._id.equals(business)) {
+				if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+					return item.getAmount();
+				} else {
+					CurrencyAmount amount = item.getAmount();
+					amount.negate();
+					return amount;
+				}
+			}
+		} else if (_type == MasterDataType.CUSTOMER) {
+			MasterDataIdentity customer = item.getCustomer();
+			if (this._id.equals(customer)) {
+				if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+					return item.getAmount();
+				} else {
+					CurrencyAmount amount = item.getAmount();
+					amount.negate();
+					return amount;
+				}
+			}
+		} else if (_type == MasterDataType.VENDOR) {
+			MasterDataIdentity vendor = item.getVendor();
+			if (this._id.equals(vendor)) {
+				if (item.getCDIndicator() == CreditDebitIndicator.DEBIT) {
+					return item.getAmount();
+				} else {
+					CurrencyAmount amount = item.getAmount();
+					amount.negate();
+					return amount;
+				}
+			}
+		}
 
-    /**
-     * get amount
-     * 
-     * @param startId
-     * @param endId
-     * @return
-     */
-    public CurrencyAmount getAmount(MonthIdentity startId, MonthIdentity endId) {
-        CurrencyAmount amount = new CurrencyAmount();
-        ArrayList<HeadEntity> docs = this.getEntities(startId, endId);
-        for (HeadEntity head : docs) {
-            ItemEntity[] items = head.getItems();
-            for (ItemEntity item : items) {
-                amount.addTo(getAmountFromItem(item));
-            }
-        }
+		return new CurrencyAmount();
+	}
 
-        return amount;
-    }
+	/**
+	 * get amount sum
+	 * 
+	 * @return
+	 */
+	public CurrencyAmount getAmountSum() {
+		return new CurrencyAmount(_sum);
+	}
+
+	/**
+	 * get amount
+	 * 
+	 * @param startId
+	 * @param endId
+	 * @return
+	 */
+	public CurrencyAmount getAmount(MonthIdentity startId, MonthIdentity endId) {
+		CurrencyAmount amount = new CurrencyAmount();
+		ArrayList<HeadEntity> docs = this.getEntities(startId, endId);
+		for (HeadEntity head : docs) {
+			ItemEntity[] items = head.getItems();
+			for (ItemEntity item : items) {
+				amount.addTo(getAmountFromItem(item));
+			}
+		}
+
+		return amount;
+	}
 }

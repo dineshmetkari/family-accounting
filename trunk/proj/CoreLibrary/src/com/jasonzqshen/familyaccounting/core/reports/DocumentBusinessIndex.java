@@ -17,40 +17,63 @@ import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
  */
 public class DocumentBusinessIndex extends DocumentIndex {
 
-    protected DocumentBusinessIndex(CoreDriver coreDriver,
-            MasterDataManagement mdMgmt) {
-        super(coreDriver, mdMgmt);
-    }
+	protected DocumentBusinessIndex(CoreDriver coreDriver,
+			MasterDataManagement mdMgmt) {
+		super(coreDriver, mdMgmt);
+	}
 
-    @Override
-    protected void newDoc(HeadEntity head) {
-        ItemEntity[] items = head.getItems();
-        for (int i = 0; i < items.length; ++i) {
-            MasterDataIdentity id = items[i].getBusinessArea();
+	@Override
+	protected void newDoc(HeadEntity head) {
+		ItemEntity[] items = head.getItems();
+		for (int i = 0; i < items.length; ++i) {
+			MasterDataIdentity id = items[i].getBusinessArea();
+			if (id != null) {
+				DocumentIndexItem item;
+				if (!_list.containsKey(id)) {
+					item = new DocumentIndexItemWithBalance(_coreDriver, id,
+							MasterDataType.BUSINESS_AREA);
+					_list.put(id, item);
+				} else {
+					item = _list.get(id);
+				}
+				// add document
+				item.addDoc(head);
+				// add amount
+				CurrencyAmount amount = items[i].getAmount();
+				if (items[i].getCDIndicator() == CreditDebitIndicator.CREDIT) {
+					amount.negate();
+				}
+				item.addAmount(head.getMonthId(), amount);
+			}
+		}
+	}
 
-            if (id != null) {
-                DocumentIndexItem item;
-                if (!_list.containsKey(id)) {
-                    item = new DocumentIndexItemWithBalance(_coreDriver, id,
-                            MasterDataType.BUSINESS_AREA);
-                    _list.put(id, item);
-                } else {
-                    item = _list.get(id);
-                }
-                // add document
-                item.addDoc(head);
-                // add amount
-                CurrencyAmount amount = items[i].getAmount();
-                if (items[i].getCDIndicator() == CreditDebitIndicator.CREDIT) {
-                    amount.negate();
-                }
-                item.addAmount(head.getMonthId(), amount);
-            }
-        }
-    }
+	@Override
+	public DocumentIndexItemWithBalance getIndexItem(MasterDataIdentity key) {
+		return (DocumentIndexItemWithBalance) super.getIndexItem(key);
+	}
 
-    @Override
-    public DocumentIndexItemWithBalance getIndexItem(MasterDataIdentity key) {
-        return (DocumentIndexItemWithBalance) super.getIndexItem(key);
-    }
+	@Override
+	protected void reverseDoc(HeadEntity head) {
+		ItemEntity[] items = head.getItems();
+		for (int i = 0; i < items.length; ++i) {
+			MasterDataIdentity id = items[i].getBusinessArea();
+			if (id == null) {
+				continue;
+			}
+			if (!_list.containsKey(id)) {
+				continue;
+			}
+			DocumentIndexItem item = _list.get(id);
+			// remove document
+			item.removeDoc(head);
+			// reverse amount
+			CurrencyAmount amount = items[i].getAmount();
+			if (items[i].getCDIndicator() == CreditDebitIndicator.DEBIT) {
+				amount.negate();
+			}
+			item.addAmount(head.getMonthId(), amount);
+		}
+
+	}
 }

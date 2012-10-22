@@ -181,6 +181,11 @@ public class TransactionDataManagement extends ManagementBase {
 						// raise load document
 						_coreDriver.getListenersManagement()
 								.loadDoc(this, head);
+
+						// raise reverse document
+						if (head.IsReversed())
+							_coreDriver.getListenersManagement()
+									.reverseDoc(head);
 					}
 				}
 			}
@@ -364,9 +369,8 @@ public class TransactionDataManagement extends ManagementBase {
 	 * @throws ReverseOrgDocNotExistException
 	 * @throws DocReservedException
 	 */
-	public HeadEntity reverseDocument(DocumentIdentity docId)
-			throws SaveClosedLedgerException, ReverseOrgDocNotExistException,
-			DocReservedException {
+	public void reverseDocument(DocumentIdentity docId)
+			throws ReverseOrgDocNotExistException, DocReservedException {
 		_coreDriver.logDebugInfo(this.getClass(), 348,
 				"Start reversing document " + docId.toString(),
 				MessageType.INFO);
@@ -386,91 +390,31 @@ public class TransactionDataManagement extends ManagementBase {
 		}
 
 		try {
-
-			HeadEntity head = new HeadEntity(_coreDriver, _masterDataMgmt);
-			head.setPostingDate(orgHead.getPostingDate());
-			head.setDocumentType(orgHead.getDocumentType());
-			head.setDocText(orgHead.getDocText());
-
-			// items
-			ItemEntity[] items = orgHead.getItems();
-			for (int i = 0; i < items.length; ++i) {
-				ItemEntity newItem = head.createEntity();
-				newItem.setBusinessArea(items[i].getBusinessArea());
-				AccountType type = items[i].getAccountType();
-				if (type == AccountType.GL_ACCOUNT) {
-					newItem.setGLAccount(items[i].getGLAccount());
-				} else if (type == AccountType.VENDOR) {
-					newItem.setVendor(items[i].getVendor(),
-							items[i].getGLAccount());
-				} else if (type == AccountType.CUSTOMER) {
-					newItem.setCustomer(items[i].getCustomer(),
-							items[i].getGLAccount());
-				}
-
-				CreditDebitIndicator cd_indicator = items[i].getCDIndicator();
-				if (cd_indicator == CreditDebitIndicator.DEBIT) {
-					newItem.setAmount(CreditDebitIndicator.CREDIT,
-							items[i].getAmount());
-				} else if (cd_indicator == CreditDebitIndicator.CREDIT) {
-					newItem.setAmount(CreditDebitIndicator.DEBIT,
-							items[i].getAmount());
-				}
-			}
-
-			_coreDriver.logDebugInfo(this.getClass(), 392,
-					"Save the reverse document", MessageType.INFO);
-			try {
-				head.save(false);
-			} catch (MandatoryFieldIsMissing e) {
-				_coreDriver.logDebugInfo(this.getClass(), 448, e.toString(),
-						MessageType.ERROR);
-				throw new SystemException(e);
-			} catch (BalanceNotZero e) {
-				_coreDriver.logDebugInfo(this.getClass(), 452,
-						"Balance is not zero", MessageType.ERROR);
-				throw new SystemException(e);
-			} catch (StorageException e) {
-				_coreDriver.logDebugInfo(this.getClass(), 452,
-						"Dirty data does not store to file system",
-						MessageType.ERROR);
-			}
-
 			_coreDriver.logDebugInfo(this.getClass(), 399,
 					"Update reverse document information", MessageType.INFO);
 			// update reverse information
-			head._isReversed = true;
 			orgHead._isReversed = true;
-			head._ref = head.getDocIdentity();
-			orgHead._ref = head.getDocIdentity();
+
+			// raise event to update balance
+			_coreDriver.getListenersManagement().reverseDoc(orgHead);
 
 			_coreDriver.logDebugInfo(this.getClass(), 399,
 					"Store memory to disk during reverse document",
 					MessageType.INFO);
-			try {
-				this.store(head.getMonthId());
-			} catch (StorageException e) {
-				_coreDriver.logDebugInfo(this.getClass(), 452,
-						"Dirty data does not store to file system",
-						MessageType.ERROR);
-			}
 
-			String info = String.format(
-					"Document %s is reversed by document %s.",
-					orgHead.getDocumentNumber(), head.getDocumentNumber());
-
-			_coreDriver.logDebugInfo(this.getClass(), 416, info,
-					MessageType.INFO);
-			return head;
-		} catch (NullValueNotAcceptable e) {
-			_coreDriver.logDebugInfo(this.getClass(), 422, e.toString(),
-					MessageType.ERROR);
-			throw new SystemException(e);
-		} catch (MasterDataIdentityNotDefined e) {
-			_coreDriver.logDebugInfo(this.getClass(), 422, e.toString(),
-					MessageType.ERROR);
-			throw new SystemException(e);
+			// store to file system
+			this.store(orgHead.getMonthId());
+		} catch (StorageException e) {
+			_coreDriver.logDebugInfo(this.getClass(), 452,
+					"Dirty data does not store to file system",
+					MessageType.WARNING);
 		}
+
+		String info = String.format("Document %s is reversed.",
+				orgHead.getDocumentNumber());
+
+		_coreDriver.logDebugInfo(this.getClass(), 416, info, MessageType.INFO);
+
 	}
 
 	/**
