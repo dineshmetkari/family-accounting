@@ -23,7 +23,6 @@ import com.jasonzqshen.familyaccounting.core.exception.IdentityTooLong;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.SaveClosedLedgerException;
 import com.jasonzqshen.familyaccounting.core.exception.StorageException;
-import com.jasonzqshen.familyaccounting.core.exception.format.DocumentIdentityFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.format.TransactionDataFileFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataManagement;
@@ -51,8 +50,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 
 	boolean _isReversed;
 
-	DocumentIdentity _ref;
-
 	public final CoreDriver _coreDriver;
 
 	public final MasterDataManagement _management;
@@ -78,15 +75,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 
 		_isReversed = false;
 		_isSaved = false;
-	}
-
-	/**
-	 * get reference
-	 * 
-	 * @return
-	 */
-	public DocumentIdentity getReference() {
-		return _ref;
 	}
 
 	/**
@@ -284,13 +272,7 @@ public class HeadEntity implements Comparable<HeadEntity> {
 		} else if (TransDataUtils.XML_IS_REVERSED.equals(key)) {
 			// is reversed
 			return String.valueOf(_isReversed);
-		} else if (TransDataUtils.XML_REF.equals(key)) {
-			// reverse reference
-			if (_ref == null) {
-				return null;
-			}
-			return _ref.toString();
-		}
+		} 
 
 		if (_fields.containsKey(key)) {
 			return null;
@@ -419,9 +401,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 			throw new TransactionDataFileFormatException("");
 		}
 
-		// reference
-		String refStr = elem.getAttribute(TransDataUtils.XML_REF);
-
 		try {
 			head._docNumber = new DocumentNumber(docNumStr.toCharArray());
 			int year = Integer.parseInt(yearStr);
@@ -432,10 +411,6 @@ public class HeadEntity implements Comparable<HeadEntity> {
 			head._docText = text;
 			head._type = DocumentType.parse(docTypeStr.charAt(0));
 			head._isReversed = Boolean.parseBoolean(isReversedStr);
-
-			if (!StringUtility.isNullOrEmpty(refStr)) {
-				head._ref = DocumentIdentity.parse(refStr);
-			}
 
 			// parse item
 			NodeList nodeList = elem.getChildNodes();
@@ -491,10 +466,7 @@ public class HeadEntity implements Comparable<HeadEntity> {
 							head.getDocIdentity(), head.getPostingDate(),
 							head.getDocText(), head.getDocumentType(),
 							head.IsReversed()));
-			if (head.getReference() != null) {
-				strBuilder.append(String.format(", reference %s",
-						head.getReference()));
-			}
+
 			coreDriver.logDebugInfo(HeadEntity.class, 377,
 					strBuilder.toString(), MessageType.INFO);
 			return head;
@@ -522,11 +494,7 @@ public class HeadEntity implements Comparable<HeadEntity> {
 			coreDriver.logDebugInfo(HeadEntity.class, 402, e.toString(),
 					MessageType.ERROR);
 			throw new TransactionDataFileFormatException("");
-		} catch (DocumentIdentityFormatException e) {
-			coreDriver.logDebugInfo(HeadEntity.class, 406, e.toString(),
-					MessageType.ERROR);
-			throw new TransactionDataFileFormatException("");
-		} catch (ParseException e) {
+		}  catch (ParseException e) {
 			coreDriver.logDebugInfo(HeadEntity.class, 410, e.toString(),
 					MessageType.ERROR);
 			throw new TransactionDataFileFormatException("");

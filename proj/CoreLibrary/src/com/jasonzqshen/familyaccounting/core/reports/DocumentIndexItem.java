@@ -156,6 +156,15 @@ public class DocumentIndexItem {
 	}
 
 	/**
+	 * remove document
+	 * 
+	 * @param head
+	 */
+	void removeDoc(HeadEntity head) {
+		_list.remove(head);
+	}
+
+	/**
 	 * add currency amount
 	 * 
 	 * @param monthId

@@ -11,6 +11,7 @@ public class ListenersManagement {
 	private final ArrayList<LoadMasterDataListener> _loadMasterDataListeners;
 	private final ArrayList<CreateMasterDataListener> _createMasterDataListeners;
 	private final ArrayList<SaveDocumentListener> _saveDocListeners;
+	private final ArrayList<ReverseDocumentListener> _reverseDocListeners;
 
 	// private final ArrayList<LedgerCloseListener> _ledgerCloseListeners;
 
@@ -19,6 +20,7 @@ public class ListenersManagement {
 		_loadMasterDataListeners = new ArrayList<LoadMasterDataListener>();
 		_createMasterDataListeners = new ArrayList<CreateMasterDataListener>();
 		_saveDocListeners = new ArrayList<SaveDocumentListener>();
+		_reverseDocListeners = new ArrayList<ReverseDocumentListener>();
 		// _ledgerCloseListeners = new ArrayList<LedgerCloseListener>();
 	}
 
@@ -63,14 +65,23 @@ public class ListenersManagement {
 	}
 
 	/**
+	 * add reverse document listener
+	 * 
+	 * @param listener
+	 */
+	public void addReverseDocListener(ReverseDocumentListener listener) {
+		_reverseDocListeners.add(listener);
+	}
+
+	/**
 	 * add load ledger close
 	 * 
 	 * @param listener
 	 *            load document listener
 	 */
-	//public void addCloseLedgerListener(LedgerCloseListener listener) {
-	//	_ledgerCloseListeners.add(listener);
-	//}
+	// public void addCloseLedgerListener(LedgerCloseListener listener) {
+	// _ledgerCloseListeners.add(listener);
+	// }
 
 	/**
 	 * raise save documents successfully
@@ -80,6 +91,17 @@ public class ListenersManagement {
 	public void saveDoc(HeadEntity doc) {
 		for (SaveDocumentListener l : _saveDocListeners) {
 			l.onSaveDocumentListener(doc);
+		}
+	}
+
+	/**
+	 * raise reverse document event
+	 * 
+	 * @param doc
+	 */
+	public void reverseDoc(HeadEntity doc) {
+		for (ReverseDocumentListener l : _reverseDocListeners) {
+			l.onReverseDocument(doc);
 		}
 	}
 
@@ -119,9 +141,9 @@ public class ListenersManagement {
 		}
 	}
 
-	//public void closeLedger(MonthLedger ledger) {
-	//	for (LedgerCloseListener l : _ledgerCloseListeners) {
-	//		l.onLedgerCloseListener(ledger);
-	//	}
-	//}
+	// public void closeLedger(MonthLedger ledger) {
+	// for (LedgerCloseListener l : _ledgerCloseListeners) {
+	// l.onLedgerCloseListener(ledger);
+	// }
+	// }
 }
