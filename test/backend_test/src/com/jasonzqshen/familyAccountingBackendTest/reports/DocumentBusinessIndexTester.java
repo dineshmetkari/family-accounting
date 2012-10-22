@@ -38,10 +38,10 @@ public class DocumentBusinessIndexTester extends TesterBase {
 				TestUtilities.BUSINESS_AREA);
 		DocumentIndexItemWithBalance item = index.getIndexItem(id);
 		ArrayList<HeadEntity> entities = item.getEntities();
-		assertEquals(3, entities.size());
+		assertEquals(1, entities.size());
 
 		entities = item.getEntities(month08, month08);
-		assertEquals(2, entities.size());
+		assertEquals(0, entities.size());
 
 		CurrencyAmount amount1 = CurrencyAmount
 				.parse(TestUtilities.TEST_AMOUNT1);

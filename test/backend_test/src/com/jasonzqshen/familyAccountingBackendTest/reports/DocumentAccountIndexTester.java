@@ -41,13 +41,13 @@ public class DocumentAccountIndexTester extends TesterBase {
 				TestData.GL_ACCOUNT_CASH);
 		DocumentIndexItem item = index.getIndexItem(glAccount2);
 		ArrayList<HeadEntity> entities = item.getEntities();
-		assertEquals(4, entities.size());
+		assertEquals(2, entities.size());
 
 		entities = item.getEntities(month07, month07);
 		assertEquals(2, entities.size());
 
 		entities = item.getEntities(month08, month08);
-		assertEquals(2, entities.size());
+		assertEquals(0, entities.size());
 
 		// check cash amount
 		assertEquals(new CurrencyAmount(-23.45), item.getAmount());
@@ -59,13 +59,13 @@ public class DocumentAccountIndexTester extends TesterBase {
 				TestData.GL_ACCOUNT_COST);
 		DocumentIndexItem costItem = index.getIndexItem(costAccount);
 		entities = costItem.getEntities();
-		assertEquals(3, entities.size());
+		assertEquals(1, entities.size());
 
 		entities = costItem.getEntities(month07, month07);
 		assertEquals(1, entities.size());
 
 		entities = costItem.getEntities(month08, month08);
-		assertEquals(2, entities.size());
+		assertEquals(0, entities.size());
 
 		// check cost amount
 		assertEquals(new CurrencyAmount(123.45), costItem.getAmount());

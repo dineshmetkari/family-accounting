@@ -66,7 +66,6 @@ public class TransactionDataCheckerCN {
 		assertEquals(TestData.TEXT_VENDOR_DOC_CN, vendorDoc.getDocText());
 		// check is reversed
 		assertEquals(false, vendorDoc.IsReversed());
-		assertEquals(null, vendorDoc.getReference());
 
 		assertEquals(2, vendorDoc.getItemCount());
 		ItemEntity[] items = vendorDoc.getItems();
@@ -116,7 +115,6 @@ public class TransactionDataCheckerCN {
 		assertEquals(TestData.TEXT_CUSTOMER_DOC_CN, customerDoc.getDocText());
 		// check is reversed
 		assertEquals(false, customerDoc.IsReversed());
-		assertEquals(null, customerDoc.getReference());
 
 		assertEquals(2, customerDoc.getItemCount());
 		ItemEntity[] items = customerDoc.getItems();
@@ -163,8 +161,7 @@ public class TransactionDataCheckerCN {
 		assertEquals(TestData.TEXT_GL_DOC_CN, glDoc.getDocText());
 		// check is reversed
 		assertEquals(false, glDoc.IsReversed());
-		assertEquals(null, glDoc.getReference());
-
+		
 		assertEquals(2, glDoc.getItemCount());
 		ItemEntity[] items = glDoc.getItems();
 		// check the source item
@@ -196,9 +193,8 @@ public class TransactionDataCheckerCN {
 	 * @param collection
 	 */
 	public static void checkLedger2012_08(HeadEntity[] docs) {
-		assertEquals(2, docs.length);
-		checkVendorDoc_08(docs[0], docs[1]);
-		checkReverseDoc_08(docs[1]);
+		assertEquals(1, docs.length);
+		checkVendorDoc_08(docs[0]);
 	}
 
 	/**
@@ -206,8 +202,7 @@ public class TransactionDataCheckerCN {
 	 * 
 	 * @param vendorDoc
 	 */
-	private static void checkVendorDoc_08(HeadEntity vendorDoc,
-			HeadEntity refDoc) {
+	private static void checkVendorDoc_08(HeadEntity vendorDoc) {
 		// check document number
 		assertEquals(TestData.DOC_NUM1, vendorDoc.getDocumentNumber()
 				.toString());
@@ -223,7 +218,6 @@ public class TransactionDataCheckerCN {
 		assertEquals(TestData.TEXT_VENDOR_DOC_CN, vendorDoc.getDocText());
 		// check is reversed
 		assertEquals(true, vendorDoc.IsReversed());
-		assertEquals(refDoc.getDocIdentity(), vendorDoc.getReference());
 
 		assertEquals(2, vendorDoc.getItemCount());
 		ItemEntity[] items = vendorDoc.getItems();
@@ -250,54 +244,4 @@ public class TransactionDataCheckerCN {
 		assertEquals(TestData.BUSINESS_AREA_WORK, items[1].getBusinessArea()
 				.toString());
 	}
-
-	/**
-	 * check reverse document in Month 8
-	 * 
-	 * @param vendorDoc
-	 */
-	private static void checkReverseDoc_08(HeadEntity vendorDoc) {
-		// check document number
-		assertEquals(TestData.DOC_NUM2, vendorDoc.getDocumentNumber()
-				.toString());
-		// check posting date
-		assertEquals(TestData.DATE_2012_08,
-				TestData.DATE_FORMAT.format(vendorDoc.getPostingDate()));
-		MonthIdentity monthId = vendorDoc.getMonthId();
-		assertEquals(TestData.YEAR, monthId._fiscalYear);
-		assertEquals(TestData.MONTH_08, monthId._fiscalMonth);
-		// check document type
-		assertEquals(DocumentType.VENDOR_INVOICE, vendorDoc.getDocumentType());
-		// check text
-		assertEquals(TestData.TEXT_VENDOR_DOC_CN, vendorDoc.getDocText());
-		// check is reversed
-		assertEquals(true, vendorDoc.IsReversed());
-		assertEquals(vendorDoc.getDocIdentity(), vendorDoc.getReference());
-
-		assertEquals(2, vendorDoc.getItemCount());
-		ItemEntity[] items = vendorDoc.getItems();
-		// check the vendor item
-		assertEquals(0, items[0].getLineNum());
-		assertEquals(AccountType.VENDOR, items[0].getAccountType());
-		assertEquals(CreditDebitIndicator.DEBIT, items[0].getCDIndicator());
-		assertEquals(TestData.AMOUNT_VENDOR, items[0].getAmount());
-		assertEquals(null, items[0].getCustomer());
-		assertEquals(TestData.VENDOR_BUS, items[0].getVendor().toString());
-		assertEquals(TestData.GL_ACCOUNT_CASH, items[0].getGLAccount()
-				.toString());
-		assertEquals(null, items[0].getBusinessArea());
-
-		// check cost item
-		assertEquals(1, items[1].getLineNum());
-		assertEquals(AccountType.GL_ACCOUNT, items[1].getAccountType());
-		assertEquals(CreditDebitIndicator.CREDIT, items[1].getCDIndicator());
-		assertEquals(TestData.AMOUNT_VENDOR, items[1].getAmount());
-		assertEquals(null, items[1].getCustomer());
-		assertEquals(null, items[1].getVendor());
-		assertEquals(TestData.GL_ACCOUNT_COST, items[1].getGLAccount()
-				.toString());
-		assertEquals(TestData.BUSINESS_AREA_WORK, items[1].getBusinessArea()
-				.toString());
-	}
-
 }
