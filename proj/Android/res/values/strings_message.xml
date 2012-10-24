@@ -17,5 +17,7 @@
     <string name="message_id_err">Please enter the valid identity. The identity only contains 0~9 and a~z.</string>
     <string name="message_duplicated_id_err">Duplicated identity. Please enter another identity.</string>
     <string name="message_investitem_saved">New investment item created.</string>
+    <string name="message_date_error">Please set posting date after starting month and before current month.</string>
+    <string name="message_dirty_data">Save data to SD card with error, dirty data exists in memory.</string>
 
 </resources>

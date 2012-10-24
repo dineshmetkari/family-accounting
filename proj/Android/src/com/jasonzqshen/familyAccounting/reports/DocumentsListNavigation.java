@@ -73,7 +73,7 @@ public class DocumentsListNavigation {
             list.add(glAccount.getIdentity());
         }
 
-        MonthIdentity monthId = coreDriver.getCurMonthId();
+        MonthIdentity monthId = coreDriver.getCurCalendarMonthId();
         navigate2DocList(context, monthId, list);
     }
 }

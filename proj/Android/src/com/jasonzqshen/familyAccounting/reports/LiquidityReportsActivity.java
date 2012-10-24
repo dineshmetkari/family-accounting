@@ -53,7 +53,7 @@ public class LiquidityReportsActivity extends BalanceReportActivityBase {
 			return;
 		}
 
-		MonthIdentity monthId = coreDriver.getCurMonthId();
+		MonthIdentity monthId = coreDriver.getCurCalendarMonthId();
 
 		AccountReportAdapterItem item = (AccountReportAdapterItem) _adapter
 				.getItem(position);

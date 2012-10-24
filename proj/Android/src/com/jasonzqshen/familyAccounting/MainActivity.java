@@ -12,14 +12,12 @@ import com.jasonzqshen.familyAccounting.utils.ActivityAction;
 import com.jasonzqshen.familyaccounting.core.CoreDriver;
 import com.jasonzqshen.familyaccounting.core.transaction.GLAccountBalanceCollection;
 import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
-import com.jasonzqshen.familyaccounting.core.transaction.TransactionDataManagement;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.GLAccountGroup;
 
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -114,9 +112,6 @@ public class MainActivity extends AbstractCostDetailsActivity {
                     CheckBalanceActivity.class, this);
             action.execute();
             return true;
-        case R.id.menu_close_ledger:
-            showDialog(R.id.dialog_close_ledger_confirm);
-            return true;
         case R.id.menu_investment:
             ActivityAction actionInvest = new ActivityAction(
                     InvestmentMainActivity.class, this);
@@ -144,19 +139,6 @@ public class MainActivity extends AbstractCostDetailsActivity {
         switch (id) {
         case R.id.dialog_entries:
             return EntriesDialogBuilder.buildEntriesDialog(this);
-        case R.id.dialog_close_ledger_confirm:
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(this.getString(R.string.message_close_confirm))
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.ok,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,
-                                        int id) {
-                                    closeLedger();
-                                    dialog.dismiss();
-                                }
-                            }).setNegativeButton(R.string.cancel, null);
-            return builder.create();
         }
 
         return super.onCreateDialog(id);
@@ -176,7 +158,7 @@ public class MainActivity extends AbstractCostDetailsActivity {
                 .getAccBalCol();
 
         // month identity in header
-        MonthIdentity monthId = coreDriver.getCurMonthId();
+        MonthIdentity monthId = coreDriver.getCurCalendarMonthId();
         _yearValue.setText(String.valueOf(monthId._fiscalYear));
         String[] months = new DateFormatSymbols().getMonths();
         _monthIdentity.setText(months[monthId._fiscalMonth - 1]);
@@ -206,16 +188,6 @@ public class MainActivity extends AbstractCostDetailsActivity {
      *           item.Account.getIdentity()); }
      */
 
-    /**
-     * close ledger
-     */
-    private void closeLedger() {
-        CoreDriver coreDriver = this._dataCore.getCoreDriver();
-        TransactionDataManagement transMgmt = coreDriver
-                .getTransDataManagement();
-
-        transMgmt.monthEndClose();
-    }
 
     @Override
     protected int getContentView() {
@@ -225,6 +197,6 @@ public class MainActivity extends AbstractCostDetailsActivity {
     @Override
     protected MonthIdentity getMonthIdentity() {
         CoreDriver coreDriver = this._dataCore.getCoreDriver();
-        return coreDriver.getCurMonthId();
+        return coreDriver.getCurCalendarMonthId();
     }
 }
