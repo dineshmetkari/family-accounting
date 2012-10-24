@@ -10,11 +10,6 @@
         android:orderInCategory="100"
         android:title="@string/menu_investment"/>
     <item
-        android:id="@+id/menu_close_ledger"
-        android:icon="@drawable/close"
-        android:orderInCategory="100"
-        android:title="@string/menu_close_ledger"/>
-    <item
         android:id="@+id/menu_main_menu"
         android:orderInCategory="100"
         android:title="@string/menu_main_menu"/>

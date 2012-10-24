@@ -13,10 +13,12 @@ import com.jasonzqshen.familyaccounting.core.document_entries.IDocumentEntry;
 import com.jasonzqshen.familyaccounting.core.exception.MandatoryFieldIsMissing;
 import com.jasonzqshen.familyaccounting.core.exception.NoFieldNameException;
 import com.jasonzqshen.familyaccounting.core.exception.NotInValueRangeException;
+import com.jasonzqshen.familyaccounting.core.exception.SaveClosedLedgerException;
 import com.jasonzqshen.familyaccounting.core.exception.format.CurrencyAmountFormatException;
 import com.jasonzqshen.familyaccounting.core.exception.runtime.SystemException;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataBase;
 import com.jasonzqshen.familyaccounting.core.masterdata.MasterDataIdentity;
+import com.jasonzqshen.familyaccounting.core.transaction.MonthIdentity;
 import com.jasonzqshen.familyaccounting.core.utils.CurrencyAmount;
 import com.jasonzqshen.familyaccounting.core.utils.StringUtility;
 
@@ -182,6 +184,23 @@ public abstract class EntryActivityBase extends Activity {
 	private View.OnClickListener _SAVE_CLICK = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			boolean flag = false;
+			MonthIdentity[] monthIds = DataCore.getInstance().getCoreDriver()
+					.getAllMonthIds();
+			for (MonthIdentity monthId : monthIds) {
+				int month = _calendar.get(Calendar.MONTH) + 1;
+				int year = _calendar.get(Calendar.YEAR);
+				if (monthId._fiscalMonth == month
+						&& monthId._fiscalYear == year) {
+					flag = true;
+					break;
+				}
+			}
+			if (flag == false) {
+				showDialog(R.id.dialog_date_error);
+				return;
+			}
+
 			boolean ret = setEntryValue(false);
 			if (ret == false) {
 				return;
@@ -190,6 +209,8 @@ public abstract class EntryActivityBase extends Activity {
 				_docEntry.save(true);
 			} catch (MandatoryFieldIsMissing e) {
 				Log.e(TAG, e.toString());
+				throw new SystemException(e);
+			} catch (SaveClosedLedgerException e) {
 				throw new SystemException(e);
 			}
 
@@ -326,6 +347,14 @@ public abstract class EntryActivityBase extends Activity {
 					.setMessage(templateMsg)
 					.setPositiveButton(R.string.ok,
 							_SAVED_ALERT_DIALOG_OK_CLICK).create();
+		case R.id.dialog_date_error:
+			String dateMsg = 
+					this.getString(R.string.message_date_error);
+
+			return new AlertDialog.Builder(this).setTitle(R.string.error)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setMessage(dateMsg).setPositiveButton(R.string.ok, null)
+					.create();
 		}
 
 		return null;

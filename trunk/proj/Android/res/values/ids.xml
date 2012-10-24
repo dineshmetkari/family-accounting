@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item name="dialog_not_implement_alert" type="id"/>
     <item name="dialog_account_selection" type="id"/>
@@ -35,5 +35,6 @@
     <item name="dialog_close_ledger_confirm" type="id"/>
     <item name="dialog_cost_details" type="id"/>
     <item name="dialog_investment_item_commit" type="id"/>
+    <item name="dialog_date_error" type="id" />
 
 </resources>
