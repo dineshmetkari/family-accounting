@@ -69,16 +69,6 @@ public abstract class MasterDataFactoryBase {
             Element elem) throws MasterDataFileFormatException;
 
     /**
-     * remove the master data entity from list
-     * 
-     * @param id
-     * @return
-     */
-    public void removeNewMasterDataBase(MasterDataIdentity id) {
-        _list.remove(id);
-    }
-
-    /**
      * parse memory to XML
      * 
      * @return
