@@ -1,0 +1,32 @@
+=Introduction=
+
+The Currency Management Module facilitates the conversion among different currency and update of latest exchange rates.
+
+=Basic Concept of Currency Management=
+
+==Default Currency==
+
+Default Currency is specified to the whole application for convenient calculation and summary. All transactions are set to Default Currency by default unless Account Currency or Foreign Currency is specified.
+
+==Account Currency==
+
+Account Currency is specified to each account. If exists, Account Currency is assigned to all transaction under the account. Multiple Account Currency is possible. 
+
+==Foreign Currency==
+
+Foreign Currency can be specified to all transactions freely. With the help of Exchange Rate Table the actually transaction values can be converted to Account Currency or Default Currency.
+
+==Exchange Rate Table==
+
+An initial Exchange Rate Table is generated as the first use of the application. Exchange Rate Table can be manually and automatically updated via internet API like Yahoo Finance.
+
+=The Calculation of Currency=
+
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
