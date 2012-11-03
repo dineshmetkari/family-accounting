@@ -4,9 +4,13 @@ The Currency Management Module facilitates the conversion among different curren
 
 =Basic Concept of Currency Management=
 
+==Transaction Currency==
+
+Transaction Currency is specified to each transaction, which can be Default Currency, Account Currency or freely specified Foreign Currency.
+
 ==Default Currency==
 
-Default Currency is specified to the whole application for convenient calculation and summary. All transactions are set to Default Currency by default unless Account Currency or Foreign Currency is specified.
+Default Currency is applied to the whole application for convenient calculation and summary. All transactions are set to Default Currency by default unless Account Currency or Foreign Currency is specified.
 
 ==Account Currency==
 
@@ -18,15 +22,13 @@ Foreign Currency can be specified to all transactions freely. With the help of E
 
 ==Exchange Rate Table==
 
-An initial Exchange Rate Table is generated as the first use of the application. Exchange Rate Table can be manually and automatically updated via internet API like Yahoo Finance.
+An initial Exchange Rate Table is generated as the first use of the application. Exchange Rate Table can be manually and automatically updated via internet API like Yahoo Finance. User Modification and User Defined Currency are permitted. 
 
 =The Calculation of Currency=
 
+When saving a transaction, the following fields should be recorded:
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+*Currency (Default, Account or freely Foreign Currency)
+*Value
+*Current Exchange Rate (from Exchange Rate Table or user defined)
+*Calculated Value (convert to Default/Account Currency)
