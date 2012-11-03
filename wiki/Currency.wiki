@@ -1,6 +1,6 @@
 =Introduction=
 
-The Currency Management Module facilitates the conversion among different currency and update of latest exchange rates.
+The Currency Management Module facilitates the conversion among different currencies and update of latest exchange rates.
 
 =Basic Concept of Currency Management=
 
