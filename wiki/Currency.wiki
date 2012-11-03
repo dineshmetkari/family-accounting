@@ -28,7 +28,7 @@ An initial Exchange Rate Table is generated as the first use of the application.
 
 When saving a transaction, the following fields should be recorded:
 
-* Currency (Default, Account or freely Foreign Currency)
-* Value
-* Current Exchange Rate (from Exchange Rate Table or user defined)
-* Calculated Value (convert to Default/Account Currency)
+  * Currency (Default, Account or freely Foreign Currency)
+  * Value
+  * Current Exchange Rate (from Exchange Rate Table or user defined)
+  * Calculated Value (convert to Default/Account Currency)
