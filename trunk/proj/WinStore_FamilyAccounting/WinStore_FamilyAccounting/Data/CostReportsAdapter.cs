@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,12 +24,22 @@ namespace WinStore_FamilyAccounting.Data
     {
         internal CostReportsAdapter()
         {
-            for (int i = 0; i < 20; ++i)
+        }
+
+        public override ObservableCollection<AbstractAdapterItem> Items
+        {
+            get
             {
-                _items.Add(new CostReportItem(String.Format("id{0}", i),
-                    String.Format("支出项目 {0}", i), this));
+                ObservableCollection<AbstractAdapterItem> items 
+                    = new ObservableCollection<AbstractAdapterItem>();
+                for (int i = 0; i < 20; ++i)
+                {
+                    items.Add(new CostReportItem(String.Format("id{0}", i),
+                        String.Format("支出项目 {0}", i), this));
+                }
+
+                return items;
             }
-            
         }
     }
 }

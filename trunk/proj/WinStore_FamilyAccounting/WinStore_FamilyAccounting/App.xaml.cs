@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -13,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using WinStore_FamilyAccounting.Data;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=234227
 
@@ -41,8 +43,12 @@ namespace WinStore_FamilyAccounting
         /// search results, and so forth.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        protected async override void OnLaunched(LaunchActivatedEventArgs args)
         {
+            // initialize data
+            DataCore dataCore = DataCore.GetInstance();
+            await dataCore.InitializeAsync();
+
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,
@@ -72,7 +78,7 @@ namespace WinStore_FamilyAccounting
                 }
             }
             // Ensure the current window is active
-            Window.Current.Activate();
+             Window.Current.Activate();
         }
 
         /// <summary>
@@ -96,7 +102,6 @@ namespace WinStore_FamilyAccounting
         private void DetermineAppTheme()
         {
             this.RequestedTheme = ApplicationTheme.Light;
-
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinStore_FamilyAccountingCore;
 
 namespace WinStore_FamilyAccounting.Data
 {
@@ -26,6 +27,7 @@ namespace WinStore_FamilyAccounting.Data
             _monthAdapter = new MonthAdapter();
             _reportAdatper = new ReportTypesAdapter();
             _costAdapter = new CostReportsAdapter();
+            _coreDriver = new CoreDriver();
         }
 
         #region Properties
@@ -43,6 +45,14 @@ namespace WinStore_FamilyAccounting.Data
 
         private readonly CostReportsAdapter _costAdapter;
         public CostReportsAdapter CostAdp { get { return _costAdapter; } }
+
+        private readonly CoreDriver _coreDriver;
+        public CoreDriver BackendCoreDriver { get { return _coreDriver; } }
         #endregion
+
+        public async Task InitializeAsync()
+        {
+            await _coreDriver.RestartAsync();
+        }
     }
 }

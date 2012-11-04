@@ -11,10 +11,10 @@ namespace WinStore_FamilyAccountingCore.Transaction
     public class MonthIdentity : IComparable<MonthIdentity>
     {
 
-        public readonly int _fiscalYear;
+        private readonly int _fiscalYear;
         public int FiscalYear { get { return _fiscalYear; } }
 
-        public readonly int _fiscalMonth;
+        private readonly int _fiscalMonth;
         public int FiscalMonth { get { return _fiscalMonth; } }
 
         /// <summary>
@@ -82,19 +82,23 @@ namespace WinStore_FamilyAccountingCore.Transaction
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        /// <exception cref="FiscalYearRangeException">input string with error month identity format</exception>
+        /// <exception cref="MonthIdentityFormatException">input string with error month identity format</exception>
         public static MonthIdentity Parse(String str)
         {
             try
             {
                 string yearStr = str.Substring(0, 4);
-                string monthStr = str.Substring(5, 7);
+                string monthStr = str.Substring(5, 2);
                 int year = Int32.Parse(yearStr);
                 int month = Int32.Parse(monthStr);
 
                 MonthIdentity id = new MonthIdentity(year, month);
 
                 return id;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                throw new MonthIdentityFormatException(e.Message);
             }
             catch (FiscalYearRangeException e)
             {

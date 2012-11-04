@@ -27,8 +27,23 @@ namespace WinStore_FamilyAccounting.Data
     {
         internal MonthAdapter(): base()
         {
-            _items.Add(new MonthItem(new MonthIdentity(2012, 07), this));
-            _items.Add(new MonthItem(new MonthIdentity(2012, 08), this));
+            
+        }
+
+        public override ObservableCollection<AbstractAdapterItem> Items
+        {
+            get {
+                ObservableCollection<AbstractAdapterItem> items 
+                    = new ObservableCollection<AbstractAdapterItem>();
+                DataCore dataCore = DataCore.GetInstance();
+                MonthIdentity[] months = dataCore.BackendCoreDriver.MonthIds;
+
+                foreach (MonthIdentity month in months)
+                {
+                    items.Add(new MonthItem(month, this));
+                }
+                return items;
+            }
         }
     }
 }

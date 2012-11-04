@@ -14,19 +14,16 @@ namespace WinStore_FamilyAccountingCore.Reports
         {
         }
 
-        public override void Initialize()
+        public override async Task InitializeAsync()
         {
-            throw new NotImplementedException();
         }
 
         public override void Clear()
         {
-            throw new NotImplementedException();
         }
 
-        public override void EstablishFilesAsync()
+        public override async Task EstablishFilesAsync()
         {
-            throw new NotImplementedException();
         }
     }
 }

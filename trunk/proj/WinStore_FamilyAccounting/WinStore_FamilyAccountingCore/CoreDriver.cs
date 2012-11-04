@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +38,9 @@ namespace WinStore_FamilyAccountingCore
         public static readonly String TRANDATA = "TD";
 
         public static readonly String REPORTDATA = "RD";
+
+        private StorageFolder _rootFolder = ApplicationData.Current.LocalFolder;
+        public StorageFolder RootFolder { get { return _rootFolder; } set { _rootFolder = value; } }
 
         private bool _flushLog2FileSystem = false;
         public bool FlushLog2FileSystem { get { return _flushLog2FileSystem; } set { _flushLog2FileSystem = value; } }
@@ -146,9 +150,7 @@ namespace WinStore_FamilyAccountingCore
         private Language _language;
         public Language Lang { get { return _language; } set { _language = value; } }
 
-        /**
-         * singleton
-         */
+
         public CoreDriver()
         {
             _infos = new List<DebugInformation>();
@@ -160,7 +162,7 @@ namespace WinStore_FamilyAccountingCore
             _managements = new Dictionary<String, AbstractManagement>();
 
             MasterDataManagement mdMgmt = new MasterDataManagement(this);
-            _managements.Add(MASTERDATA, new MasterDataManagement(this));
+            _managements.Add(MASTERDATA, mdMgmt);
 
 
             _managements.Add(TRANDATA, new TransactionDataManagement(this, mdMgmt));
@@ -202,19 +204,19 @@ namespace WinStore_FamilyAccountingCore
         /// and transaction folder. And then, transaction and master data management
         /// will initialize.
         /// </summary>
-        private void init()
+        private async Task initAsync()
         {
             this.logDebugInfo(this.GetType(), 96, "Core driver initializing...",
                     MessageType.INFO);
 
             // check root folder
             AbstractManagement m1;
-            m1 = GetManagement(MASTERDATA);
-            m1.Initialize();
-            m1 = GetManagement(TRANDATA);
-            m1.Initialize();
-            m1 = GetManagement(REPORTDATA);
-            m1.Initialize();
+            m1 = innerGetManagement(MASTERDATA);
+            await m1.InitializeAsync();
+            m1 = innerGetManagement(TRANDATA);
+            await m1.InitializeAsync();
+            m1 = innerGetManagement(REPORTDATA);
+            await m1.InitializeAsync();
 
             // initialize management
             foreach (var item in _managements)
@@ -226,7 +228,7 @@ namespace WinStore_FamilyAccountingCore
                     continue;
                 }
 
-                item.Value.Initialize();
+                await item.Value.InitializeAsync();
             }
 
             this.logDebugInfo(this.GetType(), 134,
@@ -237,21 +239,26 @@ namespace WinStore_FamilyAccountingCore
         /// Restart the core driver
         /// </summary>
         /// <exception cref="MetaDataFormatException">Format exception of meta-data file</exception>
-        public async void RestartAsync()
+        /// <exception cref="TransactionDataFormatException">Format exception of transaction data file.</exception>
+        public async Task RestartAsync()
         {
             Clear();
 
             // check root folder
-            StorageFolder rootFolder = ApplicationData.Current.LocalFolder;
-            StorageFile mdFile = await rootFolder.GetFileAsync(META_DATA);
+            StorageFile mdFile = null;
+            try
+            {
+                mdFile = await _rootFolder.GetFileAsync(META_DATA);
+            }
+            catch (FileNotFoundException){ }
 
             if (mdFile != null)
             {
                 // load meta data
                 try
                 {
-                    loadMetaData();
-                    init();
+                    await loadMetaDataAsync();
+                    await initAsync();
 
                     _isInitialized = true;
                 }
@@ -267,17 +274,17 @@ namespace WinStore_FamilyAccountingCore
 
 
             // folder not exist or folder is empty
-            establishFolderAsync();
+            await establishFolderAsync();
+            return;
         }
 
         /// <summary>
         /// load meta data
         /// </summary>
         /// <exception cref="MetaDataFormatException">Format exception of the meta-data file</exception>
-        private async void loadMetaData()
+        private async Task loadMetaDataAsync()
         {
-            StorageFolder rootFolder = ApplicationData.Current.LocalFolder;
-            StorageFile mdFile = await rootFolder.GetFileAsync(META_DATA);
+            StorageFile mdFile = await _rootFolder.GetFileAsync(META_DATA);
 
             if (mdFile == null)
             {
@@ -286,6 +293,7 @@ namespace WinStore_FamilyAccountingCore
 
             try
             {
+               
                 IList<string> lines = await FileIO.ReadLinesAsync(mdFile);
 
                 int startYear = 0;
@@ -340,22 +348,30 @@ namespace WinStore_FamilyAccountingCore
         }
 
         /// <summary>
+        /// save meta data
+        /// </summary>
+        private async void saveMetaData()
+        {
+            await saveMetaDataAsync();
+        }
+
+        /// <summary>
         /// save meta-data to file
         /// </summary>
-        private async void saveMetaDataAsync()
+        private async Task saveMetaDataAsync()
         {
             List<string> lines = new List<string>();
 
-            lines.Add(string.Format("{0}={1}\n", START_MONTH_TAG,
-                    _startMonthId._fiscalMonth));
-            lines.Add(string.Format("{0}={1}\n", START_YEAR_TAG,
-                    _startMonthId._fiscalYear));
+            lines.Add(string.Format("{0}={1}", START_MONTH_TAG,
+                    _startMonthId.FiscalMonth));
+            lines.Add(string.Format("{0}={1}", START_YEAR_TAG,
+                    _startMonthId.FiscalYear));
             // version
-            lines.Add(string.Format("{0}={1}\n", VERSION, AQUARIUS1_0));
+            lines.Add(string.Format("{0}={1}", VERSION, AQUARIUS1_0));
 
             // save meta data file
-            StorageFolder rootFolder = ApplicationData.Current.LocalFolder;
-            StorageFile mdFile = await rootFolder.CreateFileAsync(META_DATA, CreationCollisionOption.ReplaceExisting);
+            StorageFile mdFile = await _rootFolder.CreateFileAsync(
+                META_DATA, CreationCollisionOption.ReplaceExisting);
 
             await FileIO.WriteLinesAsync(mdFile, lines);
         }
@@ -363,7 +379,7 @@ namespace WinStore_FamilyAccountingCore
         /// <summary>
         /// establish folder
         /// </summary>
-        private void establishFolderAsync()
+        private async Task establishFolderAsync()
         {
             // set meta data
             int year = DateTime.Today.Year;
@@ -388,14 +404,13 @@ namespace WinStore_FamilyAccountingCore
                 throw new SystemException(e);// bug
             }
 
-            saveMetaDataAsync();
+            await saveMetaDataAsync();
 
             foreach (var item in _managements)
             {
-                item.Value.EstablishFilesAsync();
+                await item.Value.EstablishFilesAsync();
             }
             _isInitialized = true;
-
         }
 
         /// <summary>
@@ -429,7 +444,7 @@ namespace WinStore_FamilyAccountingCore
             this._startMonthId = monthId;
 
             // save meta data
-            saveMetaDataAsync();
+            saveMetaData();
 
             return true;
         }
@@ -446,13 +461,20 @@ namespace WinStore_FamilyAccountingCore
             {
                 return null;
             }
+            return innerGetManagement(str);
+        }
+
+        /// <summary>
+        /// get management for innter
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private AbstractManagement innerGetManagement(String str)
+        {
             AbstractManagement mgmt;
             _managements.TryGetValue(str, out mgmt);
             return mgmt;
         }
-
-
-
         /// <summary>
         /// clear data in memory, reset the driver core
         /// </summary>
