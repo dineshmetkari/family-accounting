@@ -3,7 +3,6 @@
 = Development Design Spec =
 
 == Functionality Strategy ==
-<<<<<<< .mine
   * Basic functions of financial ledger.(Very High)
   # Record daily financial event with some necessary fields;
   # View the records;
@@ -21,22 +20,6 @@ The function is based on the Cloud Service, like IO Cloud and SkyDriver, to sync
   * Reporting(High)
   # Investment analysis(Medium)
   * Help user to make decision on their investment, like liquidity forcast report
-=======
-  *Basic functions of financial ledger.(Very High)
-  #Record daily financial event with some necessary fields;
-  #View the records;
-  #Keep data consistently and correctly
-  *Fast entry: Try to provide user a way to enter financial record easier than other other financial software;(High)
-Records entry templates
-Schedule templates
-Credit Management
-Store data with transparency(High)
-We do not provide space for user to store the data. What we do is try to help user to store their financial data in consistent.
-Provide "Cloud" function, but we do not store the data. Our "Cloud" function is based on "Cloud" service, like IOS Cloud, Skydriver.
-Reporting(High)
-Investment analysis(Medium)
-Help user to make decision on their investment
->>>>>>> .r217
 
 
 = Functionality =
@@ -85,8 +68,7 @@ device B:
 
   * User try to sync data with Cloud Storage. 
   # 1. System reads data from the first document and compare with data on Device B. 
-  # 2. If the document with the same id is different, and if field is_reversed is the only different field, just update "is_reversed" field.
-  ("is_reversed" field only can be changed from false to true, but not true to false)
+  # 2. If the document with the same id is different, and if field is_reversed is the only different field, just update "is_reversed" field.("is_reversed" field only can be changed from false to true, but not true to false)
   # 3. If not only is_reversed is different, then the document is first NOT_MATCHED document.
   # 4. Append all NOT_MATCHED documents, from the first NOT_MATCHED document, to the end of Cloud Storage.
   # 5. Replace storage on Device B with Cloud Storage, then the data is,
