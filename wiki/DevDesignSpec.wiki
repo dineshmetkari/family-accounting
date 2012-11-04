@@ -3,11 +3,11 @@
 = Development Design Spec =
 
 == Functionality Strategy ==
-*Basic functions of financial ledger.(Very High)
-#Record daily financial event with some necessary fields;
-View the records;
-Keep data consistently
-Fast entry: Try to provide user a way to enter financial record easier than other other financial software;(High)
+  *Basic functions of financial ledger.(Very High)
+  #Record daily financial event with some necessary fields;
+  #View the records;
+  #Keep data consistently and correctly
+  *Fast entry: Try to provide user a way to enter financial record easier than other other financial software;(High)
 Records entry templates
 Schedule templates
 Credit Management
