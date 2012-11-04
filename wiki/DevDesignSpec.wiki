@@ -3,6 +3,25 @@
 = Development Design Spec =
 
 == Functionality Strategy ==
+<<<<<<< .mine
+  * Basic functions of financial ledger.(Very High)
+  # Record daily financial event with some necessary fields;
+  # View the records;
+  # Keep data consistently, which means that the data in the system must be the same with the actual data.
+  * Fast entry: Try to provide user a way to enter financial record easier than other other financial software;(High)
+  # Records entry templates
+  # Schedule templates
+  # Credit card management
+  # ... 
+  * Store data with transparency(Very High)
+  # Do not provide space for user to store the data. User must store their data in their own space.
+  # Provide the function to export the data in XML or CVS format so that use can use Excel to view the data.
+  # Provide the way that users can store the data on multiple devices and sync data between the devices. It is not the Cloud service. 
+The function is based on the Cloud Service, like IO Cloud and SkyDriver, to sync data.
+  * Reporting(High)
+  # Investment analysis(Medium)
+  * Help user to make decision on their investment, like liquidity forcast report
+=======
   *Basic functions of financial ledger.(Very High)
   #Record daily financial event with some necessary fields;
   #View the records;
@@ -17,11 +36,67 @@ Provide "Cloud" function, but we do not store the data. Our "Cloud" function is 
 Reporting(High)
 Investment analysis(Medium)
 Help user to make decision on their investment
+>>>>>>> .r217
 
 
-= Details =
+= Functionality =
+== 1. Master data ==
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+
+== 2. Financial record(Transaction Data) ==
+Principal of the transaction, *documents in the ledger file(Storage File) only can be added.* The saved document cannot be deleted. The saved documents cannot be updated, excepted
+the field "is_reversed"
+
+== 3. Account Balance ==
+
+== 4. Entry templates ==
+
+== 5. Sync Algorithm ==
+  * For example, initial state
+
+device A:
+
+<document id="1000000001" text="org1"... />
+
+<document id="1000000002" text="org2".../>
+
+
+device B:
+
+<document id="1000000001" text="org1"... />
+
+<document id="1000000002" text="org2".../>
+
+  * User add a document in device A, and then sync to Cloud Storage
+
+<document id="1000000001" text="org1"... />
+
+<document id="1000000002" text="org2".../>
+
+<document id="1000000003" text="create on device A" />
+
+  * User add a document and reverse document 1000000002 on device B
+
+<document id="1000000001" text="org1"... />
+
+<document id="1000000002" text="org2" is_reversed="true".../>
+
+<document id="1000000003" text="create on device B" />
+
+  * User try to sync data with Cloud Storage. 
+  # 1. System reads data from the first document and compare with data on Device B. 
+  # 2. If the document with the same id is different, and if field is_reversed is the only different field, just update "is_reversed" field.
+  ("is_reversed" field only can be changed from false to true, but not true to false)
+  # 3. If not only is_reversed is different, then the document is first NOT_MATCHED document.
+  # 4. Append all NOT_MATCHED documents, from the first NOT_MATCHED document, to the end of Cloud Storage.
+  # 5. Replace storage on Device B with Cloud Storage, then the data is,
+  
+<document id="1000000001" text="org1"... />
+
+<document id="1000000002" text="org2" is_reversed="true".../>
+
+<document id="1000000004" text="create on device A" />
+
+<document id="1000000005" text="create on device B" />
+
+  * User sync data on device A follow the same algorithm in above steps
