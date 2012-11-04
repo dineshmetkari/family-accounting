@@ -1,0 +1,27 @@
+#summary One-sentence summary of this page.
+
+= Development Design Spec =
+
+== Functionality Strategy ==
+*Basic functions of financial ledger.(Very High)
+#Record daily financial event with some necessary fields;
+View the records;
+Keep data consistently
+Fast entry: Try to provide user a way to enter financial record easier than other other financial software;(High)
+Records entry templates
+Schedule templates
+Credit Management
+Store data with transparency(High)
+We do not provide space for user to store the data. What we do is try to help user to store their financial data in consistent.
+Provide "Cloud" function, but we do not store the data. Our "Cloud" function is based on "Cloud" service, like IOS Cloud, Skydriver.
+Reporting(High)
+Investment analysis(Medium)
+Help user to make decision on their investment
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
