@@ -19,13 +19,13 @@ namespace WinStore_FamilyAccountingCore
         /// <summary>
         /// initialize the management
         /// </summary>
-        public abstract void Initialize();
+        public abstract Task InitializeAsync();
 
         /// <summary>
         /// Clear the data in the management
         /// </summary>
         public abstract void Clear();
 
-        public abstract void EstablishFilesAsync();
+        public abstract Task EstablishFilesAsync();
     }
 }

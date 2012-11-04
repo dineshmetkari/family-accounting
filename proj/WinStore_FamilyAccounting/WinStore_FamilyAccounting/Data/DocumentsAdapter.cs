@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,9 +45,18 @@ namespace WinStore_FamilyAccounting.Data
     {
         public DocumentsAdapter()
         {
-            for (int i = 0; i < 20; ++i)
-            {
-                _items.Add(new DocumentItem(string.Empty, string.Empty, null));
+        }
+
+        public override ObservableCollection<AbstractAdapterItem> Items
+        {
+            get { 
+                ObservableCollection<AbstractAdapterItem> items 
+                = new ObservableCollection<AbstractAdapterItem>();
+                for (int i = 0; i < 20; ++i)
+                {
+                    items.Add(new DocumentItem(string.Empty, string.Empty, null));
+                }
+                return items;
             }
         }
     }

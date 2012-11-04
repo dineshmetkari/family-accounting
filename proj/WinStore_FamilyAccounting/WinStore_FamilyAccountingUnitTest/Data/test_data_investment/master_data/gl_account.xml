@@ -1,0 +1,8 @@
+<root>
+	<entity id="1000100001" name="cash on hands 1"  /> 
+	<entity id="1010100001" name="bank account 6235" bank_account='CMB_6235'  />
+	<entity id="3010100001" name="Equity"  />
+	<entity id="4000100001" name="salary incoming 1" />
+	<entity id="5000100001" name="Traffic cost" />
+	
+</root>

@@ -33,10 +33,7 @@ namespace WinStore_FamilyAccounting.Data
     {
         protected AbstractAdapter()
         {
-            _items = new ObservableCollection<AbstractAdapterItem>();
         }
-
-        protected readonly ObservableCollection<AbstractAdapterItem> _items;
-        public ObservableCollection<AbstractAdapterItem> Items { get { return _items; } }
+        public abstract ObservableCollection<AbstractAdapterItem> Items { get; }
     }
 }

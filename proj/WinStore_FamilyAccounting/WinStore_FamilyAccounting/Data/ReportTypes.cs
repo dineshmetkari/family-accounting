@@ -34,13 +34,25 @@ namespace WinStore_FamilyAccounting.Data
         /// 
         /// </summary>
         internal ReportTypesAdapter()
-        {
+        {           
+        }
 
-            // add items
-            _items.Add(new ReportTypeItem(ReportTypesEnum.COST_REPORTS, "支出详情", this));
-            _items.Add(new ReportTypeItem(ReportTypesEnum.LIQUIDITY_REPORTS, "现金详情", this));
-            _items.Add(new ReportTypeItem(ReportTypesEnum.BALANCE_REPORTS, "总资产详情", this));
-            _items.Add(new ReportTypeItem(ReportTypesEnum.ALL_DOCUMENTS, "所有记录", this));
+        /// <summary>
+        /// get items
+        /// </summary>
+        public override ObservableCollection<AbstractAdapterItem> Items
+        {
+            get
+            {
+                ObservableCollection<AbstractAdapterItem> items 
+                    = new ObservableCollection<AbstractAdapterItem>();
+                // add items
+                items.Add(new ReportTypeItem(ReportTypesEnum.COST_REPORTS, "支出详情", this));
+                items.Add(new ReportTypeItem(ReportTypesEnum.LIQUIDITY_REPORTS, "现金详情", this));
+                items.Add(new ReportTypeItem(ReportTypesEnum.BALANCE_REPORTS, "总资产详情", this));
+                items.Add(new ReportTypeItem(ReportTypesEnum.ALL_DOCUMENTS, "所有记录", this));
+                return items;
+            }
         }
     }
 }
