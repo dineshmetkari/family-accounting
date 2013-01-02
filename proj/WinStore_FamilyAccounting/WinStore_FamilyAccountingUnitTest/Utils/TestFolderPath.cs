@@ -11,5 +11,8 @@ namespace WinStore_FamilyAccountingUnitTest.Utils
         public static readonly string LOADING_EMPTY_DATA_PATH = "loading_empty_test_folder";
         public static readonly string CREATING_MASTERDATA_PATH = "creating_masterdata_test_folder";
         public static readonly string CREATING_TRANSDATA_PATH = "creating_transdata_test_folder";
+        public static readonly string CREATING_TRANSDATA_WITH_ENTRY_PATH = "creating_transdata_with_entry_path";
+        public static readonly string CREATING_TEMPLATE_PATH = "creating_template_test_folder";
+        public static readonly string CREATING_TRANSDATA_WITH_TEMPLATE = "creating_transdata_with_template_path";
     }
 }

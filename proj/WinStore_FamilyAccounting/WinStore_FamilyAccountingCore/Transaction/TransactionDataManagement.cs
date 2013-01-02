@@ -503,5 +503,15 @@ namespace WinStore_FamilyAccountingCore.Transaction
                 }
             }
         }
+
+        public override bool NeedInit
+        {
+            get { return true; }
+        }
+
+        public override bool NeedEstablishFile
+        {
+            get { return true; }
+        }
     }
 }

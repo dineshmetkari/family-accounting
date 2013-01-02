@@ -24,9 +24,9 @@ namespace WinStore_FamilyAccounting.Data
         /// </summary>
         private DataCore()
         {
-            _monthAdapter = new MonthAdapter();
-            _reportAdatper = new ReportTypesAdapter();
-            _costAdapter = new CostReportsAdapter();
+            _monthAdapter = new MonthAdapter(this);
+            _reportAdatper = new ReportTypesAdapter(this);
+            _costAdapter = new CostReportsAdapter(this);
             _coreDriver = new CoreDriver();
         }
 

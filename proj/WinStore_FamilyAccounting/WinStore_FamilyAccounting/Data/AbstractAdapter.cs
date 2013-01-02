@@ -8,7 +8,7 @@ using WinStore_FamilyAccounting.Common;
 
 namespace WinStore_FamilyAccounting.Data
 {
-    public abstract class AbstractAdapterItem : BindableBase
+    public abstract class AbstractAdapterItem : BindableBase, IComparable<AbstractAdapterItem>
     {
         private readonly Object _id;
         public Object Identity { get { return _id; } }
@@ -24,6 +24,8 @@ namespace WinStore_FamilyAccounting.Data
             _name = name;
             _parent = parent;
         }
+
+        public abstract int CompareTo(AbstractAdapterItem other);
     }
 
     /// <summary>
@@ -31,9 +33,10 @@ namespace WinStore_FamilyAccounting.Data
     /// </summary>
     public abstract class AbstractAdapter
     {
-        protected AbstractAdapter()
+        protected readonly DataCore _dataCore;
+        protected AbstractAdapter(DataCore dataCore)
         {
+            _dataCore = dataCore;
         }
-        public abstract ObservableCollection<AbstractAdapterItem> Items { get; }
     }
 }
