@@ -24,6 +24,11 @@ namespace WinStore_FamilyAccounting.Data
         {
         }
         public ReportTypesEnum TypeId { get { return (ReportTypesEnum)Identity; } }
+
+        public override int CompareTo(AbstractAdapterItem other)
+        {
+            return 0;
+        }
     }
     /// <summary>
     /// Report Type
@@ -33,14 +38,15 @@ namespace WinStore_FamilyAccounting.Data
         /// <summary>
         /// 
         /// </summary>
-        internal ReportTypesAdapter()
+        internal ReportTypesAdapter(DataCore dataCore)
+            : base(dataCore)
         {           
         }
 
         /// <summary>
         /// get items
         /// </summary>
-        public override ObservableCollection<AbstractAdapterItem> Items
+        public ObservableCollection<AbstractAdapterItem> Items
         {
             get
             {

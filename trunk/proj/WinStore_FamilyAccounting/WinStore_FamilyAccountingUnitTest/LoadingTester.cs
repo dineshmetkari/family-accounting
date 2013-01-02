@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using WinStore_FamilyAccountingCore;
 using WinStore_FamilyAccountingCore.MasterData;
 using WinStore_FamilyAccountingCore.Utilities;
+using WinStore_FamilyAccountingCore.DocumentEntries;
 
 namespace WinStore_FamilyAccountingUnitTest
 {
@@ -35,6 +36,7 @@ namespace WinStore_FamilyAccountingUnitTest
             MasterDataChecker.CheckMasterData(_coreDriver);
             TransactionDataChecker.CheckTransactionData(_coreDriver);
             AccountReportBalanceChecker.CheckAccountBalance(_coreDriver);
+            TemplateChecker.CheckTemplate(_coreDriver.TmMgmt.EntryTemplates);
         }
     }
 }

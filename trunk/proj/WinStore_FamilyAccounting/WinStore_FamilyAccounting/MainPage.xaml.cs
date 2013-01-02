@@ -13,6 +13,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using WinStore_FamilyAccounting.Data;
 using WinStore_FamilyAccounting.ReportPages;
+using WinStore_FamilyAccountingCore;
+using WinStore_FamilyAccountingCore.Transaction;
+using WinStore_FamilyAccountingCore.Utilities;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
@@ -42,10 +45,13 @@ namespace WinStore_FamilyAccounting
         /// session.  This will be null the first time a page is visited.</param>
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
-            // set reports selection resource
-            this.DefaultViewModel["ReportsSelectionItems"] = DataCore.GetInstance().ReportsTypeAdp.Items;
             // set month selection resource
             this.DefaultViewModel["MonthSelectionItems"] = DataCore.GetInstance().MonthsAdp.Items;
+            // set reports selection resource
+            this.DefaultViewModel["ReportsSelectionItems"] = DataCore.GetInstance().ReportsTypeAdp.Items;            
+
+            // load balance data
+            this.setBalanceData();
         }
 
         /// <summary>
@@ -59,19 +65,99 @@ namespace WinStore_FamilyAccounting
         }
 
         /// <summary>
+        /// month selection changed, reload data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Month_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            setBalanceData();// set data
+            setReport();
+        }
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ReportType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox comboBox = sender as ComboBox;
-            if (comboBox == null)
+            setReport();
+        }
+        /// <summary>
+        /// set balance data
+        /// </summary>
+        private void setBalanceData()
+        {
+            // int index = MonthSelection.SelectedIndex;
+            MonthItem monthItem = MonthSelection.SelectedItem as MonthItem;
+            if (monthItem == null)
+            {
+                return;
+            }
+            CoreDriver coreDriver = DataCore.GetInstance().BackendCoreDriver;
+            if (coreDriver.IsInitialize == false)
             {
                 return;
             }
 
-            ReportTypeItem item = comboBox.SelectedItem as ReportTypeItem;
+            TransactionDataManagement transMgmt = coreDriver.TransMgmt;
+            GLAccountBalanceCollection balCol = transMgmt.AccountBalanceCol;          
+
+            #region revenue
+            CurrencyAmount revenue = new CurrencyAmount();
+            foreach (GLAccountGroupENUM group in GLAccountGroup.REVENUE_GROUP) {
+            CurrencyAmount cur = balCol
+                    .GetGroupBalance(group, monthItem.MonthId, monthItem.MonthId);
+                cur.Negate();
+                revenue.AddTo(cur);
+            }
+            // set value
+            incomingAmount.Text = revenue.ToString();
+            #endregion
+
+            #region cost
+            CurrencyAmount cost = new CurrencyAmount();
+            foreach (GLAccountGroupENUM group in GLAccountGroup.COST_GROUP)
+            {
+                CurrencyAmount cur = balCol
+                        .GetGroupBalance(group, monthItem.MonthId, monthItem.MonthId);
+                cost.AddTo(cur);
+            }
+            // set value
+            this.outgoingAmount.Text = cost.ToString();
+            #endregion
+
+            #region balance
+            CurrencyAmount balance = new CurrencyAmount();
+            foreach (GLAccountGroupENUM group in GLAccountGroup.BALANCE_GROUP)
+            {
+                CurrencyAmount cur = balCol
+                        .GetGroupBalance(group);
+                balance.AddTo(cur);
+            }
+            // set value
+            this.balanceAmount.Text = balance.ToString();
+            #endregion
+
+            #region liquidity
+            CurrencyAmount liquidity = new CurrencyAmount();
+            foreach (GLAccountGroupENUM group in GLAccountGroup.Liquidity_GROUP)
+            {
+                CurrencyAmount cur = balCol
+                        .GetGroupBalance(group);
+                liquidity.AddTo(cur);
+            }
+            // set value
+            this.liquidityAmount.Text = liquidity.ToString();
+            #endregion
+        }
+
+        /// <summary>
+        /// set report
+        /// </summary>
+        private void setReport()
+        {
+            ReportTypeItem item = this.ReportSelection.SelectedItem as ReportTypeItem;
             if (item == null)
             {
                 return;

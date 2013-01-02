@@ -16,6 +16,8 @@ namespace WinStore_FamilyAccountingCore
             _coreDriver = coreDriver;
         }
 
+        public abstract bool NeedInit{get;}
+        public abstract bool NeedEstablishFile { get; }
         /// <summary>
         /// initialize the management
         /// </summary>

@@ -110,8 +110,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicTester.cs" />
+    <Compile Include="CreationTestCases\CreateWithTemplateTester.cs" />
     <Compile Include="CreationTestCases\CreatingMasterDataTester.cs" />
+    <Compile Include="CreationTestCases\CreatingTemplateTester.cs" />
     <Compile Include="CreationTestCases\CreatingTransDataTester.cs" />
+    <Compile Include="CreationTestCases\EntriesTransactionTester.cs" />
     <Compile Include="LoadingEmptyTester.cs" />
     <Compile Include="LoadingTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -120,6 +123,8 @@
     <Compile Include="Utils\MasterDataChecker.cs" />
     <Compile Include="Utils\MasterDataCreater.cs" />
     <Compile Include="Utils\StoragePreparation.cs" />
+    <Compile Include="Utils\TemplateChecker.cs" />
+    <Compile Include="Utils\TemplateCreater.cs" />
     <Compile Include="Utils\TestData.cs" />
     <Compile Include="Utils\TestFolderPath.cs" />
     <Compile Include="Utils\TestUtilities.cs" />

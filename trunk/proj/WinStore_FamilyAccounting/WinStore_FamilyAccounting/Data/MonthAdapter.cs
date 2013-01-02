@@ -18,6 +18,16 @@ namespace WinStore_FamilyAccounting.Data
             : base(monthId, String.Empty, parent)
         {
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public override int CompareTo(AbstractAdapterItem other)
+        {
+            return 0;
+        }
     }
 
     /// <summary>
@@ -25,12 +35,12 @@ namespace WinStore_FamilyAccounting.Data
     /// </summary>
     public class MonthAdapter: AbstractAdapter
     {
-        internal MonthAdapter(): base()
+        internal MonthAdapter(DataCore dataCore): base(dataCore)
         {
             
         }
 
-        public override ObservableCollection<AbstractAdapterItem> Items
+        public ObservableCollection<AbstractAdapterItem> Items
         {
             get {
                 ObservableCollection<AbstractAdapterItem> items 

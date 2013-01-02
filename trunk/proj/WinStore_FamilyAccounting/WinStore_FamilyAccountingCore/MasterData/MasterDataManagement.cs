@@ -80,7 +80,7 @@ namespace WinStore_FamilyAccountingCore.MasterData
             {
                 GLAccountMasterDataFactory factory = (GLAccountMasterDataFactory)
                     GetMasterDataFactory(MasterDataType.GL_ACCOUNT);
-                return factory.LiabilityAccounts;
+                return factory.LiquidityAccounts;
             }
         }
 
@@ -488,6 +488,16 @@ namespace WinStore_FamilyAccountingCore.MasterData
             _coreDriver.logDebugInfo(this.GetType(), 335,
                     String.Format("Store master data %s complete.", type),
                     MessageType.INFO);
+        }
+
+        public override bool NeedInit
+        {
+            get { return true; }
+        }
+
+        public override bool NeedEstablishFile
+        {
+            get { return true; }
         }
     }
 }

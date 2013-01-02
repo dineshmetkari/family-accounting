@@ -104,9 +104,16 @@
   <ItemGroup>
     <Compile Include="AbstractManagement.cs" />
     <Compile Include="CoreDriver.cs" />
+    <Compile Include="DocumentEntries\CustomerEntry.cs" />
+    <Compile Include="DocumentEntries\EntryTemplate.cs" />
     <Compile Include="DocumentEntries\EntryTemplatesManagement.cs" />
+    <Compile Include="DocumentEntries\GLAccountEntry.cs" />
+    <Compile Include="DocumentEntries\IDocumentEntry.cs" />
+    <Compile Include="DocumentEntries\VendorEntry.cs" />
     <Compile Include="Exceptions\BalanceNotZero.cs" />
     <Compile Include="Exceptions\DocReservedException.cs" />
+    <Compile Include="Exceptions\DuplicatedTemplateException.cs" />
+    <Compile Include="Exceptions\EntryTypeNotExistException.cs" />
     <Compile Include="Exceptions\FiscalMonthRangeException.cs" />
     <Compile Include="Exceptions\FiscalYearRangeException.cs" />
     <Compile Include="Exceptions\FormatExceptions\AbstractFormatException.cs" />
@@ -116,6 +123,7 @@
     <Compile Include="Exceptions\FormatExceptions\MasterDataFileFormatException.cs" />
     <Compile Include="Exceptions\FormatExceptions\MetaDataFormatException.cs" />
     <Compile Include="Exceptions\FormatExceptions\MonthIdentityFormatException.cs" />
+    <Compile Include="Exceptions\FormatExceptions\TemplateFormatException.cs" />
     <Compile Include="Exceptions\FormatExceptions\TransactionDataFileFormatException.cs" />
     <Compile Include="Exceptions\IdentityInvalidChar.cs" />
     <Compile Include="Exceptions\IdentityNoData.cs" />
@@ -123,8 +131,10 @@
     <Compile Include="Exceptions\MandatoryFieldIsMissing.cs" />
     <Compile Include="Exceptions\MasterDataIdentityExists.cs" />
     <Compile Include="Exceptions\MasterDataIdentityNotDefined.cs" />
+    <Compile Include="Exceptions\NoFieldNameException.cs" />
     <Compile Include="Exceptions\NoGLAccountGroupException.cs" />
     <Compile Include="Exceptions\NoMasterDataFactoryClass.cs" />
+    <Compile Include="Exceptions\NotInValueRangeException.cs" />
     <Compile Include="Exceptions\ParametersException.cs" />
     <Compile Include="Exceptions\ReverseOrgDocNotExistException.cs" />
     <Compile Include="Exceptions\SaveClosedLedgerException.cs" />
@@ -149,6 +159,11 @@
     <Compile Include="MasterData\VendorMasterData.cs" />
     <Compile Include="MasterData\VendorMasterDataFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\DocumentAccountIndex.cs" />
+    <Compile Include="Reports\DocumentBusinessIndex.cs" />
+    <Compile Include="Reports\DocumentIndex.cs" />
+    <Compile Include="Reports\DocumentIndexItem.cs" />
+    <Compile Include="Reports\DocumentIndexItemWithBalance.cs" />
     <Compile Include="Reports\ReportsManagement.cs" />
     <Compile Include="Transaction\DocumentIdentity.cs" />
     <Compile Include="Transaction\DocumentNumber.cs" />

@@ -11,8 +11,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using WinStore_FamilyAccounting.Data;
-using WinStore_FamilyAccountingCore.Transaction;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -21,13 +19,12 @@ namespace WinStore_FamilyAccounting.ReportPages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CostDetailPage : Page
+    public sealed partial class CostDocumentsPage : Page
     {
-        public CostDetailPage()
+        public CostDocumentsPage()
         {
             this.InitializeComponent();
         }
-
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
@@ -36,13 +33,6 @@ namespace WinStore_FamilyAccounting.ReportPages
         /// property is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            MonthItem item = e.Parameter as MonthItem;
-            if (item == null)
-            {
-                return;
-            }
-            this.ItemGridView.ItemsSource = DataCore.GetInstance().CostAdp
-                .GetItems(item.MonthId);
         }
     }
 }

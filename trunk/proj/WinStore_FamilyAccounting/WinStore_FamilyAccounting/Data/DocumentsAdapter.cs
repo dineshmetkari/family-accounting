@@ -38,16 +38,21 @@ namespace WinStore_FamilyAccounting.Data
         {
             get { return DateTime.Today; }
         }
+
+        public override int CompareTo(AbstractAdapterItem other)
+        {
+            return 0;
+        }
     }
 
 
     public class DocumentsAdapter : AbstractAdapter
     {
-        public DocumentsAdapter()
+        public DocumentsAdapter(DataCore dataCore) : base(dataCore)
         {
         }
 
-        public override ObservableCollection<AbstractAdapterItem> Items
+        public ObservableCollection<AbstractAdapterItem> Items
         {
             get { 
                 ObservableCollection<AbstractAdapterItem> items 

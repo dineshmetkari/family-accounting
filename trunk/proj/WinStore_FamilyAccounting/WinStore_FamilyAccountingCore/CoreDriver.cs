@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Search;
+using WinStore_FamilyAccountingCore.DocumentEntries;
 using WinStore_FamilyAccountingCore.Exceptions;
 using WinStore_FamilyAccountingCore.Exceptions.FormatExceptions;
 using WinStore_FamilyAccountingCore.Listeners;
@@ -39,6 +40,8 @@ namespace WinStore_FamilyAccountingCore
 
         public static readonly String REPORTDATA = "RD";
 
+        public static readonly String TEMPLATE = "TM";
+
         private StorageFolder _rootFolder = ApplicationData.Current.LocalFolder;
         public StorageFolder RootFolder { get { return _rootFolder; } set { _rootFolder = value; } }
 
@@ -48,7 +51,7 @@ namespace WinStore_FamilyAccountingCore
         private readonly ListenersManagement _listenerManagement;
         public ListenersManagement ListenerMgmt { get { return _listenerManagement; } }
 
-
+        #region Month information
         private MonthIdentity _startMonthId;
         /// <summary>
         /// current calendar month identity
@@ -96,6 +99,7 @@ namespace WinStore_FamilyAccountingCore
         {
             get { return _startMonthId; }
         }
+        #endregion
 
         /// <summary>
         /// is initialized
@@ -103,6 +107,7 @@ namespace WinStore_FamilyAccountingCore
         private bool _isInitialized;
         public bool IsInitialize { get { return _isInitialized; } }
 
+        #region Managements
         /// <summary>
         /// hash table, key string, value ManagementBase
         /// </summary>
@@ -143,6 +148,19 @@ namespace WinStore_FamilyAccountingCore
                 return (ReportsManagement)this.GetManagement(REPORTDATA);
             }
         }
+        /// <summary>
+        /// template management
+        /// </summary>
+        public EntryTemplatesManagement TmMgmt
+        {
+            get
+            {
+                if (this._isInitialized == false)
+                    return null;
+                return (EntryTemplatesManagement)this.GetManagement(TEMPLATE);
+            }
+        }
+        #endregion
 
         private List<DebugInformation> _infos;
         public DebugInformation[] DebugInfo { get { return _infos.ToArray<DebugInformation>(); } }
@@ -167,6 +185,7 @@ namespace WinStore_FamilyAccountingCore
 
             _managements.Add(TRANDATA, new TransactionDataManagement(this, mdMgmt));
             _managements.Add(REPORTDATA, new ReportsManagement(this, mdMgmt));
+            _managements.Add(TEMPLATE, new EntryTemplatesManagement(this, mdMgmt));
 
             _startMonthId = null;
 
@@ -215,15 +234,14 @@ namespace WinStore_FamilyAccountingCore
             await m1.InitializeAsync();
             m1 = innerGetManagement(TRANDATA);
             await m1.InitializeAsync();
-            m1 = innerGetManagement(REPORTDATA);
-            await m1.InitializeAsync();
 
             // initialize management
             foreach (var item in _managements)
             {
                 if (item.Value is TransactionDataManagement
                         || item.Value is MasterDataManagement
-                    || item.Value is ReportsManagement)
+                    || item.Value is ReportsManagement
+                    || item.Value.NeedInit == false)
                 {
                     continue;
                 }
@@ -408,7 +426,8 @@ namespace WinStore_FamilyAccountingCore
 
             foreach (var item in _managements)
             {
-                await item.Value.EstablishFilesAsync();
+                if(item.Value.NeedEstablishFile)
+                    await item.Value.EstablishFilesAsync();
             }
             _isInitialized = true;
         }
