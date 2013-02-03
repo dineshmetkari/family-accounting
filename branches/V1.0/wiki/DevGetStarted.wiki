@@ -1,0 +1,44 @@
+#summary Introduce how to set up development environment
+#labels Phase-Implementation
+
+= Get Started with development =
+
+==Step 1 Install JDK and eclipse==
+Both JDK 6.0 and 7.0 is OK.
+
+Eclipse version 4.2.0 is recommended.
+
+==Step 2 Install Android SDK API 4(Android 1.6)==
+You can follow the installation guides in site [http://developer.android.com/sdk/index.html].
+
+==Step 3 Sync project code from SVN==
+1. Create a work space for development `%workspace%`;
+
+2. Sync *Core* code with SVN path `%SVN_branch%/proj/CoreLibrary/` into local work space `%workspace%/CoreLibrary`;
+
+3. Sync *Android* code with SVN path `%SVN_branch%/proj/Android/` into local work space `%workspace%/Android`;
+
+4. Sync *Back-end Test* code with SVN path `%SVN_branch%/test/backend_test/` into local work space `%workspace%/backend_test`;
+
+5. Import above three projects into eclipse;
+
+After all steps above, you've established the eclipse work-space for development.
+
+==Step 4 Set up test environment==
+There are lots of test suites in the back-end test project. The exchange data with file system is necessary in some test suites. So we need to establish the test environment on file system for some test suites.
+
+1. Create a test environment on file system with directory `%test_workspace%`. And then set the test run configuration in eclipse, set the *Working Directory* as `%test_workspace%`;
+
+2. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/balance_report`;
+
+3. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/init_data`;
+
+4. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/load_template`;
+
+5. Sync SVN path `%SVN_branch%/test/test_data_investment/` into local work space `%test_workspace%/load_invest_data`;
+
+6. Sync SVN path `%SVN_branch%/test/test_data/` into local work space `%test_workspace%/busi_index`;
+
+*ALERT*: Read-only SVN path MUST be used in test environment. The reason is that the running test will probably modify the data in test environment. Such modification MUST NOT be synced to the SVN.
+
+After all above is done, run the test suites with JUNIT 4. All the test suites should be passed. 
