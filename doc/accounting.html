@@ -1,0 +1,108 @@
+<html>
+	<head>
+		<title>Family Accounting</title>
+		<LINK REL ="stylesheet" TYPE="text/css" HREF="./stylesheet.css" TITLE="Style">
+	</head>
+	<body>
+		<p><a href='./index.html'>Home</a>/</p>
+		<h1>Accounting Entry/Display</h1>
+		<p>
+			<img src="./imgs/sys_ledge.png" width="50%"/><br/>
+		</p>
+		<h2>Entry: </h2>
+		<p>Document entries provide the function that user can move amount from one G/L account to other account.</p>
+		<table class='Table'>
+			<tr><td>1. Incoming Recording: </td><td>salary, bonus, award, adhoc incoming; transafer REVENUE to Balance accounts group(GLAccountGroup.CASH,
+			GLAccountGroup.BANK_ACCOUNT, GLAccountGroup.INVESTMENT,
+			GLAccountGroup.ASSETS, GLAccountGroup.PREPAID)</td></tr>
+			<tr><td>2. Outgoting Recroding: </td><td>transfer money from Liquidity account group (GLAccountGroup.CASH, GLAccountGroup.BANK_ACCOUNT,
+			GLAccountGroup.SHORT_LIABILITIES, GLAccountGroup.PREPAID) accounts to COST.</td></tr>
+			<tr><td>3. Internal Transfer: </td><td>Money transfer between Liquidity accounts;</td></tr>
+			<tr><td>4. Investment Entry: </td><td>Money transfer between CASH or BANK accounts to investment; Besides that, system will save specific information of investemnt.</td></tr>
+			<tr><td>5. Asset Transfer: </td><td>Money transfer between CASH or BANK accounts to fixed assets; Besides that, system will save specific information of assets.</td></tr>
+		</table>
+		<p>The Family Accounting system follows <a href='http://en.wikipedia.org/wiki/Double-entry_bookkeeping_system'>Double-entry bookkeeping system</a>.
+		If you have the knowledge of accounting, you can enter the accounting document directly.</p>
+		
+		<h2>Display: </h2>
+		<p> For display, user also has two options, record/accounting document.</p>
+		
+		<h2>Document: </h2>
+		<table class='Table' width='60%' border='1'>
+			<tr style="border-style: double"><td width='20%'>Field Name</td><td width='20%'>Tag Name</td><td width='40%'>Description</td><td width='20%'>Is Mandatory</td></tr>
+			<tr><td>Document Number</td><td>doc_num</td><td>Document number follow the certain order in one month.</td><td>Mandatory</td></tr>
+			<tr><td>Fiscal Year</td><td>fiscal_year</td><td>Fiscal year</td><td>Mandatory</td></tr>
+			<tr><td>Fiscal Month</td><td>fiscal_month</td><td>Fiscal month</td><td>Mandatory</td></tr>
+			<tr><td>Posting Date</td><td>date</td><td>Posting date of the document. Fiscal year and fiscal month related to the posting date.</td><td>Mandatory</td></tr>
+			<tr><td>Document Text</td><td>text</td><td>Description of the document</td><td>Option</td></tr>
+			<tr><td>Document Type</td><td>doc_type</td><td>Document type</td><td>Mandatory</td></tr>
+			<tr><td>Is Reversed</td><td>is_reversed</td><td>Indicator whether the document is reversed(true/false)</td><td>Mandatory</td></tr>
+			<tr><td>Document Reference</td><td>reference</td><td>The id of the document which has the reference to current document.(doc_num + fiscal_year + fiscal_month)</td><td>Option</td></tr>
+			<tr><td>Items</td><td>item</td><td>Line items</td><td>Mandatory</td></tr>
+		</table>
+		
+		<h2>Document Item: </h2>
+		<table class='Table' width='60%' border='1'>
+			<tr style="border-style: double"><td width='20%'>Field Name</td><td width='20%'>Tag Name</td><td width='40%'>Description</td><td width='20%'>Is Mandatory</td></tr>
+			<tr><td>Document Number</td><td>doc_num</td><td>Document number follow the certain order in one month.</td><td>Mandatory</td></tr>
+			<tr><td>Fiscal Year</td><td>fiscal_year</td><td>Fiscal year</td><td>Mandatory</td></tr>
+			<tr><td>Fiscal Month</td><td>fiscal_month</td><td>Fiscal month</td><td>Mandatory</td></tr>
+			<tr><td>Line number</td><td>line_num</td><td>Line number</td><td>Mandatory</td></tr>
+			<tr><td>Account Type</td><td>account_type</td><td>Account type of the line item. It has the constraint on Vendor and Customer. If it is the G/L account line item, vendor and customer must be 
+			empty. If it is vendor line item, vendor should contain value and customer must be null. If it is customer line item, customer should contain value and vendor must be null.</td><td>Mandatory</td></tr>
+			<tr><td>G/L account</td><td>gl_account</td><td>Financial account</td><td>Mandatory</td></tr>
+			<tr><td>Vendor</td><td>vendor</td><td>Vendor account</td><td>Option</td></tr>
+			<tr><td>Customer</td><td>customer</td><td>Customer account</td><td>Option</td></tr>
+			<tr><td>Amount</td><td>amount</td><td>Amount</td><td>Mandatory</td></tr>
+			<tr><td>Credit/Debit Indicator</td><td>cd_indicator</td><td>Credit/Debit Indicator</td><td>Mandatory</td></tr>
+			<tr><td>Business Area</td><td>business_area</td><td>Business area</td><td>Option</td></tr>
+		</table>
+		
+		
+		<h2>How to store the records</h2>
+		<p>The Family Accounting system follows <a href='http://en.wikipedia.org/wiki/Double-entry_bookkeeping_system'>Double-entry bookkeeping system</a>. 
+		The records are called accounting documents in terms of Financial Accounting. For example, user enters the record below: 
+		</p>
+		
+		<table class='Table'>
+			<tr><td>Outgoing: </td><td>Subway</td></tr>
+			<tr><td>Account: </td><td>Cash</td></tr>
+			<tr><td>Amount: </td><td>5.00</td></tr>
+			<tr><td>Segment: </td><td>For work</td></tr>
+		</table>
+		
+		<p>In the backend, the system will generate one accounting document and two line items. And the balance of this document is zero.</p>
+		
+		<table class='Table'>
+			<tr>
+				<td>Acount</td>
+				<td>Credit/Debit</td>
+				<td>Amount</td>
+				<td>Segment</td>
+			</tr>
+			<tr>
+				<td>Subway</td>
+				<td>Debit</td>
+				<td>5.00</td>
+				<td>For work</td>
+			</tr>
+			<tr>
+				<td>Cash</td>
+				<td>Credit</td>
+				<td>-5.00</td>
+				<td></td>
+			</tr>
+		</table>
+		
+		<p>
+		It is just a simple sample. In system, it is much more complex.<br/>
+		Now, we know that when a record entry by the user, the system will generate a document with header and several line items according
+		to the <a href='./customizing.html'>customizing</a>. And then system will save such things in the backend. In the storage files, documents is stored as <a href='./storage_format.html'>XML format</a>.
+		
+		</p>
+		
+		
+		<h2>Customizing</h2>
+		<p>User can customize both the layout and the default value in system <a href='./customizing.html'>customizing</a>.</p>
+	</body>
+</html>
