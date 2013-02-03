@@ -1,0 +1,152 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/actionbar_background"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin"
+        android:weightSum="1" >
+
+        <ImageButton
+            android:id="@+id/new_icon"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.15"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/new_doc" />
+
+        <TextView
+            android:id="@+id/HomeTextView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.7"
+            android:gravity="center"
+            android:text="@string/main_home"
+            android:textAppearance="@style/TextAppearance.ActionBarTitle" />
+
+        <ImageButton
+            android:id="@+id/report_icon"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.15"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/reports" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin" >
+
+        <LinearLayout
+            android:id="@+id/cost_row"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_view_background_light_blue"
+            android:baselineAligned="false"
+            android:gravity="bottom"
+            android:paddingBottom="@dimen/TextBottomMargin"
+            android:paddingLeft="@dimen/TextLeftMargin"
+            android:paddingRight="@dimen/TextRightMargin"
+            android:paddingTop="@dimen/TextTopMargin"
+            android:weightSum="1" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/year"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_test_amount"
+                    android:textAppearance="@style/TextAppearance.XXLarge" />
+
+                <TextView
+                    android:id="@+id/month_identity"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_test_amount"
+                    android:textAppearance="@style/TextAppearance.XXLarge" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/cost_value"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/main_test_amount"
+                    android:textAppearance="@style/TextAppearance.Large"
+                    android:textColor="@color/outgoing_color"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/revenue_value"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="@string/main_test_amount"
+                    android:textAppearance="@style/TextAppearance.Large"
+                    android:textColor="@color/incoming_color"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="3dp"
+            android:background="@color/margin_blue" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/ViewBottomMargin"
+            android:paddingLeft="@dimen/ViewLeftMargin"
+            android:paddingRight="@dimen/ViewRightMargin"
+            android:paddingTop="@dimen/ViewTopMargin" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_group_by"
+                android:textAppearance="@style/TextAppearance.Medium"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/group_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/display_groupby" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chart"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

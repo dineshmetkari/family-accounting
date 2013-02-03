@@ -1,0 +1,22 @@
+<resources>
+
+    <string name="documents_outgoing_account">Outgoing Account:</string>
+    <string name="documents_incoming_account">Incoming Account:</string>
+    <string name="documents_src_account">From Account: </string>
+    <string name="documents_dst_account">To Account: </string>
+    <string name="documents_vendor">Vendor:</string>
+    <string name="documents_customer">Customer:</string>
+    <string name="documents_psting_date">Posting Date:</string>
+    <string name="documents_amount">Amount:</string>
+    <string name="documents_month">Month Filter:</string>
+    <string name="documents_group_by">Group by:</string>
+    <string name="documents_cost_account">Cost Account:</string>
+    <string name="documents_revenue_account">Revenue Account:</string>
+    <string name="documents_value_filter">Value Filter:</string>
+    <string name="documents_select_month">Month:</string>
+    <string name="documents_select_value">Value Filter</string>
+    <string name="documents_title">Documents</string>
+    <string name="documents_customized_entry">Customized Entry</string>
+    <string name="documents_reverse_doc">Reverse Document</string>
+
+</resources>

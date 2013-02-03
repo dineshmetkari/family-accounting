@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="app_name">家庭财务</string>
+    <string name="title_activity_main">家庭财务</string>
+    <string name="main_test_amount">00000.00</string>
+    <string name="main_test_amount_large">0000000.00</string>
+    <string name="main_test_account">1000100000</string>
+    <string name="main_test_descp">这只是一个描述测试字符窜. The string is to test the long value in text field</string>
+    <string name="main_test_date">2012/08/02</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="error">错误</string>
+
+</resources>

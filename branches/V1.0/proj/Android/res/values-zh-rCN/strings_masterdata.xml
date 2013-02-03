@@ -1,0 +1,54 @@
+<resources>
+
+    <string name="masterdata_accounts_title">余额项目</string>
+    <string name="masterdata_cost_accounts_title">支出项目</string>
+    <string name="masterdata_rev_accounts_title">收入项目</string>
+    <string name="masterdata_area_title">支出用途</string>
+    <string name="masterdata_vemdpr_title">商家</string>
+    <string name="masterdata_customer_title">客户</string>
+    <string name="masterdata_edit_account_title">编辑余额项目：</string>
+    <string name="masterdata_new_account_title">新建余额项目</string>
+    <string name="masterdata_edit_cost_account_title">编辑支出项目：</string>
+    <string name="masterdata_new_cost_account_title">新建支出项目</string>
+    <string name="masterdata_edit_rev_account_title">编辑收入项目：</string>
+    <string name="masterdata_new_rev_account_title">新建收入项目</string>
+    <string name="masterdata_edit_area_title">编辑支出用途：</string>
+    <string name="masterdata_new_area_title">新建支出用途</string>
+    <string name="masterdata_edit_customer_title">编辑客户：</string>
+    <string name="masterdata_new_customer_title">新建客户</string>
+    <string name="masterdata_edit_vendor_title">编辑商户：</string>
+    <string name="masterdata_new_vendor_title">新建商户</string>
+    <string name="masterdata_credit_card">信用卡</string>
+    <string name="masterdata_saving_account">活期存款</string>
+    <string name="masterdata_account_name">项目名称</string>
+    <string name="masterdata_account_type">项目种类</string>
+    <string name="masterdata_account_name_hint">输入项目名臣</string>
+    <string name="masterdata_area_name">支出用途名称：</string>
+    <string name="masterdata_area_id">支出用途标识（ID）：</string>
+    <string name="masterdata_id">标识（ID）：</string>
+    <string name="masterdata_area_priority">支出紧迫性：</string>
+    <string name="masterdata_area_name_hint">输入支出用途名称</string>
+    <string name="masterdata_area_id_hint">输入支出用途标识</string>
+    <string name="masterdata_id_hint">出入标识</string>
+    <string name="masterdata_descp">描述：</string>
+    <string name="masterdata_descp_hint">输入描述</string>
+    <string name="masterdata_save">保存</string>
+    <string name="masterdata_new_bank_account">新建银行账户</string>
+    <string name="masterdata_edit_bank_account">编辑银行账户</string>
+    <string name="masterdata_save_comfirm">确认保存</string>
+    <string name="masterdata_cash">现金</string>
+    <string name="masterdata_bank_account">银行活期存款</string>
+    <string name="masterdata_investment">投资</string>
+    <string name="masterdata_prepaid">预付项</string>
+    <string name="masterdata_assets">固定资产</string>
+    <string name="masterdata_short_liabilities">短期借贷</string>
+    <string name="masterdata_long_liabilities">长期借贷</string>
+    <string name="masterdata_cost_accidently">意外支出</string>
+    <string name="masterdata_cost_purpose">计划内指出</string>
+    <string name="masterdata_salary">薪资</string>
+    <string name="masterdata_invest_revenue">投资及其他收入</string>
+    <string name="masterdata_priority_high">高优先级</string>
+    <string name="masterdata_priority_medium">中优先级</string>
+    <string name="masterdata_priority_low">低优先级</string>
+
+</resources>

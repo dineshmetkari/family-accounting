@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/text_view_transparent"
+    android:paddingLeft="@dimen/ListRightPadding"
+    android:paddingRight="@dimen/ListLeftPadding" >
+
+    <TextView
+        android:id="@+id/descp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:ems="10"
+        android:paddingBottom="@dimen/TextBottomMargin"
+        android:paddingLeft="@dimen/TextLeftMargin"
+        android:paddingRight="@dimen/TextRightMargin"
+        android:paddingTop="@dimen/TextTopMargin"
+        android:text="@string/main_test_descp"
+        android:textAppearance="@style/TextAppearance.Medium" >
+    </TextView>
+
+    <TableRow
+        android:id="@+id/tableRow4"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@string/documents_amount"
+            android:textAppearance="@style/TextAppearance.Small"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/amountValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:gravity="right"
+            android:text="@string/main_test_amount_large"
+            android:textAppearance="@style/TextAppearance.Large"
+            android:textStyle="bold" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:id="@+id/accountLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@string/documents_src_account"
+            android:textAppearance="@style/TextAppearance.Small"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/srcAccount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:gravity="right"
+            android:text="@string/main_test_descp"
+            android:textAppearance="@style/TextAppearance.Small" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@string/documents_dst_account"
+            android:textAppearance="@style/TextAppearance.Small"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dstAccount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:gravity="right"
+            android:text="@string/main_test_descp"
+            android:textAppearance="@style/TextAppearance.Small" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:text="@string/documents_psting_date"
+            android:textAppearance="@style/TextAppearance.Small"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/pstingDateValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:gravity="right"
+            android:text="@string/main_test_date"
+            android:textAppearance="@style/TextAppearance.Small" />
+    </TableRow>
+
+</TableLayout>

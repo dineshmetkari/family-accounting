@@ -1,0 +1,90 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/actionbar_background"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin"
+        android:weightSum="1" >
+
+        <ImageButton
+            android:id="@+id/new_icon"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.15"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/new_doc" />
+
+        <TextView
+            android:id="@+id/HomeTextView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.7"
+            android:gravity="center"
+            android:text="@string/liquidity_report_title"
+            android:textAppearance="@style/TextAppearance.ActionBarTitle" />
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/displayOnlyLiquidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/TextBottomMargin"
+        android:layout_marginTop="@dimen/TextLeftMargin"
+        android:text="@string/display_only_liquidity" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:paddingBottom="@dimen/TextBottomMargin"
+            android:paddingLeft="@dimen/TextLeftMargin"
+            android:text="@string/liquidity_report_sum"
+            android:textAppearance="@style/TextAppearance.XLarge" />
+
+        <TextView
+            android:id="@+id/sum_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:gravity="right"
+            android:paddingBottom="@dimen/TextBottomMargin"
+            android:paddingRight="@dimen/TextRightMargin"
+            android:text="@string/main_test_amount"
+            android:textAppearance="@style/TextAppearance.Large"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin" >
+
+        <ListView
+            android:id="@id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@android:color/transparent"
+            android:listSelector="@android:color/transparent" />
+
+    </LinearLayout>
+
+</LinearLayout>

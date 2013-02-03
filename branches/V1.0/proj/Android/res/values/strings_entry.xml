@@ -1,0 +1,35 @@
+<resources>
+
+    <string name="entry_outgoing_entry">Outgoing</string>
+    <string name="entry_pst_date">Date:</string>
+    <string name="entry_amount">Amount:</string>
+    <string name="entry_vendor">Vendor:</string>
+    <string name="entry_outgoing_account">Outgoing Account:</string>
+    <string name="entry_cost_account">Cost Account:</string>
+    <string name="entry_business_area">Business Area:</string>
+    <string name="entry_vendor_selection">Vendor Selection</string>
+    <string name="entry_outgoing_selection">Outgoing Account Selection</string>
+    <string name="entry_cost_selection">Cost Account Selection</string>
+    <string name="entry_business_selection">Business Area Selection</string>
+    <string name="entry_src_selection">Source Account Selection</string>
+    <string name="entry_dst_selection">Destination Account Selection</string>
+    <string name="entry_src_account">Source Account:</string>
+    <string name="entry_dst_account">Destination Account:</string>
+    <string name="entry_internal_transfer_entry">Internal</string>
+    <string name="entry_description">Entry description</string>
+    <string name="entry_saved">Document saved</string>
+    <string name="entry_template_saved">Template saved</string>
+    <string name="entry_amount_value">0.00</string>
+    <string name="entry_incoming_entry">Incoming</string>
+    <string name="entry_incoming_account">Incoming Account:</string>
+    <string name="entry_customer">Customer:</string>
+    <string name="entry_profit_account">Profit Account:</string>
+    <string name="entry_check_balance">Check Balance</string>
+    <string name="entry_org_balance">Enter currency amount</string>
+    <string name="entry_investment_entry">Investment</string>
+    <string name="entry_start_date">Start Date:</string>
+    <string name="entry_due_date">Due Date:</string>
+    <string name="entry_end_date">End Date:</string>
+    <string name="entry_investment_commit">Investment Commit</string>
+
+</resources>

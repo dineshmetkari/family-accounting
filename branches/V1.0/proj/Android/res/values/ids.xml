@@ -1,0 +1,40 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item name="dialog_not_implement_alert" type="id"/>
+    <item name="dialog_account_selection" type="id"/>
+    <item name="dialog_date_selection" type="id"/>
+    <item name="dialog_business_selection" type="id"/>
+    <item name="dialog_account_group_selection" type="id"/>
+    <item name="dialog_entries" type="id"/>
+    <item name="dialog_date_picker" type="id"/>
+    <item name="dialog_vendor_selection" type="id"/>
+    <item name="dialog_customer_selection" type="id"/>
+    <item name="dialog_outgoing_selection" type="id"/>
+    <item name="dialog_incoming_selection" type="id"/>
+    <item name="dialog_cost_selection" type="id"/>
+    <item name="dialog_profit_selection" type="id"/>
+    <item name="dialog_business_area_selection" type="id"/>
+    <item name="dialog_src_account_selection" type="id"/>
+    <item name="dialog_dst_account_selection" type="id"/>
+    <item name="dialog_amount_format_error" type="id"/>
+    <item name="dialog_amount_range_value" type="id"/>
+    <item name="dialog_document_saved" type="id"/>
+    <item name="dialog_text_empty_warning" type="id"/>
+    <item name="dialog_template_saved" type="id"/>
+    <item name="dialog_template_save_with_failure" type="id"/>
+    <item name="dialog_doc_menu" type="id"/>
+    <item name="dialog_reverse_confirm" type="id"/>
+    <item name="dialog_doc_reversed" type="id"/>
+    <item name="dialog_doc_reverse_with_failure" type="id"/>
+    <item name="dialog_save_comfirm" type="id"/>
+    <item name="dialog_bank_number_error" type="id"/>
+    <item name="dialog_descp_error" type="id"/>
+    <item name="dialog_mdid_error" type="id"/>
+    <item name="dialog_duplicated_mdid_error" type="id"/>
+    <item name="dialog_check_balance" type="id"/>
+    <item name="dialog_close_ledger_confirm" type="id"/>
+    <item name="dialog_cost_details" type="id"/>
+    <item name="dialog_investment_item_commit" type="id"/>
+    <item name="dialog_date_error" type="id" />
+
+</resources>

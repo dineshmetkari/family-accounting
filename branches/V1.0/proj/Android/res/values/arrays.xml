@@ -1,0 +1,30 @@
+<resources>
+
+    <string-array name="groupby_options">
+        <item>Account</item>
+        <item>Business Area</item>
+        <item>Date</item>
+    </string-array>
+    <string-array name="doc_menus">
+        <item>Reverse</item>
+    </string-array>
+    <string-array name="display_groupby">
+        <item>Group by G/L account</item>
+        <item>Group by Area</item>
+    </string-array>
+    <string-array name="account_group">
+        <item>Cash</item>
+        <item>Bank account</item>
+        <item>Investment</item>
+        <item>Pre-paid</item>
+        <item>Fixed assets</item>
+        <item>Short liabilities</item>
+        <item>Long liabilities</item>
+    </string-array>
+    <string-array name="area_priority">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+</resources>

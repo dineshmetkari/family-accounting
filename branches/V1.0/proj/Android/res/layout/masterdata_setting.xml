@@ -1,0 +1,53 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/actionbar_background"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin"
+        android:weightSum="1" >
+
+        <ImageButton
+            android:id="@+id/new_icon"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.15"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/new_master_data" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.7"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.ActionBarTitle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/ViewBottomMargin"
+        android:paddingLeft="@dimen/ViewLeftMargin"
+        android:paddingRight="@dimen/ViewRightMargin"
+        android:paddingTop="@dimen/ViewTopMargin" >
+
+        <ListView
+            android:id="@id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:listSelector="@android:color/transparent" >
+        </ListView>
+    </LinearLayout>
+
+</LinearLayout>

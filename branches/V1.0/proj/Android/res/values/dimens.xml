@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="ListPreferredItemHeight">64dip</dimen>
+    <dimen name="ListLeftPadding">18dip</dimen>
+    <dimen name="ListRightPadding">18dip</dimen>
+    <dimen name="ListTopPadding">15dip</dimen>
+    <dimen name="ListBottomPadding">5dip</dimen>
+    <dimen name="SearchResultListItemHeight">58dip</dimen>
+    <dimen name="BaseLayoutPadding">6dip</dimen>
+
+    <!-- Gold stripe -->
+    <eat-comment />
+
+    <dimen name="GoldStripePadding">10dip</dimen>
+    <dimen name="GoldStripeGoldStripeHeight">12dip</dimen>
+    <dimen name="GoldStripeTitleMarginTopBottom">6dip</dimen>
+    <dimen name="GoldStripeBottomSignMarginTop">8dip</dimen>
+    <!-- End gold stripe -->
+    <eat-comment />
+
+    <!-- About screen -->
+    <eat-comment />
+
+    <dimen name="AboutScreenTextMarginTop">12dip</dimen>
+    <dimen name="AboutScreenButtonsMarginTop">10dip</dimen>
+    <dimen name="AboutScreenButtonsMarginLeftRight">4dip</dimen>
+    <dimen name="AboutScreenButtonsSpaceBetweenButtons">4dip</dimen>
+    <!-- End about screen -->
+    <eat-comment />
+
+    <!-- Login screen -->
+    <eat-comment />
+
+    <dimen name="FrameWidth">1dip</dimen>
+    <dimen name="FrameCornersRadius">4dip</dimen>
+    <dimen name="LoginScreenEmailMarginTop">12dip</dimen>
+    <dimen name="LoginScreenEmailMarginBottom">6dip</dimen>
+    <dimen name="LoginScreenEmailMarginLeftRight">8dip</dimen>
+    <dimen name="LoginScreenEmailInputMarginLeftRight">6dip</dimen>
+    <dimen name="LoginScreenEmailInputMarginBottom">8dip</dimen>
+    <dimen name="LoginScreenPasswordMarginTop">12dip</dimen>
+    <dimen name="LoginScreenPasswordMarginBottom">6dip</dimen>
+    <dimen name="LoginScreenPasswordMarginLeftRight">8dip</dimen>
+    <dimen name="LoginScreenPasswordInputMarginLeftRight">6dip</dimen>
+    <dimen name="LoginScreenPasswordInputMarginBottom">8dip</dimen>
+    <dimen name="LoginScreenButtonsMarginTop">10dip</dimen>
+    <dimen name="LoginScreenButtonsMarginLeftRight">4dip</dimen>
+    <dimen name="LoginScreenButtonsSpaceBetweenButtons">4dip</dimen>
+    <!-- End login screen -->
+    <eat-comment />
+
+    <!-- AlertDialog -->
+    <eat-comment />
+
+    <dimen name="AlertDialogButtonsPaddingTop">10dip</dimen>
+    <dimen name="AlertDialogButtonsPaddingBottom">6dip</dimen>
+    <dimen name="AlertDialogButtonsPaddingLeft">5dip</dimen>
+    <dimen name="AlertDialogButtonsPaddingRight">5dip</dimen>
+    <dimen name="AlertDialogButtonsButtonMarginLeftRight">2dip</dimen>
+    <!-- End AlertDialog -->
+    <eat-comment />
+
+    <dimen name="RatingDialogPaddingLeftRight">50dip</dimen>
+
+    <!-- SegmentedList -->
+    <eat-comment />
+
+    <dimen name="SegmentedListItemRowBackgroundCornersRadius">5dip</dimen>
+    <!-- End SegmentedList -->
+    <eat-comment />
+
+    <!-- SeekBar -->
+    <eat-comment />
+
+    <dimen name="SeekBarCornersRadius">4dip</dimen>
+    <!-- End SeekBar -->
+    <eat-comment />
+
+    <dimen name="ListBottomShadowHeight">16dip</dimen>
+    <dimen name="ExpandableListHeight">64dip</dimen>
+    <dimen name="ExpandableListChildLeftPadding">20dip</dimen>
+    <dimen name="ExpandableListGroupLeftPadding">10dip</dimen>
+    <dimen name="ExpandableListGroupRightPadding">10dip</dimen>
+    <dimen name="ExpandableListGroupRightLeftIdicatorPadding">5dip</dimen>
+    <dimen name="ExpandableListGroupNameTextSize">18sp</dimen>
+    <dimen name="ExpandableListGroupCountTextSize">12sp</dimen>
+    <dimen name="Divider">1px</dimen>
+    <dimen name="ActionbarButtonMinWidth">100dip</dimen>
+    <dimen name="TextSizeSmall">12sp</dimen>
+    <dimen name="TextSizeMedium">18sp</dimen>
+    <dimen name="TextSizeLarge">22sp</dimen>
+    <dimen name="TextSizeXLarge">24sp</dimen>
+    <dimen name="TextSizeXXLarge">28sp</dimen>
+    <dimen name="TextSizeActionBarTitle">32sp</dimen>
+    <dimen name="ViewLeftMargin">7dip</dimen>
+    <dimen name="ViewRightMargin">7dip</dimen>
+    <dimen name="ViewTopMargin">8dip</dimen>
+    <dimen name="ViewBottomMargin">5dip</dimen>
+    <dimen name="DividerLeftMargin">5dip</dimen>
+    <dimen name="DividerRightMargin">5dip</dimen>
+    <dimen name="TextLeftMargin">5dip</dimen>
+    <dimen name="TextRightMargin">5dip</dimen>
+    <dimen name="TextTopMargin">5dip</dimen>
+    <dimen name="TextBottomMargin">5dip</dimen>
+
+</resources>

@@ -1,0 +1,54 @@
+<resources>
+
+    <string name="masterdata_accounts_title">Accounts</string>
+    <string name="masterdata_cost_accounts_title">Cost Accounts</string>
+    <string name="masterdata_rev_accounts_title">Revenue Accounts</string>
+    <string name="masterdata_area_title">Area</string>
+    <string name="masterdata_vemdpr_title">Vendor</string>
+    <string name="masterdata_customer_title">Customer</string>
+    <string name="masterdata_edit_account_title">Edit account: </string>
+    <string name="masterdata_new_account_title">New account</string>
+    <string name="masterdata_edit_cost_account_title">Edit cost account: </string>
+    <string name="masterdata_new_cost_account_title">New cost account</string>
+    <string name="masterdata_edit_rev_account_title">Edit revenue account: </string>
+    <string name="masterdata_new_rev_account_title">New revenue account</string>
+    <string name="masterdata_edit_area_title">Edit area: </string>
+    <string name="masterdata_new_area_title">New area</string>
+    <string name="masterdata_edit_customer_title">Edit customer: </string>
+    <string name="masterdata_new_customer_title">New customer</string>
+    <string name="masterdata_edit_vendor_title">Edit vendor: </string>
+    <string name="masterdata_new_vendor_title">New vendor</string>
+    <string name="masterdata_credit_card">Credit Card</string>
+    <string name="masterdata_saving_account">Saving Account</string>
+    <string name="masterdata_account_name">Account Name:</string>
+    <string name="masterdata_account_type">Account Type: </string>
+    <string name="masterdata_account_name_hint">Enter account name</string>
+    <string name="masterdata_area_name">Area Name:</string>
+    <string name="masterdata_area_id">Area Identity: </string>
+    <string name="masterdata_id">Identity: </string>
+    <string name="masterdata_area_priority">Priority: </string>
+    <string name="masterdata_area_name_hint">Enter area name</string>
+    <string name="masterdata_area_id_hint">Enter area identity</string>
+    <string name="masterdata_id_hint">Enter identity</string>
+    <string name="masterdata_descp">Description: </string>
+    <string name="masterdata_descp_hint">Enter description</string>
+    <string name="masterdata_save">Save</string>
+    <string name="masterdata_new_bank_account">New Bank Account</string>
+    <string name="masterdata_edit_bank_account">Edit Bank Account</string>
+    <string name="masterdata_save_comfirm">Save Confirm</string>
+    <string name="masterdata_cash">Cash</string>
+    <string name="masterdata_bank_account">Bank account</string>
+    <string name="masterdata_investment">Investment</string>
+    <string name="masterdata_prepaid">Pre-paid</string>
+    <string name="masterdata_assets">Fixed assets</string>
+    <string name="masterdata_short_liabilities">Short Liabilities</string>
+    <string name="masterdata_long_liabilities">Long Liabilities</string>
+    <string name="masterdata_cost_accidently">Cost accidently</string>
+    <string name="masterdata_cost_purpose">Cost for purpose</string>
+    <string name="masterdata_salary">Salary</string>
+    <string name="masterdata_invest_revenue">Investment and other revenue</string>
+    <string name="masterdata_priority_high">High</string>
+    <string name="masterdata_priority_medium">Medium</string>
+    <string name="masterdata_priority_low">Low</string>
+
+</resources>

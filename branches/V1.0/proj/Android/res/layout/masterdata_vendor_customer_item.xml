@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/text_view_transparent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/ListBottomPadding"
+    android:paddingLeft="@dimen/ListRightPadding"
+    android:paddingRight="@dimen/ListLeftPadding"
+    android:paddingTop="@dimen/ListTopPadding" >
+
+    <TextView
+        android:id="@+id/descp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Large"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/masterdata_id"
+            android:textAppearance="@style/TextAppearance.Medium"
+            android:textColor="@color/devil_gray"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/areaId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Medium"
+            android:textColor="@color/devil_gray" />
+    </LinearLayout>
+
+</LinearLayout>

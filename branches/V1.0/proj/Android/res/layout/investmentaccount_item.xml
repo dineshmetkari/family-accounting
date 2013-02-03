@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/text_view_transparent"
+    android:paddingLeft="@dimen/ListRightPadding"
+    android:paddingRight="@dimen/ListLeftPadding" >
+
+    <TableRow
+        android:id="@+id/tableRow4"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:id="@+id/account"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@string/main_test_descp"
+            android:textAppearance="@style/TextAppearance.Small" />
+
+        <TextView
+            android:id="@+id/amountValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:gravity="right"
+            android:text="@string/main_test_amount_large"
+            android:textAppearance="@style/TextAppearance.Large"
+            android:textStyle="bold" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@string/investment_rev_amount"
+            android:textAppearance="@style/TextAppearance.Small"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/revAmountValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:gravity="right"
+            android:text="@string/main_test_amount_large"
+            android:textAppearance="@style/TextAppearance.Large"
+            android:textStyle="bold" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@string/investment_rev_account"
+            android:textAppearance="@style/TextAppearance.Small"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/revAccount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:gravity="right"
+            android:text="@string/main_test_descp"
+            android:textAppearance="@style/TextAppearance.Small" />
+    </TableRow>
+
+</TableLayout>

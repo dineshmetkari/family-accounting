@@ -1,0 +1,51 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/ViewBottomMargin"
+    android:paddingLeft="@dimen/ViewLeftMargin"
+    android:paddingRight="@dimen/ViewRightMargin"
+    android:paddingTop="@dimen/ViewTopMargin" >
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:text="@string/masterdata_descp"
+            android:textAppearance="@style/TextAppearance.Large"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/descp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:ems="10"
+            android:hint="@string/masterdata_descp_hint" >
+
+            <requestFocus />
+        </EditText>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:paddingLeft="@dimen/ViewLeftMargin"
+            android:paddingRight="@dimen/ViewRightMargin"
+            android:text="@string/masterdata_save" />
+    </TableRow>
+
+</TableLayout>

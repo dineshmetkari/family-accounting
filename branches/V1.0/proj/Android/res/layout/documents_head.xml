@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/dark_gray"
+    android:orientation="horizontal"
+    android:weightSum="1" >
+
+    <TextView
+        android:id="@+id/descp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.63"
+        android:paddingLeft="@dimen/ListLeftPadding"
+        android:text="@string/main_test_descp"
+        android:textAppearance="@style/TextAppearance.Small"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.37"
+        android:gravity="right"
+        android:paddingRight="@dimen/ListRightPadding"
+        android:text="@string/main_test_amount_large"
+        android:textAppearance="@style/TextAppearance.Medium"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+</LinearLayout>

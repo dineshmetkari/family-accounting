@@ -1,0 +1,24 @@
+<resources>
+
+    <string name="main_equity_label">Equity:</string>
+    <string name="main_assert_label">Asset:</string>
+    <string name="main_liability_label">Liab. :</string>
+    <string name="main_cur_cost_label">Cost in Cur. Month:</string>
+    <string name="main_cur_revenue_label">Rvn in Cur. Month:</string>
+    <string name="main_chart_label">Asserts Details:</string>
+    <string name="main_liquidity_label">Liquidity:</string>
+    <string name="main_sample_year">2012</string>
+    <string name="main_sample_month">2012_08 (1)</string>
+    <string name="main_sample_date">2012.08.01</string>
+    <string name="main_date_to_symbol">~</string>
+    <string name="main_home">Home</string>
+    <string name="main_chart_title">Cost in current month</string>
+    <string name="main_chart_ytitle">Amount</string>
+    <string name="main_accounts">Accounts</string>
+    <string name="main_business_area">Business Area</string>
+    <string name="main_entries">Entries</string>
+    <string name="main_month">Current Month</string>
+    <string name="main_group_by">Group by: </string>
+    <string name="main_cost_details">Outgoing Details</string>
+
+</resources>

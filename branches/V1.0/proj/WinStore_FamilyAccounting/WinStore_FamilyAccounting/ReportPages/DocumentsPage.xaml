@@ -1,0 +1,54 @@
+﻿<Page
+    x:Class="WinStore_FamilyAccounting.ReportPages.DocumentsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WinStore_FamilyAccounting.ReportPages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+
+        <!-- Collection of items displayed by this page -->
+        <CollectionViewSource
+            x:Name="itemsViewSource"
+            Source="{Binding Items}"
+            />
+    </Page.Resources>
+
+    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+        <GridView x:Name="ItemGridView" BorderBrush="Gray" BorderThickness="0"
+                 Height="Auto" 
+            ScrollViewer.VerticalScrollBarVisibility="Auto" 
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  SelectionMode="None"
+            IsSwipeEnabled="false"
+            IsItemClickEnabled="True"
+             ItemsPanel="{StaticResource ReportItemsPanelTemplate}">
+            <GridView.ItemTemplate>
+                <DataTemplate>
+                    <Grid HorizontalAlignment="Left" Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+                        <StackPanel Orientation="Horizontal" Margin="10,10,0,10">
+                            <StackPanel Margin="0,0,0,0" Orientation="Vertical">
+                                <TextBlock TextWrapping="Wrap" Foreground="{StaticResource ApplicationForegroundThemeBrush}" 
+                                           Style="{StaticResource ReportItemTitleStyle}" Width="200" 
+                                           VerticalAlignment="Center" Text="{Binding Name}" HorizontalAlignment="Left"
+                                           FontFamily="Segoe UI" />
+                                <StackPanel Orientation="Horizontal" Width="200" >
+                                    <TextBlock TextWrapping="Wrap" Foreground="{StaticResource ApplicationForegroundThemeBrush}" 
+                                           Width="Auto" Height="Auto"
+                                           Style="{StaticResource ReportItemLabelStyle}"
+                                           Text="金额：" />
+                                    <TextBlock TextWrapping="Wrap" Foreground="{StaticResource ApplicationForegroundThemeBrush}" 
+                                           Width="Auto" Height="Auto"
+                                           Style="{StaticResource ReportItemAmountStyle}"
+                                           Text="{Binding Amount}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+    </StackPanel>
+</Page>

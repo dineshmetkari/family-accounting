@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_check_balance"
+        android:icon="@drawable/check_dark"
+        android:orderInCategory="100"
+        android:title="@string/menu_check_balance"/>
+    <item
+        android:id="@+id/menu_investment"
+        android:orderInCategory="100"
+        android:title="@string/menu_investment"/>
+    <item
+        android:id="@+id/menu_main_menu"
+        android:orderInCategory="100"
+        android:title="@string/menu_main_menu"/>
+
+</menu>
