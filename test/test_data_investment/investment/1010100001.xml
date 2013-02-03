@@ -1,4 +1,0 @@
-<root account="1010100001" revenue_account="4000100001" name="deposite account in ICBC" >
-	<investement start_date="2012.07.02" due_date="2012.07.30" end_date="2012.07.30" is_closed="true" start_doc="1000000001_2012_07" end_doc="1000000002_2012_07"/>
-	<investement start_date="2012.07.30" due_date="2012.08.30" is_closed="false" start_doc="1000000003_2012_07" />
-</root>

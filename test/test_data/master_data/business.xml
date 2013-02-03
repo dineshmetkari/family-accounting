@@ -1,5 +1,0 @@
-<root>
-	<entity id='WORK' 			name="Work" critical='H'/>
-	<entity id='ENTERTAIN' 		name="Entertainment(or with Yanyan), like dinner, movie..." critical='M'/>
-	<entity id='SNACKS' 		name="Expense on snack" critical='L'/>
-</root>
